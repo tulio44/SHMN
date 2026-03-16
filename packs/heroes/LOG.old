@@ -1,13 +1,7 @@
-2026/03/16-02:09:35.822 18ac Recovering log #10
-2026/03/16-02:09:35.831 18ac Delete type=0 #10
-2026/03/16-02:09:35.831 18ac Delete type=3 #9
-2026/03/16-02:12:16.646 2b1c Level-0 table #14: started
-2026/03/16-02:12:16.646 2b1c Level-0 table #14: 0 bytes OK
-2026/03/16-02:12:16.647 2b1c Delete type=0 #12
-2026/03/16-02:12:16.653 2b1c Manual compaction at level-0 from '!actors!125qFnXvT9z0iOic' @ 72057594037927935 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1
-2026/03/16-02:12:16.653 2b1c Compacting 1@0 + 0@1 files
-2026/03/16-02:12:16.699 2b1c Generated table #15@0: 397 keys, 473482 bytes
-2026/03/16-02:12:16.699 2b1c Compacted 1@0 + 0@1 files => 473482 bytes
-2026/03/16-02:12:16.700 2b1c compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/16-02:12:16.700 2b1c Delete type=2 #5
-2026/03/16-02:12:16.883 2b1c Manual compaction at level-0 from '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at (end)
+2026/03/16-02:12:22.810 18ac Recovering log #13
+2026/03/16-02:12:22.815 18ac Delete type=0 #13
+2026/03/16-02:12:22.815 18ac Delete type=3 #11
+2026/03/16-03:01:03.205 2b1c Level-0 table #19: started
+2026/03/16-03:01:03.205 2b1c Level-0 table #19: 0 bytes OK
+2026/03/16-03:01:03.206 2b1c Delete type=0 #17
+2026/03/16-03:01:03.212 2b1c Manual compaction at level-0 from '!actors!125qFnXvT9z0iOic' @ 72057594037927935 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at (end)

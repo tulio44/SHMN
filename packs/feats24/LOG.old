@@ -1,13 +1,7 @@
-2026/03/16-02:09:36.443 18ac Recovering log #10
-2026/03/16-02:09:36.449 18ac Delete type=0 #10
-2026/03/16-02:09:36.450 18ac Delete type=3 #9
-2026/03/16-02:12:17.069 2b1c Level-0 table #14: started
-2026/03/16-02:12:17.069 2b1c Level-0 table #14: 0 bytes OK
-2026/03/16-02:12:17.070 2b1c Delete type=0 #12
-2026/03/16-02:12:17.071 2b1c Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 0 : 0; will stop at '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 24 : 1
-2026/03/16-02:12:17.071 2b1c Compacting 1@0 + 0@1 files
-2026/03/16-02:12:17.076 2b1c Generated table #15@0: 27 keys, 16584 bytes
-2026/03/16-02:12:17.076 2b1c Compacted 1@0 + 0@1 files => 16584 bytes
-2026/03/16-02:12:17.077 2b1c compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/16-02:12:17.078 2b1c Delete type=2 #5
-2026/03/16-02:12:17.084 2b1c Manual compaction at level-0 from '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 24 : 1 .. '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 0 : 0; will stop at (end)
+2026/03/16-02:12:23.147 45a8 Recovering log #13
+2026/03/16-02:12:23.153 45a8 Delete type=0 #13
+2026/03/16-02:12:23.153 45a8 Delete type=3 #11
+2026/03/16-03:01:03.235 2b1c Level-0 table #19: started
+2026/03/16-03:01:03.235 2b1c Level-0 table #19: 0 bytes OK
+2026/03/16-03:01:03.240 2b1c Delete type=0 #17
+2026/03/16-03:01:03.241 2b1c Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 0 : 0; will stop at (end)
