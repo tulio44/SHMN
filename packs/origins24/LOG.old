@@ -1,5 +1,13 @@
-2026/01/20-18:53:14.034912 7f4c70fbd6c0 Delete type=3 #1
-2026/01/20-18:53:14.035930 7f4c637fe6c0 Level-0 table #5: started
-2026/01/20-18:53:14.037081 7f4c637fe6c0 Level-0 table #5: 76487 bytes OK
-2026/01/20-18:53:14.037548 7f4c637fe6c0 Delete type=0 #3
-2026/01/20-18:53:14.037631 7f4c637fe6c0 Manual compaction at level-0 from '!folders!2Bw096HjE0HyGMwM' @ 72057594037927935 : 1 .. '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 0 : 0; will stop at (end)
+2026/03/16-02:09:36.427 1f48 Recovering log #10
+2026/03/16-02:09:36.433 1f48 Delete type=0 #10
+2026/03/16-02:09:36.433 1f48 Delete type=3 #9
+2026/03/16-02:12:17.029 2b1c Level-0 table #14: started
+2026/03/16-02:12:17.029 2b1c Level-0 table #14: 0 bytes OK
+2026/03/16-02:12:17.030 2b1c Delete type=0 #12
+2026/03/16-02:12:17.034 2b1c Manual compaction at level-0 from '!folders!2Bw096HjE0HyGMwM' @ 72057594037927935 : 1 .. '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 0 : 0; will stop at '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 31 : 1
+2026/03/16-02:12:17.034 2b1c Compacting 1@0 + 0@1 files
+2026/03/16-02:12:17.040 2b1c Generated table #15@0: 75 keys, 76487 bytes
+2026/03/16-02:12:17.040 2b1c Compacted 1@0 + 0@1 files => 76487 bytes
+2026/03/16-02:12:17.041 2b1c compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/16-02:12:17.041 2b1c Delete type=2 #5
+2026/03/16-02:12:17.071 2b1c Manual compaction at level-0 from '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 31 : 1 .. '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 0 : 0; will stop at (end)

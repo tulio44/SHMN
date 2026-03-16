@@ -55662,7 +55662,7 @@ class CharacterActorSheet extends BaseActorSheet {
     { tab: "details", label: "SHMN.Details", icon: "fas fa-cog" },
     { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
     { tab: "features", label: "SHMN.Features", icon: "fas fa-list" },
-    { tab: "spells", label: "TYPES.Item.spellPl", icon: "fas fa-book" },
+    { tab: "spells", label: "TYPES.Item.spellPl", icon: "fas fa-handshake" },
     { tab: "effects", label: "SHMN.Effects", icon: "fas fa-bolt" },
     { tab: "biography", label: "SHMN.Biography", icon: "fas fa-feather" },
     { tab: "bastion", label: "SHMN.Bastion.Label", icon: "fas fa-chess-rook" },
