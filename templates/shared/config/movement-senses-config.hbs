@@ -28,13 +28,13 @@
 
     {{#with travel}}
     <fieldset class="card">
-        <legend>{{ localize "SHAMN.TRAVEL.Speed" }}</legend>
+        <legend>{{ localize "SHMN.TRAVEL.Speed" }}</legend>
         <div class="header">
             <div class="form-group split-group">
                 <span></span>
                 <div class="form-fields">
-                    <span>{{ localize "SHAMN.TRAVEL.Per.Hour" }}</span>
-                    <span>{{ localize "SHAMN.TRAVEL.Per.Day" }}</span>
+                    <span>{{ localize "SHMN.TRAVEL.Per.Hour" }}</span>
+                    <span>{{ localize "SHMN.TRAVEL.Per.Day" }}</span>
                 </div>
             </div>
         </div>
@@ -57,10 +57,10 @@
 
     {{#if fields.special}}
     <fieldset class="card">
-        <legend>{{ localize "SHAMN.Special" }}</legend>
+        <legend>{{ localize "SHMN.Special" }}</legend>
         <div class="form-group">
             {{ formInput fields.special value=data.special }}
-            <p class="hint">{{ localize "SHAMN.SpecialHint" }}</p>
+            <p class="hint">{{ localize "SHMN.SpecialHint" }}</p>
         </div>
     </fieldset>
     {{/if}}

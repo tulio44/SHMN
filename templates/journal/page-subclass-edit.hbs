@@ -1,6 +1,6 @@
 <section>
     <div class="form-group">
-        <label>{{ localize "JOURNALENTRYPAGE.SHAMN.Subclass.FIELDS.item.label" }}</label>
+        <label>{{ localize "JOURNALENTRYPAGE.SHMN.Subclass.FIELDS.item.label" }}</label>
         <div class="form-fields">
             <ol class="items-list">
                 {{#if document.system.item}}
@@ -8,13 +8,13 @@
                     <div class="item-name">{{{ shmn-linkForUuid document.system.item }}}</div>
                     <div class="item-controls flexrow">
                         <a class="item-control" data-action="deleteItem" data-tooltip
-                           aria-label="{{ localize 'SHAMN.ItemDelete' }}">
+                           aria-label="{{ localize 'SHMN.ItemDelete' }}">
                             <i class="fa-solid fa-trash" inert></i>
                         </a>
                     </div>
                 </li>
                 {{else}}
-                <li class="item flexrow">{{ localize "JOURNALENTRYPAGE.SHAMN.Subclass.ItemHint" }}</li>
+                <li class="item flexrow">{{ localize "JOURNALENTRYPAGE.SHMN.Subclass.ItemHint" }}</li>
                 {{/if}}
             </ol>
         </div>
@@ -23,12 +23,12 @@
     {{ formField systemFields.style value=system.style options=styleOptions }}
 
     <div class="form-group">
-        <label>{{ localize "JOURNALENTRYPAGE.SHAMN.Subclass.FIELDS.description.value.label" }}</label>
+        <label>{{ localize "JOURNALENTRYPAGE.SHMN.Subclass.FIELDS.description.value.label" }}</label>
         <div class="form-fields">
             <button data-action="launchTextEditor" data-target="system.description.value">
-                <i class="fa-solid fa-edit" inert></i> {{ localize "JOURNALENTRYPAGE.SHAMN.EditDescription" }}
+                <i class="fa-solid fa-edit" inert></i> {{ localize "JOURNALENTRYPAGE.SHMN.EditDescription" }}
             </button>
         </div>
-        <p class="hint">{{ localize "JOURNALENTRYPAGE.SHAMN.Subclass.FIELDS.description.value.hint" }}</p>
+        <p class="hint">{{ localize "JOURNALENTRYPAGE.SHMN.Subclass.FIELDS.description.value.hint" }}</p>
     </div>
 </section>

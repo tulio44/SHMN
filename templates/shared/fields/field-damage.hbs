@@ -1,6 +1,6 @@
 {{!-- Custom Formula --}}
 <div class="form-group split-group">
-    <label>{{ localize "SHAMN.Formula" }}</label>
+    <label>{{ localize "SHMN.Formula" }}</label>
     <div class="form-fields">
 
         {{!-- Enable --}}
@@ -17,19 +17,19 @@
 {{!-- Simple Input --}}
 {{#unless source.custom.enabled}}
 <div class="form-group split-group">
-    <label>{{#if heal}}{{ localize "SHAMN.HEAL.Title" }}{{else}}{{ localize "SHAMN.DAMAGE.Title" }}{{/if}}</label>
+    <label>{{#if heal}}{{ localize "SHMN.HEAL.Title" }}{{else}}{{ localize "SHMN.DAMAGE.Title" }}{{/if}}</label>
     <div class="form-fields">
 
         {{!-- Number --}}
-        {{ formField fields.number name=(concat prefix "number") value=source.number label="SHAMN.Number" localize=true
+        {{ formField fields.number name=(concat prefix "number") value=source.number label="SHMN.Number" localize=true
                      hint=false classes="label-top" placeholder=numberPlaceholder rootId=@root.partId }}
 
         {{!-- Die --}}
-        {{ formField fields.denomination name=(concat prefix "denomination") value=source.denomination label="SHAMN.Die"
+        {{ formField fields.denomination name=(concat prefix "denomination") value=source.denomination label="SHMN.Die"
                      hint=false localize=true options=denominationOptions classes="label-top" rootId=@root.partId }}
 
         {{!-- Bonus --}}
-        {{ formField fields.bonus name=(concat prefix "bonus") value=source.bonus label="SHAMN.Bonus" localize=true
+        {{ formField fields.bonus name=(concat prefix "bonus") value=source.bonus label="SHMN.Bonus" localize=true
                      hint=false classes="label-top" rootId=@root.partId }}
     </div>
 </div>
@@ -37,25 +37,25 @@
 
 {{!-- Types --}}
 {{#if types}}
-{{ formField fields.types name=(concat prefix "types") value=source.types options=types label="SHAMN.Type"
+{{ formField fields.types name=(concat prefix "types") value=source.types options=types label="SHMN.Type"
              localize=true rootId=@root.partId }}
 {{/if}}
 
 {{!-- Scaling --}}
 {{#if canScale}}
 <div class="form-group split-group">
-    <label>{{ localize "SHAMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.abbr" }}</label>
+    <label>{{ localize "SHMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.abbr" }}</label>
     <div class="form-fields">
 
         {{!-- Mode --}}
         {{ formField fields.scaling.fields.mode name=(concat prefix "scaling.mode") value=source.scaling.mode
-                     options=scalingOptions label="SHAMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.mode.abbr" hint=false
+                     options=scalingOptions label="SHMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.mode.abbr" hint=false
                      localize=true classes="label-top" rootId=@root.partId }}
 
         {{!-- Dice --}}
         {{#if source.scaling.mode}}
         {{ formField fields.scaling.fields.number name=(concat prefix "scaling.number") value=source.scaling.number
-                     label="SHAMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.number.abbr" hint=false localize=true
+                     label="SHMN.DAMAGE.FIELDS.damage.parts.FIELDS.scaling.number.abbr" hint=false localize=true
                      classes="label-top" rootId=@root.partId }}
         {{/if}}
     </div>

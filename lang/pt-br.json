@@ -1423,7 +1423,7 @@
 "SHMN.Charges": "Cargas",
 "SHMN.ChatContextDamage": "Aplicar Como Dano",
 "SHMN.ChatContextHealing": "Aplicar Como Cura",
-"SHMN.ChatContextTempHP": "Aplicar Como PV Temporários",
+"SHMN.ChatContextTempHP": "Aplicar Como HP Temporários",
 "SHMN.ChatContextDoubleDamage": "Aplicar em Dobro Como Dano",
 "SHMN.ChatContextHalfDamage": "Aplicar Metade Como Dano",
 "SHMN.ChatContextSelectHit": "Selecionar Alvos Acertados",
@@ -3036,19 +3036,24 @@
 "SHMN.HitPointsMax": "Pontos de Vida Máximos",
 "SHMN.HitPointsMin": "Pontos de Vida Mínimos",
 "SHMN.HitPointsOverride": "Substituição Máxima",
-"SHMN.HitPointsOverrideHint": "Substitui os pontos de vida calculados automaticamente, ignorando quaisquer PV de classes, bônus e modificador de habilidade.",
+"SHMN.HitPointsOverrideHint": "Substitui os pontos de vida calculados automaticamente, ignorando quaisquer HP de classes, bônus e modificador de habilidade.",
 "SHMN.HitPointsTemp": "Pontos de Vida Temporários",
-"SHMN.HitPointsTempShort": "PV Temporários",
+"SHMN.HitPointsTempShort": "HP Temporários",
 "SHMN.HitPointsTempMax": "Máximo Temporário",
-"SHMN.HitPointsTempMaxHint": "Mudança temporária no máximo de PV.",
-"SHMN.HitPointsTempMaxShort": "Máx Temp PV",
-"SHMN.HP": "PV",
+"SHMN.HitPointsTempMaxHint": "Mudança temporária no máximo de HP.",
+"SHMN.HitPointsTempMaxShort": "Máx Temp HP",
+"SHMN.HP": "HP",
 "SHMN.HPFormula": "Fórmula de Vida",
 "SHMN.HPFormulaError": "A fórmula de pontos de vida fornecida não pôde ser avaliada.",
 "SHMN.HPFormulaRollMessage": "Rolar Fórmula de Pontos de Vida",
+"SHMN.EnergyPoints": "Pontos de Energia",
+"SHMN.EnergyPointsConfig": "Configurar Pontos de Energia",
+"SHMN.CurrentEnergyPoints": "Pontos de Energia Atuais",
+"SHMN.MaxEnergyPoints": "Pontos Máximos de Energia",
+"SHMN.EP": "EP",
 
 "SHMN.HITDICE": {
-  "Abbreviation": "DV",
+  "Abbreviation": "HD",
   "Action": {
     "Decrease": "Diminuir",
     "Increase": "Aumentar"
@@ -3647,7 +3652,7 @@
   "HitDice": {
     "AutoSpend": {
       "Hint": "Gastar automaticamente dados de vida até acabarem ou a vida ficar cheia.",
-      "Label": "Gastar DV Automaticamente"
+      "Label": "Gastar HD Automaticamente"
     },
     "None": "Nenhum Dado de Vida restante para rolar durante este descanso.",
     "Select": "Selecionar Dados para Rolar"
@@ -3676,11 +3681,11 @@
     "Label": "Novo Dia"
   },
   "RecoverTempHP": {
-    "Label": "Remover PV Temporários"
+    "Label": "Remover HP Temporários"
   },
   "RecoverTempMaxHP": {
     "Hint": "Remove quaisquer ajustes aos Pontos de Vida máximos de um personagem.",
-    "Label": "Recuperar PV Máximos"
+    "Label": "Recuperar HP Máximos"
   },
   "Request": {
     "AutoRest": {
@@ -4207,7 +4212,7 @@
       },
       "hd": {
         "label": "Bônus nos Dados de Vida",
-        "hint": "Dados de vida adicionais adicionados à criatura além do que é derivado da fórmula de PV em seu bloco de estatísticas. Só pode ser usado ao invocar atores NPC."
+        "hint": "Dados de vida adicionais adicionados à criatura além do que é derivado da fórmula de HP em seu bloco de estatísticas. Só pode ser usado ao invocar atores NPC."
       },
       "healing": {
         "label": "Bônus de Cura",
@@ -4833,7 +4838,7 @@
         "label": "Listas de Magia Mantidas"
       },
       "tempFormula": {
-        "hint": "Fórmula para PV temporários que serão adicionados ao se transformar.",
+        "hint": "Fórmula para HP temporários que serão adicionados ao se transformar.",
         "label": "Fórmula Temporária"
       },
       "transformTokens": {
@@ -4890,7 +4895,7 @@
         "Label": "Magias"
       },
       "TempHP": {
-        "Label": "PV Temporários"
+        "Label": "HP Temporários"
       },
       "Vision": {
         "Label": "Visão"
@@ -5377,10 +5382,10 @@
           "label": "Limiar de Dano"
         },
         "max": {
-          "label": "PV Máximos"
+          "label": "HP Máximos"
         },
         "value": {
-          "label": "PV Atuais"
+          "label": "HP Atuais"
         }
       },
       "speed": {
@@ -5780,7 +5785,7 @@
     },
     "AutoRollNPCHP": {
       "Name": "Pontos de Vida",
-      "Hint": "Configure se deve rolar PV máximos de NPC sempre que um novo token for criado.",
+      "Hint": "Configure se deve rolar HP máximos de NPC sempre que um novo token for criado.",
       "No": "Não rolar",
       "Silent": "Rolar sem criar cartão de chat",
       "Yes": "Rolar e criar cartão de chat"

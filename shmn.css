@@ -7469,6 +7469,55 @@ dialog.shmn2.application {
   background: linear-gradient(to right, var(--shmn-color-hd-1) 0%, var(--shmn-color-hd-2) 100%);
   border-inline-end: none;
 }
+.shmn2.sheet.actor .meter.hit-points.energy-points .progress::before,
+.shmn2.sheet.actor .meter.hit-points.energy-points.progress::before,
+.shmn2.sheet.actor .meter.hit-points .progress.energy-points::before,
+.shmn2.sheet.actor .meter.hit-points.progress.energy-points::before {
+  background: linear-gradient(to right, #8b5cf6 0%, #5b21b6 100%);
+}
+.shmn2.sheet.actor .meter.hit-points.energy-points .progress > input:not([hidden]),
+.shmn2.sheet.actor .meter.hit-points .progress.energy-points > input:not([hidden]) {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: var(--color-text-light-0);
+  text-align: center;
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  margin: 0;
+}
+
+.shmn2.sheet.actor .meter.hit-points.energy-points .progress > input[hidden],
+.shmn2.sheet.actor .meter.hit-points .progress.energy-points > input[hidden] {
+  display: none;
+}
+
+.shmn2.sheet.actor .meter.hit-points.energy-points {
+  width: 100%;
+}
+
+.shmn2.sheet.actor .meter.hit-points.energy-points > .progress,
+.shmn2.sheet.actor .meter.hit-points > .progress.energy-points {
+  width: 100%;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.shmn2.sheet.actor .meter.hit-points.energy-points > .progress > input,
+.shmn2.sheet.actor .meter.hit-points > .progress.energy-points > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .shmn2.sheet.actor .meter.hit-points.progress::before,
 .shmn2.sheet.actor .meter.hit-dice.progress::before,
 .shmn2.sheet.actor .meter.uses.progress::before,
