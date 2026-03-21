@@ -1,2 +1,6 @@
-2026/03/21-16:28:50.860 264c Delete type=3 #1
-2026/03/21-16:28:50.863 5dc8 Moved #11 to level-1 2123490 bytes OK: files[ 3 1 0 0 0 0 0 ]
+2026/03/21-17:16:21.781 3e24 Table #11: 1092 entries OK
+2026/03/21-17:16:22.170 3e24 Table #42: 1636 entries OK
+2026/03/21-17:16:22.191 3e24 Table #43: 1706 entries OK
+2026/03/21-17:16:22.307 3e24 Table #44: 3443 entries OK
+2026/03/21-17:16:22.311 3e24 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\actors24/MANIFEST-000048: OK
+2026/03/21-17:16:22.315 3e24 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\actors24; recovered 4 files; 8194336 bytes. Some data may have been lost. ****

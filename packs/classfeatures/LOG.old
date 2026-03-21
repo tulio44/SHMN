@@ -1,1 +1,5 @@
-2026/03/21-16:28:49.854 347c Delete type=3 #1
+2026/03/21-17:16:20.622 3e24 Log #45: 0 ops saved to Table #48 OK
+2026/03/21-17:16:20.625 3e24 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\classfeatures/000045.log: OK
+2026/03/21-17:16:20.628 3e24 Table #47: 295 entries OK
+2026/03/21-17:16:20.632 3e24 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\classfeatures/MANIFEST-000043: OK
+2026/03/21-17:16:20.636 3e24 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\classfeatures; recovered 1 files; 204442 bytes. Some data may have been lost. ****

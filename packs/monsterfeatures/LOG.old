@@ -1,1 +1,5 @@
-2026/03/21-16:28:49.977 264c Delete type=3 #1
+2026/03/21-17:16:20.710 5574 Log #45: 0 ops saved to Table #48 OK
+2026/03/21-17:16:20.712 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\monsterfeatures/000045.log: OK
+2026/03/21-17:16:20.721 5574 Table #47: 252 entries OK
+2026/03/21-17:16:20.724 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\monsterfeatures/MANIFEST-000043: OK
+2026/03/21-17:16:20.729 5574 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\monsterfeatures; recovered 1 files; 188124 bytes. Some data may have been lost. ****

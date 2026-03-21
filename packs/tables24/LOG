@@ -1,13 +1,11 @@
-2026/03/21-16:31:26.555 5574 Recovering log #42
-2026/03/21-16:31:26.560 5574 Delete type=0 #42
-2026/03/21-16:31:26.560 5574 Delete type=3 #41
-2026/03/21-16:54:31.705 5d48 Level-0 table #46: started
-2026/03/21-16:54:31.705 5d48 Level-0 table #46: 0 bytes OK
-2026/03/21-16:54:31.708 5d48 Delete type=0 #44
-2026/03/21-16:54:31.753 5d48 Manual compaction at level-0 from '!folders!6PmNgdAU8WO1cFlx' @ 72057594037927935 : 1 .. '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 0 : 0; will stop at '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 718 : 1
-2026/03/21-16:54:31.753 5d48 Compacting 1@0 + 0@1 files
-2026/03/21-16:54:31.761 5d48 Generated table #47@0: 718 keys, 120261 bytes
-2026/03/21-16:54:31.761 5d48 Compacted 1@0 + 0@1 files => 120261 bytes
-2026/03/21-16:54:31.764 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-16:54:31.764 5d48 Delete type=2 #39
-2026/03/21-16:54:31.783 5d48 Manual compaction at level-0 from '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 718 : 1 .. '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 0 : 0; will stop at (end)
+2026/03/21-17:16:21.702 5574 Delete type=3 #1
+2026/03/21-17:20:22.859 5d48 Level-0 table #43: started
+2026/03/21-17:20:22.859 5d48 Level-0 table #43: 0 bytes OK
+2026/03/21-17:20:22.860 5d48 Delete type=0 #41
+2026/03/21-17:20:22.906 5d48 Manual compaction at level-0 from '!folders!6PmNgdAU8WO1cFlx' @ 72057594037927935 : 1 .. '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 0 : 0; will stop at '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 718 : 1
+2026/03/21-17:20:22.906 5d48 Compacting 1@0 + 0@1 files
+2026/03/21-17:20:22.918 5d48 Generated table #44@0: 718 keys, 120261 bytes
+2026/03/21-17:20:22.918 5d48 Compacted 1@0 + 0@1 files => 120261 bytes
+2026/03/21-17:20:22.919 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/21-17:20:22.919 5d48 Delete type=2 #39
+2026/03/21-17:20:22.973 5d48 Manual compaction at level-0 from '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 718 : 1 .. '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 0 : 0; will stop at (end)

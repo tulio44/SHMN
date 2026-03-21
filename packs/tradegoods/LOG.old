@@ -1,1 +1,5 @@
-2026/03/21-16:28:49.522 347c Delete type=3 #1
+2026/03/21-17:16:20.245 3ac0 Log #45: 0 ops saved to Table #48 OK
+2026/03/21-17:16:20.247 3ac0 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\tradegoods/000045.log: OK
+2026/03/21-17:16:20.252 3ac0 Table #47: 23 entries OK
+2026/03/21-17:16:20.257 3ac0 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\tradegoods/MANIFEST-000043: OK
+2026/03/21-17:16:20.265 3ac0 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\tradegoods; recovered 1 files; 12255 bytes. Some data may have been lost. ****

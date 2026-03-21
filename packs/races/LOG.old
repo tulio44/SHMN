@@ -1,1 +1,5 @@
-2026/03/21-16:28:49.922 347c Delete type=3 #1
+2026/03/21-17:16:20.670 5574 Log #45: 0 ops saved to Table #48 OK
+2026/03/21-17:16:20.672 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\races/000045.log: OK
+2026/03/21-17:16:20.676 5574 Table #47: 51 entries OK
+2026/03/21-17:16:20.679 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\races/MANIFEST-000043: OK
+2026/03/21-17:16:20.684 5574 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\races; recovered 1 files; 48423 bytes. Some data may have been lost. ****

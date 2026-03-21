@@ -1,13 +1,11 @@
-2026/03/21-16:31:26.466 5c7c Recovering log #42
-2026/03/21-16:31:26.471 5c7c Delete type=0 #42
-2026/03/21-16:31:26.471 5c7c Delete type=3 #41
-2026/03/21-16:54:31.554 5d48 Level-0 table #46: started
-2026/03/21-16:54:31.554 5d48 Level-0 table #46: 0 bytes OK
-2026/03/21-16:54:31.557 5d48 Delete type=0 #44
-2026/03/21-16:54:31.561 5d48 Manual compaction at level-0 from '!folders!1dQPltrHt3bFzqtu' @ 72057594037927935 : 1 .. '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 0 : 0; will stop at '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 454 : 1
-2026/03/21-16:54:31.561 5d48 Compacting 1@0 + 0@1 files
-2026/03/21-16:54:31.585 5d48 Generated table #47@0: 464 keys, 387615 bytes
-2026/03/21-16:54:31.585 5d48 Compacted 1@0 + 0@1 files => 387615 bytes
-2026/03/21-16:54:31.588 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-16:54:31.589 5d48 Delete type=2 #39
-2026/03/21-16:54:31.631 5d48 Manual compaction at level-0 from '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 454 : 1 .. '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 0 : 0; will stop at (end)
+2026/03/21-17:16:21.153 5574 Delete type=3 #1
+2026/03/21-17:20:22.783 5d48 Level-0 table #52: started
+2026/03/21-17:20:22.783 5d48 Level-0 table #52: 0 bytes OK
+2026/03/21-17:20:22.786 5d48 Delete type=0 #50
+2026/03/21-17:20:22.792 5d48 Manual compaction at level-0 from '!folders!1dQPltrHt3bFzqtu' @ 72057594037927935 : 1 .. '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 0 : 0; will stop at '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 454 : 1
+2026/03/21-17:20:22.792 5d48 Compacting 1@0 + 0@1 files
+2026/03/21-17:20:22.809 5d48 Generated table #53@0: 464 keys, 387615 bytes
+2026/03/21-17:20:22.809 5d48 Compacted 1@0 + 0@1 files => 387615 bytes
+2026/03/21-17:20:22.811 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/21-17:20:22.811 5d48 Delete type=2 #47
+2026/03/21-17:20:22.855 5d48 Manual compaction at level-0 from '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 454 : 1 .. '!items.effects!phbwzdSpellMaste.P5SxPZNi4KPzW8dD' @ 0 : 0; will stop at (end)
