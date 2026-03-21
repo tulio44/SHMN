@@ -1,13 +1,13 @@
-2026/03/21-15:51:58.129 264c Recovering log #34
-2026/03/21-15:51:58.134 264c Delete type=0 #34
-2026/03/21-15:51:58.134 264c Delete type=3 #33
-2026/03/21-16:17:15.948 5dc8 Level-0 table #38: started
-2026/03/21-16:17:15.949 5dc8 Level-0 table #38: 0 bytes OK
-2026/03/21-16:17:15.950 5dc8 Delete type=0 #36
-2026/03/21-16:17:15.961 5dc8 Manual compaction at level-0 from '!actors!125qFnXvT9z0iOic' @ 72057594037927935 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1
-2026/03/21-16:17:15.961 5dc8 Compacting 1@0 + 0@1 files
-2026/03/21-16:17:16.001 5dc8 Generated table #39@0: 397 keys, 473482 bytes
-2026/03/21-16:17:16.001 5dc8 Compacted 1@0 + 0@1 files => 473482 bytes
-2026/03/21-16:17:16.003 5dc8 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-16:17:16.003 5dc8 Delete type=2 #15
-2026/03/21-16:17:16.317 5dc8 Manual compaction at level-0 from '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at (end)
+2026/03/21-16:31:26.156 5c7c Recovering log #42
+2026/03/21-16:31:26.161 5c7c Delete type=0 #42
+2026/03/21-16:31:26.161 5c7c Delete type=3 #41
+2026/03/21-16:54:30.982 5d48 Level-0 table #46: started
+2026/03/21-16:54:30.982 5d48 Level-0 table #46: 0 bytes OK
+2026/03/21-16:54:30.984 5d48 Delete type=0 #44
+2026/03/21-16:54:31.128 5d48 Manual compaction at level-0 from '!actors!125qFnXvT9z0iOic' @ 72057594037927935 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1
+2026/03/21-16:54:31.128 5d48 Compacting 1@0 + 0@1 files
+2026/03/21-16:54:31.166 5d48 Generated table #47@0: 397 keys, 473482 bytes
+2026/03/21-16:54:31.166 5d48 Compacted 1@0 + 0@1 files => 473482 bytes
+2026/03/21-16:54:31.167 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/21-16:54:31.168 5d48 Delete type=2 #39
+2026/03/21-16:54:31.168 5d48 Manual compaction at level-0 from '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 130 : 1 .. '!actors.items.effects!xVmbM44RXyI2Eqq3.PCcIZTkaRF749Y4z.1QhUB3231btaCO0b' @ 0 : 0; will stop at (end)

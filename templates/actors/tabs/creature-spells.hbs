@@ -84,11 +84,18 @@
     <section class="pactbook">
         {{#if @root.editable}}
         <header class="pactbook-header">
-            <button type="button" class="config-button unbutton" data-action="createPact" data-tooltip="{{ localize "
-                SHMN.PactCreate" }}" aria-label="{{ localize " SHMN.PactCreate" }}">
-                <i class="fas fa-plus" inert></i>
-            </button>
-        </header>
+    <button
+        type="button"
+        class="config-button pact-create-button"
+        data-action="createPact"
+        data-tooltip="{{ localize "SHMN.PactCreate" }}"
+        aria-label="{{ localize "SHMN.PactCreate" }}">
+        <span class="pact-create-icon">
+            <i class="fas fa-handshake" inert></i>
+            <i class="fas fa-plus pact-create-plus" inert></i>
+        </span>
+    </button>
+</header>
         {{/if}}
 
         {{#each pactbook as |pact|}}
@@ -135,27 +142,23 @@
                 {{/if}}
             </div>
 
+            {{#if @root.editable}}
             <div class="pact-description">
-    {{#unless pact.unlinked}}
-    {{#if @root.editable}}
-    <prose-mirror
-        name="flags.shmn.pactsData.{{ pact.id }}.description"
-        value="{{ pact.description }}"
-        document-uuid="{{ @root.actor.uuid }}">
-    </prose-mirror>
-    {{else}}
-    {{#if pact.description}}
-    <div class="editor">
-        <div class="editor-content pact-description-text">{{{ pact.description }}}</div>
-    </div>
-    {{else}}
-    <p class="empty">{{ localize "SHMN.Notes" }}</p>
-    {{/if}}
-    {{/if}}
-    {{else}}
-    <p class="empty">{{ localize "SHMN.Notes" }}</p>
-    {{/unless}}
-</div>
+                {{#unless pact.unlinked}}
+                <prose-mirror name="flags.shmn.pactsData.{{ pact.id }}.description" value="{{ pact.description }}"
+                    document-uuid="{{ @root.actor.uuid }}">
+                </prose-mirror>
+                {{/unless}}
+            </div>
+            {{else}}
+            {{#if pact.description}}
+            <div class="pact-description">
+                <div class="editor">
+                    <div class="editor-content pact-description-text">{{{ pact.description }}}</div>
+                </div>
+            </div>
+            {{/if}}
+            {{/if}}
 
             <div class="pact-spells">
                 {{#if pact.spells}}

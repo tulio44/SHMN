@@ -1,13 +1,13 @@
-2026/03/21-15:51:58.335 684 Recovering log #34
-2026/03/21-15:51:58.339 684 Delete type=0 #34
-2026/03/21-15:51:58.340 684 Delete type=3 #33
-2026/03/21-16:17:16.579 5dc8 Level-0 table #38: started
-2026/03/21-16:17:16.580 5dc8 Level-0 table #38: 0 bytes OK
-2026/03/21-16:17:16.581 5dc8 Delete type=0 #36
-2026/03/21-16:17:16.587 5dc8 Manual compaction at level-0 from '!tables!4ryVFV5LPHPzRKxl' @ 72057594037927935 : 1 .. '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 0 : 0; will stop at '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 258 : 1
-2026/03/21-16:17:16.587 5dc8 Compacting 1@0 + 0@1 files
-2026/03/21-16:17:16.592 5dc8 Generated table #39@0: 295 keys, 52102 bytes
-2026/03/21-16:17:16.592 5dc8 Compacted 1@0 + 0@1 files => 52102 bytes
-2026/03/21-16:17:16.593 5dc8 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-16:17:16.594 5dc8 Delete type=2 #15
-2026/03/21-16:17:16.621 5dc8 Manual compaction at level-0 from '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 258 : 1 .. '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 0 : 0; will stop at (end)
+2026/03/21-16:31:26.427 5574 Recovering log #42
+2026/03/21-16:31:26.432 5574 Delete type=0 #42
+2026/03/21-16:31:26.433 5574 Delete type=3 #41
+2026/03/21-16:54:31.445 5d48 Level-0 table #46: started
+2026/03/21-16:54:31.445 5d48 Level-0 table #46: 0 bytes OK
+2026/03/21-16:54:31.450 5d48 Delete type=0 #44
+2026/03/21-16:54:31.487 5d48 Manual compaction at level-0 from '!tables!4ryVFV5LPHPzRKxl' @ 72057594037927935 : 1 .. '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 0 : 0; will stop at '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 258 : 1
+2026/03/21-16:54:31.487 5d48 Compacting 1@0 + 0@1 files
+2026/03/21-16:54:31.494 5d48 Generated table #47@0: 295 keys, 52102 bytes
+2026/03/21-16:54:31.494 5d48 Compacted 1@0 + 0@1 files => 52102 bytes
+2026/03/21-16:54:31.498 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/21-16:54:31.498 5d48 Delete type=2 #39
+2026/03/21-16:54:31.553 5d48 Manual compaction at level-0 from '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 258 : 1 .. '!tables.results!ypk2L9feVwTx0QVj.zW1HUUNLqwmOfFgg' @ 0 : 0; will stop at (end)
