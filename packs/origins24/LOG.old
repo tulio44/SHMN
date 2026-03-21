@@ -1,6 +1,4 @@
-2026/03/21-17:16:21.178 5574 Log #45: 0 ops saved to Table #48 OK
-2026/03/21-17:16:21.180 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\origins24/000045.log: OK
-2026/03/21-17:16:21.184 5574 Table #39: 75 entries OK
-2026/03/21-17:16:21.186 5574 Table #47: 75 entries OK
-2026/03/21-17:16:21.192 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\origins24/MANIFEST-000043: OK
-2026/03/21-17:16:21.198 5574 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\origins24; recovered 2 files; 152974 bytes. Some data may have been lost. ****
+2026/03/21-18:05:13.310 5d48 Level-0 table #4: started
+2026/03/21-18:05:13.310 5d48 Level-0 table #4: 0 bytes OK
+2026/03/21-18:05:13.311 5d48 Delete type=0 #2
+2026/03/21-18:05:13.312 5d48 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)

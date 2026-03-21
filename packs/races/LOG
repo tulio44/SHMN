@@ -1,11 +1,7 @@
-2026/03/21-17:16:20.697 5574 Delete type=3 #1
-2026/03/21-17:20:22.727 5d48 Level-0 table #52: started
-2026/03/21-17:20:22.727 5d48 Level-0 table #52: 0 bytes OK
-2026/03/21-17:20:22.728 5d48 Delete type=0 #50
-2026/03/21-17:20:22.740 5d48 Manual compaction at level-0 from '!folders!1GCaQEaMIbogg5ty' @ 72057594037927935 : 1 .. '!items.effects!PqxZgcJzp1VVgP8t.8oJGOvksocvoVzVE' @ 0 : 0; will stop at '!items.effects!PqxZgcJzp1VVgP8t.8oJGOvksocvoVzVE' @ 35 : 1
-2026/03/21-17:20:22.740 5d48 Compacting 1@0 + 0@1 files
-2026/03/21-17:20:22.747 5d48 Generated table #53@0: 51 keys, 48423 bytes
-2026/03/21-17:20:22.747 5d48 Compacted 1@0 + 0@1 files => 48423 bytes
-2026/03/21-17:20:22.748 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-17:20:22.748 5d48 Delete type=2 #47
-2026/03/21-17:20:22.782 5d48 Manual compaction at level-0 from '!items.effects!PqxZgcJzp1VVgP8t.8oJGOvksocvoVzVE' @ 35 : 1 .. '!items.effects!PqxZgcJzp1VVgP8t.8oJGOvksocvoVzVE' @ 0 : 0; will stop at (end)
+2026/03/21-18:11:04.241 5c7c Recovering log #3
+2026/03/21-18:11:04.246 5c7c Delete type=0 #3
+2026/03/21-18:11:04.246 5c7c Delete type=3 #1
+2026/03/21-19:24:51.130 5d48 Level-0 table #8: started
+2026/03/21-19:24:51.130 5d48 Level-0 table #8: 0 bytes OK
+2026/03/21-19:24:51.131 5d48 Delete type=0 #6
+2026/03/21-19:24:51.137 5d48 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)

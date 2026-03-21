@@ -55705,6 +55705,8 @@ class CharacterActorSheet extends BaseActorSheet {
       classes: ["tabs-right"],
       template: "systems/shmn/templates/shared/sidebar-tabs.hbs"
     }
+    sexo:
+    []
   };
 
   /* -------------------------------------------- */

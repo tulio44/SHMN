@@ -1,5 +1,4 @@
-2026/03/21-17:16:19.748 5c7c Log #45: 0 ops saved to Table #48 OK
-2026/03/21-17:16:19.751 5c7c Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\heroes/000045.log: OK
-2026/03/21-17:16:19.805 5c7c Table #47: 397 entries OK
-2026/03/21-17:16:19.810 5c7c Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\heroes/MANIFEST-000043: OK
-2026/03/21-17:16:19.815 5c7c **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\heroes; recovered 1 files; 473482 bytes. Some data may have been lost. ****
+2026/03/21-18:05:13.283 5d48 Level-0 table #4: started
+2026/03/21-18:05:13.283 5d48 Level-0 table #4: 0 bytes OK
+2026/03/21-18:05:13.284 5d48 Delete type=0 #2
+2026/03/21-18:05:13.288 5d48 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)

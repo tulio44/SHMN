@@ -48,7 +48,7 @@
 "TYPES.Item.raceLegacy": "Raça",
 "TYPES.Item.raceLegacyPl": "Raças",
 "TYPES.Item.spell": "Magia",
-"TYPES.Item.spellPl": "Magias",
+"TYPES.Item.spellPl": "Rituais",
 "TYPES.Item.subclass": "Subclasse",
 "TYPES.Item.subclassPl": "Subclasses",
 "TYPES.Item.tool": "Ferramenta",
@@ -3766,12 +3766,12 @@
     }
   },
   "Hover": "Pairar",
-  "Speed": "Velocidade de Combate",
+  "Speed": "Movimento de Combate",
   "Type": {
     "Burrow": "Escavar",
     "Climb": "Escalar",
     "Fly": "Voar",
-    "Speed": "Velocidade",
+    "Speed": "Movimento",
     "Swim": "Nadar",
     "Walk": "Andar"
   }
@@ -5902,8 +5902,8 @@
 "SOURCE.BOOK.SRD52": "Documento de Referência do Sistema 5.2",
 "SIDEBAR.SortModePriority": "Ordenar por prioridade",
 
-"SHMN.Pact": "Pacto",
-"SHMN.UnlinkedPact": "Sem Pacto",
+"SHMN.Pact": "Barganha",
+"SHMN.UnlinkedPact": "Inato",
 "SHMN.PactCreate": "Novo Pacto",
 "SHMN.PactSpellCreate": "Nova Magia do Pacto"
 }

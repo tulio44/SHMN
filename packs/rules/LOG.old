@@ -1,3 +1,4 @@
-2026/03/21-17:16:20.762 5574 Table #39: 448 entries OK
-2026/03/21-17:16:20.765 5574 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\rules/MANIFEST-000043: OK
-2026/03/21-17:16:20.771 5574 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\rules; recovered 1 files; 365138 bytes. Some data may have been lost. ****
+2026/03/21-18:05:13.302 5d48 Level-0 table #4: started
+2026/03/21-18:05:13.302 5d48 Level-0 table #4: 0 bytes OK
+2026/03/21-18:05:13.303 5d48 Delete type=0 #2
+2026/03/21-18:05:13.304 5d48 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
