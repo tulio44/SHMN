@@ -20278,6 +20278,7 @@ class SpellData extends ItemDataModel$1.mixin(ActivitiesTemplate, ItemDescriptio
         supply: new NumberField$x({ required: true, initial: 0, min: 0, label: "SHMN.SpellMaterialsSupply" })
       }, { label: "SHMN.SpellMaterials" }),
       method: new StringField$U({ required: true, initial: "", label: "SHMN.SpellPreparation.Method" }),
+      pactId: new StringField$U({ required: true, initial: "", label: "SHMN.Pact" }),
       prepared: new NumberField$x({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
       properties: new SetField$u(new StringField$U(), { label: "SHMN.SpellComponents" }),
       range: new RangeField(),
@@ -55616,6 +55617,12 @@ class CharacterActorSheet extends BaseActorSheet {
       deleteOccupant: CharacterActorSheet.#deleteOccupant,
       findItem: CharacterActorSheet.#findItem,
       setSpellcastingAbility: CharacterActorSheet.#setSpellcastingAbility,
+      createPact: CharacterActorSheet.#createPact,
+      createPactSpell: CharacterActorSheet.#createPactSpell,
+      editPactImage: CharacterActorSheet.#editPactImage,
+      deletePact: CharacterActorSheet.#deletePact,
+      editPactSpell: CharacterActorSheet.#editPactSpell,
+      deletePactSpell: CharacterActorSheet.#deletePactSpell,
       toggleDeathTray: CharacterActorSheet.#toggleDeathTray,
       toggleInspiration: CharacterActorSheet.#toggleInspiration,
       useFacility: CharacterActorSheet.#useFacility,
@@ -56176,6 +56183,7 @@ class CharacterActorSheet extends BaseActorSheet {
   /** @inheritDoc */
   async _prepareSpellsContext(context, options) {
     context = await super._prepareSpellsContext(context, options);
+    context.pactbook = this._preparePactbook(context);
 
     // Spellcasting
     context.spellcasting = [];
@@ -56199,6 +56207,68 @@ class CharacterActorSheet extends BaseActorSheet {
     }
 
     return context;
+  }
+
+  /* -------------------------------------------- */
+
+  _preparePactbook(context) {
+  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+  const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+
+  const pactbook = pacts.map((pact, index) => ({
+    ...pact,
+    index,
+    description: pact.description ?? "",
+    spells: spells.filter(spell => spell.system.pactId === pact.id)
+  }));
+
+  const unlinked = spells.filter(spell => {
+    const pactId = spell.system.pactId ?? "";
+    return !pactId || !pacts.some(p => p.id === pactId);
+  });
+
+  if (unlinked.length) {
+    pactbook.push({
+      id: "",
+      index: -1,
+      name: game.i18n.localize("SHMN.UnlinkedPact"),
+      img: "icons/svg/mystery-man.svg",
+      description: "",
+      spells: unlinked,
+      unlinked: true
+    });
+  }
+
+  return pactbook;
+}
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  _processFormData(event, form, formData) {
+    const submitData = super._processFormData(event, form, formData);
+
+    const pactUpdates = foundry.utils.getProperty(submitData, "flags.shmn.pactsData");
+    if (pactUpdates && (foundry.utils.getType(pactUpdates) === "Object")) {
+      const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+
+      const next = existing.map(pact => {
+        const update = pactUpdates[pact.id] ?? {};
+        return {
+          ...pact,
+          name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
+          description: update.description ?? pact.description ?? ""
+        };
+      });
+
+      foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+
+      delete submitData.flags.shmn.pactsData;
+      if (Object.keys(submitData.flags.shmn).length === 0) delete submitData.flags.shmn;
+      if (Object.keys(submitData.flags ?? {}).length === 0) delete submitData.flags;
+    }
+
+    return submitData;
   }
 
   /* -------------------------------------------- */
@@ -56634,6 +56704,79 @@ class CharacterActorSheet extends BaseActorSheet {
     const ability = target.closest("[data-ability]")?.dataset.ability;
     this.submit({ updateData: { "system.attributes.spellcasting": ability } });
   }
+
+  /* -------------------------------------------- */
+
+  static async #createPact(event, target) {
+  if ( !this.isEditable ) return;
+
+  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+  pacts.push({
+    id: foundry.utils.randomID(),
+    name: game.i18n.localize("SHMN.Pact"),
+    img: "icons/svg/mystery-man.svg",
+    description: ""
+  });
+  await this.actor.setFlag("shmn", "pacts", pacts);
+}
+
+static async #createPactSpell(event, target) {
+  if ( !this.isEditable ) return;
+
+  const pactId = target.dataset.pactId ?? "";
+  const created = await this.actor.createEmbeddedDocuments("Item", [{
+    name: game.i18n.localize("TYPES.Item.spell"),
+    type: "spell",
+    system: { pactId }
+  }]);
+
+  if ( created?.[0]?.sheet ) created[0].sheet.render(true);
+}
+
+static async #editPactImage(event, target) {
+  if ( !this.isEditable ) return;
+
+  const pactId = target.dataset.pactId;
+  const current = target.getAttribute("src") || "icons/svg/mystery-man.svg";
+
+  new FilePicker({
+    type: "image",
+    current,
+    callback: async path => {
+      const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+      const pact = pacts.find(p => p.id === pactId);
+      if ( !pact ) return;
+      pact.img = path;
+      await this.actor.setFlag("shmn", "pacts", pacts);
+    }
+  }).render(true);
+}
+
+static async #deletePact(event, target) {
+  if ( !this.isEditable ) return;
+
+  const pactId = target.dataset.pactId;
+  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+  await this.actor.setFlag("shmn", "pacts", pacts.filter(p => p.id !== pactId));
+}
+
+static async #editPactSpell(event, target) {
+  if ( !this.isEditable ) return;
+
+  const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
+  const item = this.actor.items.get(itemId);
+  if ( item?.sheet ) item.sheet.render(true);
+}
+
+static async #deletePactSpell(event, target) {
+  if ( !this.isEditable ) return;
+
+  const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
+  if ( !itemId ) return;
+
+  await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+}
+
 
   /* -------------------------------------------- */
 

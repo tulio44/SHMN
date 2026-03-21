@@ -5900,5 +5900,10 @@
 "SOURCE.BOOK.FreeRules": "Regras Gratuitas",
 "SOURCE.BOOK.SRD51": "Documento de Referência do Sistema 5.1",
 "SOURCE.BOOK.SRD52": "Documento de Referência do Sistema 5.2",
-"SIDEBAR.SortModePriority": "Ordenar por prioridade"
+"SIDEBAR.SortModePriority": "Ordenar por prioridade",
+
+"SHMN.Pact": "Pacto",
+"SHMN.UnlinkedPact": "Sem Pacto",
+"SHMN.PactCreate": "Novo Pacto",
+"SHMN.PactSpellCreate": "Nova Magia do Pacto"
 }

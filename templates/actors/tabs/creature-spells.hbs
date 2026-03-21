@@ -15,23 +15,28 @@
                 {{/if}}
                 {{else}}
                 <button type="button" class="radio-button" data-action="setSpellcastingAbility"
-                        data-tooltip="SHMN.SpellAbilitySet" aria-pressed="{{#if primary}}true{{else}}false{{/if}}"
-                        aria-label="{{ localize "SHMN.SpellAbilitySet" }}"></button>
+                    data-tooltip="SHMN.SpellAbilitySet" aria-pressed="{{#if primary}}true{{else}}false{{/if}}"
+                    aria-label="{{ localize " SHMN.SpellAbilitySet" }}">
+                </button>
                 {{/if}}
             </div>
+
             <div class="info">
                 <div class="ability">
                     <span class="label">{{ localize "SHMN.Ability" }}</span>
                     <span class="value">{{ shmn-formatModifier ability.mod }}</span>
                 </div>
+
                 <div class="attack">
                     <span class="label">{{ localize "SHMN.Attack" }}</span>
                     <span class="value">{{ shmn-formatModifier attack }}</span>
                 </div>
+
                 <div class="save">
                     <span class="label">{{ localize "SHMN.SpellDC" }}</span>
                     <span class="value">{{ save }}</span>
                 </div>
+
                 {{#if (or preparation.value preparation.max)}}
                 <div class="prepared">
                     <span class="label">{{ localize "SHMN.Prepared" }}</span>
@@ -44,22 +49,25 @@
                     </span>
                 </div>
                 {{/if}}
+
                 {{#if @root.isNPC}}
                 <div class="level">
                     <span class="label">{{ localize "SHMN.Level" }}</span>
                     {{#if (and @root.editable noSpellcaster)}}
                     {{ numberInput @root.system.attributes.spell.level name="system.attributes.spell.level" min=0 step=1
-                                placeholder="—" }}
+                    placeholder="—" }}
                     {{else}}
                     <span class="value">{{ level }}</span>
                     {{/if}}
                 </div>
+
                 <div class="concentration" data-ability="concentration">
-                    <a class="label saving-throw {{ @root.rollableClass }}" data-action="roll"
-                       data-type="ability">{{ localize "SHMN.Concentration" }}</a>
+                    <a class="label saving-throw {{ @root.rollableClass }}" data-action="roll" data-type="ability">
+                        {{ localize "SHMN.Concentration" }}
+                    </a>
                     {{#if @root.editable}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="ability" data-tooltip="{{ tooltip }}" aria-label="{{ tooltip }}">
+                        data-config="ability" data-tooltip="{{ tooltip }}" aria-label="{{ tooltip }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{else}}
@@ -72,7 +80,115 @@
         {{/each}}
     </section>
 
-    {{!-- Spells --}}
-    {{> "systems/shmn/templates/inventory/inventory.hbs" keepEmpty=true }}
+    {{!-- Spells by Pact --}}
+    <section class="pactbook">
+        {{#if @root.editable}}
+        <header class="pactbook-header">
+            <button type="button" class="config-button unbutton" data-action="createPact" data-tooltip="{{ localize "
+                SHMN.PactCreate" }}" aria-label="{{ localize " SHMN.PactCreate" }}">
+                <i class="fas fa-plus" inert></i>
+            </button>
+        </header>
+        {{/if}}
 
+        {{#each pactbook as |pact|}}
+        <section class="pact card" data-pact-id="{{ pact.id }}">
+            <div class="header pact-banner">
+                {{#if @root.editable}}
+                <img class="pact-img editable" src="{{ pact.img }}" alt="{{ pact.name }}" data-action="editPactImage"
+                    data-pact-id="{{ pact.id }}">
+                {{else}}
+                <img class="pact-img" src="{{ pact.img }}" alt="{{ pact.name }}">
+                {{/if}}
+
+                <div class="pact-heading">
+                    {{#if @root.editable}}
+                    {{#unless pact.unlinked}}
+                    <input type="text" class="pact-name-input" name="flags.shmn.pactsData.{{ pact.id }}.name"
+                        value="{{ pact.name }}" placeholder="{{ localize " SHMN.Pact" }}">
+                    {{else}}
+                    <h3>{{ pact.name }}</h3>
+                    {{/unless}}
+                    {{else}}
+                    <h3>{{ pact.name }}</h3>
+                    {{/if}}
+
+                    <span class="subtitle">{{ localize "SHMN.Pact" }}</span>
+                </div>
+
+                {{#if @root.editable}}
+                {{#unless pact.unlinked}}
+                <div class="pact-controls">
+                    <button type="button" class="config-button unbutton" data-action="createPactSpell"
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize " SHMN.PactSpellCreate" }}"
+                        aria-label="{{ localize " SHMN.PactSpellCreate" }}">
+                        <i class="fas fa-plus" inert></i>
+                    </button>
+
+                    <button type="button" class="config-button unbutton" data-action="deletePact"
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize " SHMN.ContextMenuActionDelete" }}"
+                        aria-label="{{ localize " SHMN.ContextMenuActionDelete" }}">
+                        <i class="fas fa-trash" inert></i>
+                    </button>
+                </div>
+                {{/unless}}
+                {{/if}}
+            </div>
+
+            <div class="pact-description">
+                {{#if @root.editable}}
+                {{#unless pact.unlinked}}
+                <div class="textbox">
+                    <textarea class="pact-description-input"
+                        name="flags.shmn.pactsData.{{ pact.id }}.description">{{ pact.description }}</textarea>
+                </div>
+                {{else}}
+                <p class="empty">{{ localize "SHMN.Notes" }}</p>
+                {{/unless}}
+                {{else}}
+                {{#if pact.description}}
+                <div class="editor-content pact-description-text">{{{ shmn-textFormat pact.description }}}</div>
+                {{else}}
+                <p class="empty">{{ localize "SHMN.Notes" }}</p>
+                {{/if}}
+                {{/if}}
+            </div>
+
+            <div class="pact-spells">
+                {{#if pact.spells}}
+                {{#each pact.spells as |item|}}
+                <div class="item" data-item-id="{{ item.id }}">
+                    <div class="item-name">
+                        <img src="{{ item.img }}" alt="{{ item.name }}">
+                        <span>{{ item.name }}</span>
+                    </div>
+
+                    {{#if @root.editable}}
+                    <div class="item-controls">
+                        <button type="button" class="inline-control unbutton" data-action="editPactSpell"
+                            data-item-id="{{ item.id }}" data-tooltip="{{ localize " SHMN.ContextMenuActionEdit" }}"
+                            aria-label="{{ localize " SHMN.ContextMenuActionEdit" }}">
+                            <i class="fas fa-edit" inert></i>
+                        </button>
+
+                        <button type="button" class="inline-control unbutton" data-action="deletePactSpell"
+                            data-item-id="{{ item.id }}" data-tooltip="{{ localize " SHMN.ContextMenuActionDelete" }}"
+                            aria-label="{{ localize " SHMN.ContextMenuActionDelete" }}">
+                            <i class="fas fa-trash" inert></i>
+                        </button>
+                    </div>
+                    {{/if}}
+                </div>
+                {{/each}}
+
+                {{#unless pact.spells.length}}
+                <p class="empty">{{ localize "SHMN.None" }}</p>
+                {{/unless}}
+                {{else}}
+                <p class="empty">{{ localize "SHMN.None" }}</p>
+                {{/if}}
+            </div>
+        </section>
+        {{/each}}
+    </section>
 </section>
