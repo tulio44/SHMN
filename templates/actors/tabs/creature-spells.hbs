@@ -136,23 +136,26 @@
             </div>
 
             <div class="pact-description">
-                {{#if @root.editable}}
-                {{#unless pact.unlinked}}
-                <div class="textbox">
-                    <textarea class="pact-description-input"
-                        name="flags.shmn.pactsData.{{ pact.id }}.description">{{ pact.description }}</textarea>
-                </div>
-                {{else}}
-                <p class="empty">{{ localize "SHMN.Notes" }}</p>
-                {{/unless}}
-                {{else}}
-                {{#if pact.description}}
-                <div class="editor-content pact-description-text">{{{ shmn-textFormat pact.description }}}</div>
-                {{else}}
-                <p class="empty">{{ localize "SHMN.Notes" }}</p>
-                {{/if}}
-                {{/if}}
-            </div>
+    {{#unless pact.unlinked}}
+    {{#if @root.editable}}
+    <prose-mirror
+        name="flags.shmn.pactsData.{{ pact.id }}.description"
+        value="{{ pact.description }}"
+        document-uuid="{{ @root.actor.uuid }}">
+    </prose-mirror>
+    {{else}}
+    {{#if pact.description}}
+    <div class="editor">
+        <div class="editor-content pact-description-text">{{{ pact.description }}}</div>
+    </div>
+    {{else}}
+    <p class="empty">{{ localize "SHMN.Notes" }}</p>
+    {{/if}}
+    {{/if}}
+    {{else}}
+    <p class="empty">{{ localize "SHMN.Notes" }}</p>
+    {{/unless}}
+</div>
 
             <div class="pact-spells">
                 {{#if pact.spells}}

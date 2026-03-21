@@ -15590,4 +15590,29 @@ document-embed.spells ul li {
   color: var(--color-text-secondary);
   font-style: italic;
 }
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description {
+  padding: 0.5rem 0.75rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description prose-mirror {
+  display: block;
+  width: 100%;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description .editor.prosemirror {
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description .editor.prosemirror menu {
+  border-radius: 0;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description .editor.prosemirror .editor-content {
+  min-height: 140px;
+  padding: 0.5rem 0.75rem;
+  overflow-y: auto;
+}
 /*# sourceMappingURL=shmn.css.map */
