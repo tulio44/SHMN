@@ -15532,7 +15532,7 @@ document-embed.spells ul li {
 }
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description-text {
-  min-height: 64px;
+  min-height: 32px;
   white-space: pre-wrap;
 }
 
@@ -15612,7 +15612,7 @@ document-embed.spells ul li {
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description .editor.prosemirror .editor-content {
   min-height: 140px;
-  padding: 0.5rem 0.75rem;
+  padding: 0rem 0.75rem;
   overflow-y: auto;
 }
 
