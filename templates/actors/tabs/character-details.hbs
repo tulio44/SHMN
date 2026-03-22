@@ -12,7 +12,21 @@
             <ul>
                 {{#each skills}}
                 {{> ".skill-prof" path=(concat "system.skills." key) config="SHMN.SkillConfigure"
-                    type="skill" hasPassive=true roll="skill-name" }}
+                type="skill" hasPassive=true roll="skill-name" }}
+                {{/each}}
+            </ul>
+        </filigree-box>
+
+        {{!-- Collective Combat --}}
+        <filigree-box class="cc-skills">
+            <h3>
+                <i class="fas fa-people-group" inert></i>
+                <span class="roboto-upper">Combate Coletivo</span>
+            </h3>
+            <ul>
+                {{#each ccSkills}}
+                {{> ".skill-prof" path=(concat "system.skills." key) config="SHMN.SkillConfigure"
+                type="skill" hasPassive=true roll="skill-name" }}
                 {{/each}}
             </ul>
         </filigree-box>
@@ -21,9 +35,8 @@
         <filigree-box class="tools">
             {{#if editable}}
             <button type="button" class="trait-selector config-button unbutton" data-action="showConfiguration"
-                    data-trait="tool"
-                    data-tooltip="{{ localize 'SHMN.TraitConfig' trait=(localize 'SHMN.TraitToolProf') }}"
-                    aria-label="{{ localize 'SHMN.TraitConfig' trait=(localize 'SHMN.TraitToolProf') }}">
+                data-trait="tool" data-tooltip="{{ localize 'SHMN.TraitConfig' trait=(localize 'SHMN.TraitToolProf') }}"
+                aria-label="{{ localize 'SHMN.TraitConfig' trait=(localize 'SHMN.TraitToolProf') }}">
                 <i class="fas fa-cog" inert></i>
             </button>
             {{/if}}
@@ -34,7 +47,7 @@
             <ul>
                 {{#each tools}}
                 {{> ".skill-prof" path=(concat "system.tools." key) config="SHMN.ToolConfigure"
-                    type="tool" hasPassive=false roll="tool-name" }}
+                type="tool" hasPassive=false roll="tool-name" }}
                 {{/each}}
             </ul>
         </filigree-box>
@@ -56,7 +69,7 @@
                 <ul>
                     {{#each saves}}
                     {{> ".ability-prof" path=(concat "system.abilities." @key)
-                        config=(localize "SHMN.AbilityConfigure" ability=label) }}
+                    config=(localize "SHMN.AbilityConfigure" ability=label) }}
                     {{/each}}
                 </ul>
             </filigree-box>
@@ -64,7 +77,7 @@
             {{!-- Background --}}
             <div class="pills-lg">
                 {{#with creatureType}}
-                <div class="pill-lg texture type" {{#if reference}}data-reference-tooltip="{{ reference }}"{{/if}}>
+                <div class="pill-lg texture type" {{#if reference}}data-reference-tooltip="{{ reference }}" {{/if}}>
                     <div class="gold-icon creature-type {{ class }}" style="background-image: url('{{ icon }}');"></div>
                     <div class="name name-stacked">
                         <span class="title">
@@ -74,8 +87,8 @@
                     </div>
                     {{#if (and @root.editable @root.species)}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="creatureType" data-tooltip="SHMN.CreatureTypeConfig"
-                            aria-label="{{ localize 'SHMN.CreatureTypeConfig' }}">
+                        data-config="creatureType" data-tooltip="SHMN.CreatureTypeConfig"
+                        aria-label="{{ localize 'SHMN.CreatureTypeConfig' }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{/if}}
@@ -83,8 +96,8 @@
                 {{/with}}
                 {{#if species}}
                 <div class="draggable pill-lg texture race item-tooltip" data-action="showDocument"
-                     data-item-id="{{ species.id }}" data-uuid="{{ species.uuid }}"
-                     aria-label="{{ localize (ifThen actor.isOwner 'SHMN.ItemEdit' 'SHMN.ItemView') }}">
+                    data-item-id="{{ species.id }}" data-uuid="{{ species.uuid }}"
+                    aria-label="{{ localize (ifThen actor.isOwner 'SHMN.ItemEdit' 'SHMN.ItemView') }}">
                     {{#if species.img}}
                     <img class="gold-icon" src="{{ species.img }}" alt="{{ species.name }}">
                     {{/if}}
@@ -100,8 +113,8 @@
                     </div>
                     {{#if editable}}
                     <button type="button" class="config-button unbutton" data-action="deleteDocument"
-                            data-tooltip="SHMN.ItemDelete" aria-label="{{ localize 'SHMN.ItemDelete' }}"
-                            data-tooltip-class data-tooltip-direction>
+                        data-tooltip="SHMN.ItemDelete" aria-label="{{ localize 'SHMN.ItemDelete' }}" data-tooltip-class
+                        data-tooltip-direction>
                         <i class="fas fa-trash" inert></i>
                     </button>
                     {{/if}}
@@ -113,8 +126,8 @@
                 {{/if}}
                 {{#if background}}
                 <div class="draggable pill-lg texture background item-tooltip" data-action="showDocument"
-                     data-item-id="{{ background.id }}" data-uuid="{{ background.uuid }}"
-                     aria-label="{{ localize (ifThen actor.isOwner SHMN.ItemEdit SHMN.ItemView) }}">
+                    data-item-id="{{ background.id }}" data-uuid="{{ background.uuid }}"
+                    aria-label="{{ localize (ifThen actor.isOwner SHMN.ItemEdit SHMN.ItemView) }}">
                     {{#if background.img}}
                     <img class="gold-icon" src="{{ background.img }}" alt="{{ background.name }}">
                     {{/if}}
@@ -123,8 +136,8 @@
                     </div>
                     {{#if editable}}
                     <button type="button" class="config-button unbutton" data-action="deleteDocument"
-                            data-tooltip="SHMN.ItemDelete" aria-label="{{ localize 'SHMN.ItemDelete' }}"
-                            data-tooltip-class data-tooltip-direction>
+                        data-tooltip="SHMN.ItemDelete" aria-label="{{ localize 'SHMN.ItemDelete' }}" data-tooltip-class
+                        data-tooltip-direction>
                         <i class="fas fa-trash" inert></i>
                     </button>
                     {{/if}}
@@ -141,50 +154,50 @@
         {{!-- Senses --}}
         {{#if (or editable senses)}}
         {{> "shmn.actor-trait-pills" values=senses key="senses" icon="fas fa-eye"
-            label="SHMN.Senses" configAction="senses" }}
+        label="SHMN.Senses" configAction="senses" }}
         {{/if}}
 
         {{!-- Resistances --}}
         {{> "shmn.actor-trait-pills" values=traits.dr key="dr" color="green" icon="fas fa-shield-halved"
-            label="SHMN.Resistances" }}
+        label="SHMN.Resistances" }}
 
         {{!-- Immunities --}}
         {{#if editable}}
-            {{> "shmn.actor-trait-pills" values=traits.di key="di" color="green" icon="fas fa-shield"
-                label="SHMN.DamImm" }}
+        {{> "shmn.actor-trait-pills" values=traits.di key="di" color="green" icon="fas fa-shield"
+        label="SHMN.DamImm" }}
         {{else}}
-            {{> "shmn.actor-trait-pills" values=traits.di key="di" color="green" icon="fas fa-shield"
-                label="SHMN.Immunities" }}
+        {{> "shmn.actor-trait-pills" values=traits.di key="di" color="green" icon="fas fa-shield"
+        label="SHMN.Immunities" }}
         {{/if}}
         {{> "shmn.actor-trait-pills" values=traits.ci key="ci" color="green" svg="rosa-shield" label="SHMN.ConImm" }}
 
         {{!-- Vulnerabilities --}}
         {{> "shmn.actor-trait-pills" values=traits.dv key="dv" color="maroon" icon="fas fa-heart-crack"
-            label="SHMN.Vulnerabilities" }}
+        label="SHMN.Vulnerabilities" }}
 
         {{!-- Damage Modification --}}
         {{> "shmn.actor-trait-pills" values=traits.dm key="dm" icon="fas fa-heart-circle-plus"
-            label="SHMN.DamageModification.Label" }}
+        label="SHMN.DamageModification.Label" }}
 
         {{!-- Armor --}}
         {{> "shmn.actor-trait-pills" values=traits.armor key="armor" svg="checked-shield" label="SHMN.Armor" }}
 
         {{!-- Weapons --}}
         {{> "shmn.actor-trait-pills" values=traits.weapon key="weapon" svg="trait-weapon-proficiencies"
-            label="TYPES.Item.weaponPl" }}
+        label="TYPES.Item.weaponPl" }}
 
         {{!-- Languages --}}
         {{> "shmn.actor-trait-pills" values=traits.languages key="languages" icon="fas fa-flag"
-            label="SHMN.Languages" }}
+        label="SHMN.Languages" }}
 
     </div>
 </section>
 
 {{#*inline ".skill-prof"}}
-<li data-key="{{ key }}" {{~#if reference}} data-reference-tooltip="{{ reference }}"{{/if}}>
+<li data-key="{{ key }}" {{~#if reference}} data-reference-tooltip="{{ reference }}" {{/if}}>
     <proficiency-cycle type="skill" name="{{ path }}.value" data-tooltip="{{ hover }}"
-                       value="{{#if @root.editable}}{{ source.value }}{{else}}{{ value }}{{/if}}"
-                       aria-label="{{ localize hover }}" {{disabled (not @root.editable)}}></proficiency-cycle>
+        value="{{#if @root.editable}}{{ source.value }}{{else}}{{ value }}{{/if}}" aria-label="{{ localize hover }}"
+        {{disabled (not @root.editable)}}></proficiency-cycle>
     {{#if @root.editable}}
     <select name="{{ path }}.ability" class="ability roboto-upper unselect">
         {{ selectOptions @root.CONFIG.abilities selected=baseAbility labelAttr="abbreviation" }}
@@ -198,7 +211,7 @@
     <div class="bonus">{{ shmn-formatModifier total }}</div>
     {{#if @root.editable}}
     <button type="button" class="config-button unbutton" data-action="showConfiguration" data-config="{{ type }}"
-            data-tooltip="{{ config }}" aria-label="{{ localize config }}">
+        data-tooltip="{{ config }}" aria-label="{{ localize config }}">
         <i class="fas fa-cog" inert></i>
     </button>
     {{else if hasPassive}}
@@ -213,18 +226,17 @@
     <shmn-icon src="systems/shmn/icons/svg/statuses/concentrating.svg"></shmn-icon>
     {{else}}
     <proficiency-cycle type="ability" name="{{ path }}.proficient" data-tooltip aria-label="{{ hover }}"
-                       value="{{#if @root.editable}}{{ source.proficient }}{{else}}{{ proficient }}{{/if}}"
-                       {{ disabled (not @root.editable) }}></proficiency-cycle>
+        value="{{#if @root.editable}}{{ source.proficient }}{{else}}{{ proficient }}{{/if}}" {{ disabled (not
+        @root.editable) }}></proficiency-cycle>
     {{/if}}
     <a class="name saving-throw full {{ @root.rollableClass }}" data-action="roll" data-type="ability">{{ label }}</a>
     <a class="name saving-throw abbr {{ @root.rollableClass }}" data-action="roll" data-type="ability">{{ abbr }}</a>
     <div class="bonus">{{ shmn-formatModifier save.value }}</div>
     {{#if @root.editable}}
     <button type="button" class="config-button unbutton" data-action="showConfiguration" data-config="ability"
-            data-tooltip aria-label="{{ config }}">
+        data-tooltip aria-label="{{ config }}">
         <i class="fas fa-cog" inert></i>
     </button>
     {{/if}}
 </li>
 {{/inline}}
-

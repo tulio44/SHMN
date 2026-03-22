@@ -162,35 +162,34 @@
                 {{/with}}
             </div>
 
-{{!-- Energy Points --}}
-<div class="meter-group">
-    <div class="label roboto-condensed-upper">
-        <span>{{ localize "SHMN.EnergyPoints" }}</span>
-        {{#if editable}}
-        <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                data-config="energyPoints" data-tooltip="SHMN.EnergyPointsConfig"
-                aria-label="{{ localize 'SHMN.EnergyPointsConfig' }}">
-            <i class="fas fa-cog" inert></i>
-        </button>
-        {{/if}}
-    </div>
+            {{!-- Energy Points --}}
+            <div class="meter-group">
+                <div class="label roboto-condensed-upper">
+                    <span>{{ localize "SHMN.EnergyPoints" }}</span>
+                    {{#if editable}}
+                    <button type="button" class="config-button unbutton" data-action="showConfiguration"
+                        data-config="energyPoints" data-tooltip="SHMN.EnergyPointsConfig"
+                        aria-label="{{ localize 'SHMN.EnergyPointsConfig' }}">
+                        <i class="fas fa-cog" inert></i>
+                    </button>
+                    {{/if}}
+                </div>
 
-    {{#with system.attributes.ep}}
-    <div class="meter hit-points energy-points">
-        <div class="progress hit-points energy-points" role="meter"
-             aria-valuemin="0" aria-valuenow="{{ value }}" aria-valuemax="{{ max }}"
-             style="--bar-percentage: {{ pct }}%">
-            <div class="label">
-                <span class="value">{{ value }}</span>
-                <span class="separator">&sol;</span>
-                <span class="max">{{ max }}</span>
+                {{#with system.attributes.ep}}
+                <div class="meter hit-points energy-points">
+                    <div class="progress hit-points energy-points" role="meter" aria-valuemin="0"
+                        aria-valuenow="{{ value }}" aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
+                        <div class="label">
+                            <span class="value">{{ value }}</span>
+                            <span class="separator">&sol;</span>
+                            <span class="max">{{ max }}</span>
+                        </div>
+                        <input type="text" name="system.attributes.ep.value" data-dtype="Number" placeholder="0"
+                            value="{{ value }}" hidden>
+                    </div>
+                </div>
+                {{/with}}
             </div>
-            <input type="text" name="system.attributes.ep.value" data-dtype="Number"
-                   placeholder="0" value="{{ value }}" hidden>
-        </div>
-    </div>
-    {{/with}}
-</div>
 
             {{!-- Hit Dice --}}
             {{#with system.attributes.hd}}

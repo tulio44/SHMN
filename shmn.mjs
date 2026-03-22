@@ -35269,7 +35269,7 @@ class Actor5e extends SystemDocumentMixin(Actor) {
     const units = movement.units || defaultUnits("length");
     const unit = CONFIG.SHMN.movementUnits[units]?.formattingUnit;
     const formatValue = value => `<span class="value">${unit ? formatLength(value ?? 0, unit, { parts: true })
-        : `${value ?? 0} <span class="units">${units}</span>`
+      : `${value ?? 0} <span class="units">${units}</span>`
       }</span>`;
     return Object.entries(CONFIG.SHMN.movementTypes).reduce((html, [k, { label }]) => {
       const value = movement[k];
@@ -41651,6 +41651,69 @@ SHMN.maxAbilityScore = 20;
  * @enum {SkillConfiguration}
  */
 SHMN.skills = {
+  rit: {
+    label: "SHMN.SkillRit",
+    ability: "int",
+    fullKey: "ritual",
+    reference: "",
+    icon: "icons/magic/symbols/runes-star-blue.webp"
+  },
+  lex: {
+    label: "SHMN.SkillLex",
+    ability: "wis",
+    fullKey: "lex",
+    reference: "",
+    icon: "icons/magic/symbols/rune-sigil-black-pink.webp"
+  },
+  enr: {
+    label: "SHMN.SkillEnr",
+    ability: "con",
+    fullKey: "energy",
+    reference: "",
+    icon: "icons/magic/control/silhouette-hold-change-blue.webp"
+  },
+  spp: {
+    label: "SHMN.SkillSpp",
+    ability: "wis",
+    fullKey: "spiritualPerception",
+    reference: "",
+    icon: "icons/magic/perception/eye-ringed-glow-angry-teal.webp"
+  },
+  eng: {
+    label: "SHMN.SkillEng",
+    ability: "dex",
+    fullKey: "engineering",
+    reference: "",
+    icon: "icons/commodities/tech/cog-large-steel-white.webp"
+  },
+  occ: {
+    label: "SHMN.SkillOcc",
+    ability: "str",
+    fullKey: "offense(cc)",
+    reference: "",
+    icon: "icons/skills/melee/unarmed-punch-fist.webp"
+  },
+  dcc: {
+    label: "SHMN.SkillDcc",
+    ability: "con",
+    fullKey: "defense(cc)",
+    reference: "",
+    icon: "icons/skills/melee/shield-block-gray-orange.webp"
+  },
+  ccc: {
+    label: "SHMN.SkillCcc",
+    ability: "dex",
+    fullKey: "catcher(cc)",
+    reference: "",
+    icon: "icons/skills/movement/feet-winged-sandals-tan.webp"
+  },
+  scc: {
+    label: "SHMN.SkillScc",
+    ability: "wis",
+    fullKey: "support(cc)",
+    reference: "",
+    icon: "icons/skills/social/diplomacy-handshake.webp"
+  },
   acr: {
     label: "SHMN.SkillAcr",
     ability: "dex",
@@ -41688,7 +41751,7 @@ SHMN.skills = {
   },
   his: {
     label: "SHMN.SkillHis",
-    ability: "int",
+    ability: "wis",
     fullKey: "history",
     reference: "Compendium.shmn.content24.JournalEntry.phbAppendixDRule.JournalEntryPage.kRBZbdWMGW9K3wdY",
     icon: "icons/sundries/books/book-embossed-bound-brown.webp"
@@ -55957,12 +56020,15 @@ class CharacterActorSheet extends BaseActorSheet {
     context.senses = this._prepareSenses(context);
 
     // Skills & Tools
-    context.skills = this._prepareSkillsTools(context, "skills");
+    const allSkills = this._prepareSkillsTools(context, "skills");
+    context.ccSkills = allSkills.filter(entry => ["occ", "dcc", "ccc", "scc"].includes(entry.key));
+    context.skills = allSkills.filter(entry => !["occ", "dcc", "ccc", "scc"].includes(entry.key));
     context.tools = this._prepareSkillsTools(context, "tools");
-    for (const [key, entry] of Object.entries(context.skills).concat(Object.entries(context.tools))) {
+
+    for (const entry of [...context.skills, ...context.ccSkills, ...context.tools]) {
       entry.class = this.constructor.PROFICIENCY_CLASSES[context.editable ? entry.baseValue : entry.value];
-      if (key in CONFIG.SHMN.skills) entry.reference = CONFIG.SHMN.skills[key].reference;
-      else if (key in CONFIG.SHMN.tools) entry.reference = getBaseItemUUID(CONFIG.SHMN.tools[key].id);
+      if (entry.key in CONFIG.SHMN.skills) entry.reference = CONFIG.SHMN.skills[entry.key].reference;
+      else if (entry.key in CONFIG.SHMN.tools) entry.reference = getBaseItemUUID(CONFIG.SHMN.tools[entry.key].id);
     }
 
     // Traits
@@ -56212,35 +56278,35 @@ class CharacterActorSheet extends BaseActorSheet {
   /* -------------------------------------------- */
 
   _preparePactbook(context) {
-  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-  const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+    const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
 
-  const pactbook = pacts.map((pact, index) => ({
-    ...pact,
-    index,
-    description: pact.description ?? "",
-    spells: spells.filter(spell => spell.system.pactId === pact.id)
-  }));
+    const pactbook = pacts.map((pact, index) => ({
+      ...pact,
+      index,
+      description: pact.description ?? "",
+      spells: spells.filter(spell => spell.system.pactId === pact.id)
+    }));
 
-  const unlinked = spells.filter(spell => {
-    const pactId = spell.system.pactId ?? "";
-    return !pactId || !pacts.some(p => p.id === pactId);
-  });
-
-  if (unlinked.length) {
-    pactbook.push({
-      id: "",
-      index: -1,
-      name: game.i18n.localize("SHMN.UnlinkedPact"),
-      img: "icons/svg/mystery-man.svg",
-      description: "",
-      spells: unlinked,
-      unlinked: true
+    const unlinked = spells.filter(spell => {
+      const pactId = spell.system.pactId ?? "";
+      return !pactId || !pacts.some(p => p.id === pactId);
     });
-  }
 
-  return pactbook;
-}
+    if (unlinked.length) {
+      pactbook.push({
+        id: "",
+        index: -1,
+        name: game.i18n.localize("SHMN.UnlinkedPact"),
+        img: "icons/svg/mystery-man.svg",
+        description: "",
+        spells: unlinked,
+        unlinked: true
+      });
+    }
+
+    return pactbook;
+  }
 
   /* -------------------------------------------- */
 
@@ -56708,74 +56774,74 @@ class CharacterActorSheet extends BaseActorSheet {
   /* -------------------------------------------- */
 
   static async #createPact(event, target) {
-  if ( !this.isEditable ) return;
+    if (!this.isEditable) return;
 
-  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-  pacts.push({
-    id: foundry.utils.randomID(),
-    name: game.i18n.localize("SHMN.Pact"),
-    img: "icons/svg/mystery-man.svg",
-    description: ""
-  });
-  await this.actor.setFlag("shmn", "pacts", pacts);
-}
+    const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    pacts.push({
+      id: foundry.utils.randomID(),
+      name: game.i18n.localize("SHMN.Pact"),
+      img: "icons/svg/mystery-man.svg",
+      description: ""
+    });
+    await this.actor.setFlag("shmn", "pacts", pacts);
+  }
 
-static async #createPactSpell(event, target) {
-  if ( !this.isEditable ) return;
+  static async #createPactSpell(event, target) {
+    if (!this.isEditable) return;
 
-  const pactId = target.dataset.pactId ?? "";
-  const created = await this.actor.createEmbeddedDocuments("Item", [{
-    name: game.i18n.localize("TYPES.Item.spell"),
-    type: "spell",
-    system: { pactId }
-  }]);
+    const pactId = target.dataset.pactId ?? "";
+    const created = await this.actor.createEmbeddedDocuments("Item", [{
+      name: game.i18n.localize("TYPES.Item.spell"),
+      type: "spell",
+      system: { pactId }
+    }]);
 
-  if ( created?.[0]?.sheet ) created[0].sheet.render(true);
-}
+    if (created?.[0]?.sheet) created[0].sheet.render(true);
+  }
 
-static async #editPactImage(event, target) {
-  if ( !this.isEditable ) return;
+  static async #editPactImage(event, target) {
+    if (!this.isEditable) return;
 
-  const pactId = target.dataset.pactId;
-  const current = target.getAttribute("src") || "icons/svg/mystery-man.svg";
+    const pactId = target.dataset.pactId;
+    const current = target.getAttribute("src") || "icons/svg/mystery-man.svg";
 
-  new FilePicker({
-    type: "image",
-    current,
-    callback: async path => {
-      const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-      const pact = pacts.find(p => p.id === pactId);
-      if ( !pact ) return;
-      pact.img = path;
-      await this.actor.setFlag("shmn", "pacts", pacts);
-    }
-  }).render(true);
-}
+    new FilePicker({
+      type: "image",
+      current,
+      callback: async path => {
+        const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+        const pact = pacts.find(p => p.id === pactId);
+        if (!pact) return;
+        pact.img = path;
+        await this.actor.setFlag("shmn", "pacts", pacts);
+      }
+    }).render(true);
+  }
 
-static async #deletePact(event, target) {
-  if ( !this.isEditable ) return;
+  static async #deletePact(event, target) {
+    if (!this.isEditable) return;
 
-  const pactId = target.dataset.pactId;
-  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-  await this.actor.setFlag("shmn", "pacts", pacts.filter(p => p.id !== pactId));
-}
+    const pactId = target.dataset.pactId;
+    const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    await this.actor.setFlag("shmn", "pacts", pacts.filter(p => p.id !== pactId));
+  }
 
-static async #editPactSpell(event, target) {
-  if ( !this.isEditable ) return;
+  static async #editPactSpell(event, target) {
+    if (!this.isEditable) return;
 
-  const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
-  const item = this.actor.items.get(itemId);
-  if ( item?.sheet ) item.sheet.render(true);
-}
+    const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    if (item?.sheet) item.sheet.render(true);
+  }
 
-static async #deletePactSpell(event, target) {
-  if ( !this.isEditable ) return;
+  static async #deletePactSpell(event, target) {
+    if (!this.isEditable) return;
 
-  const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
-  if ( !itemId ) return;
+    const itemId = target.dataset.itemId ?? target.closest("[data-item-id]")?.dataset.itemId;
+    if (!itemId) return;
 
-  await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-}
+    await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+  }
 
 
   /* -------------------------------------------- */
