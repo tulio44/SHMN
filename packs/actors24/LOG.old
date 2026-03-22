@@ -1,11 +1,16 @@
-2026/03/21-17:41:32.081 5c7c Delete type=3 #1
-2026/03/21-18:05:13.323 5d48 Level-0 table #15: started
-2026/03/21-18:05:13.323 5d48 Level-0 table #15: 0 bytes OK
-2026/03/21-18:05:13.325 5d48 Delete type=0 #13
-2026/03/21-18:05:13.341 5d48 Manual compaction at level-0 from '!actors!AkraLv0100000000' @ 72057594037927935 : 1 .. '!actors.items!BeiroLv050000000.wzVUiDPSYbH4QHvq' @ 0 : 0; will stop at '!actors.items!BeiroLv050000000.wzVUiDPSYbH4QHvq' @ 6936 : 1
-2026/03/21-18:05:13.341 5d48 Compacting 1@0 + 0@1 files
-2026/03/21-18:05:13.402 5d48 Generated table #16@0: 1092 keys, 2123490 bytes
-2026/03/21-18:05:13.402 5d48 Compacted 1@0 + 0@1 files => 2123490 bytes
-2026/03/21-18:05:13.403 5d48 compacted to: files[ 0 1 0 0 0 0 0 ]
-2026/03/21-18:05:13.403 5d48 Delete type=2 #11
-2026/03/21-18:05:13.436 5d48 Manual compaction at level-0 from '!actors.items!BeiroLv050000000.wzVUiDPSYbH4QHvq' @ 6936 : 1 .. '!actors.items!BeiroLv050000000.wzVUiDPSYbH4QHvq' @ 0 : 0; will stop at (end)
+2026/03/21-21:00:54.606 1a58 Delete type=3 #1
+2026/03/21-21:00:54.607 554 Moved #11 to level-1 2123490 bytes OK: files[ 3 1 0 0 0 0 0 ]
+2026/03/21-21:03:54.748 554 Level-0 table #48: started
+2026/03/21-21:03:54.748 554 Level-0 table #48: 0 bytes OK
+2026/03/21-21:03:54.749 554 Delete type=0 #46
+2026/03/21-21:03:54.754 554 Manual compaction at level-0 from '!actors!AkraLv0100000000' @ 72057594037927935 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at '!folders!xmXOrBADA4LyJOGl' @ 853 : 1
+2026/03/21-21:03:54.754 554 Compacting 3@0 + 0@1 files
+2026/03/21-21:03:55.011 554 Generated table #49@0: 1636 keys, 2125509 bytes
+2026/03/21-21:03:55.063 554 Generated table #50@0: 1706 keys, 2126440 bytes
+2026/03/21-21:03:55.175 554 Generated table #51@0: 3443 keys, 1818897 bytes
+2026/03/21-21:03:55.175 554 Compacted 3@0 + 0@1 files => 6070846 bytes
+2026/03/21-21:03:55.175 554 compacted to: files[ 0 4 0 0 0 0 0 ]
+2026/03/21-21:03:55.176 554 Delete type=2 #42
+2026/03/21-21:03:55.176 554 Delete type=2 #43
+2026/03/21-21:03:55.177 554 Delete type=2 #44
+2026/03/21-21:03:55.180 554 Manual compaction at level-0 from '!folders!xmXOrBADA4LyJOGl' @ 853 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at (end)

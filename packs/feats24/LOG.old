@@ -1,4 +1,11 @@
-2026/03/21-18:05:13.313 5d48 Level-0 table #4: started
-2026/03/21-18:05:13.313 5d48 Level-0 table #4: 0 bytes OK
-2026/03/21-18:05:13.315 5d48 Delete type=0 #2
-2026/03/21-18:05:13.320 5d48 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
+2026/03/21-21:00:54.429 35b8 Delete type=3 #1
+2026/03/21-21:03:54.616 554 Level-0 table #50: started
+2026/03/21-21:03:54.616 554 Level-0 table #50: 0 bytes OK
+2026/03/21-21:03:54.617 554 Delete type=0 #48
+2026/03/21-21:03:54.619 554 Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 0 : 0; will stop at '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 24 : 1
+2026/03/21-21:03:54.619 554 Compacting 1@0 + 0@1 files
+2026/03/21-21:03:54.623 554 Generated table #51@0: 27 keys, 16584 bytes
+2026/03/21-21:03:54.623 554 Compacted 1@0 + 0@1 files => 16584 bytes
+2026/03/21-21:03:54.624 554 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/21-21:03:54.624 554 Delete type=2 #39
+2026/03/21-21:03:54.647 554 Manual compaction at level-0 from '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 24 : 1 .. '!items.effects!phbftAlert000000.uvZy4Zzi0oPd54qs' @ 0 : 0; will stop at (end)
