@@ -3615,7 +3615,6 @@ h5 {
   border-radius: 4px;
   background: var(--shmn-background-card);
   box-shadow: 0 0 6px var(--shmn-shadow-45);
-  border: var(--shmn-border-gold);
 }
 .shmn2 .card .header {
   background: linear-gradient(to right, var(--shmn-card-header-1), var(--shmn-card-header-2));
@@ -15633,5 +15632,55 @@ document-embed.spells ul li {
 .pact-spells .item-name.rollable,
 .pact-spells .item-name.rollable * {
   cursor: var(--cursor-pointer);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-section {
+  margin-top: 0.2rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-section:first-child {
+  margin-top: 0;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-section {
+  margin-top: 0.35rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-section:first-child {
+  margin-top: 0;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.15rem;
+  padding: 0 0.75rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.18), transparent);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-rank-divider .label {
+  font-size: var(--font-size-10);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.06em;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact > .header.pact-banner {
+  border-radius: 0;
+  border-bottom: var(--shmn-border-gold);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-banner {
+  box-shadow:
+    inset 2px 0 0 var(--shmn-card-header-1),
+    inset -2px 0 0 var(--shmn-card-header-2);
 }
 /*# sourceMappingURL=shmn.css.map */

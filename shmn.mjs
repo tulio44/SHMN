@@ -56277,16 +56277,44 @@ class CharacterActorSheet extends BaseActorSheet {
 
   /* -------------------------------------------- */
 
+  _getSpellRank(level) {
+    level = Number(level ?? 0);
+    if (level <= 1) return "E";
+    if (level === 2) return "D";
+    if (level === 3) return "C";
+    if (level === 4) return "B";
+    if (level === 5) return "A";
+    return "S";
+  }
+
   _preparePactbook(context) {
     const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
     const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+    const rankOrder = ["E", "D", "C", "B", "A", "S"];
 
-    const pactbook = pacts.map((pact, index) => ({
-      ...pact,
-      index,
-      description: pact.description ?? "",
-      spells: spells.filter(spell => spell.system.pactId === pact.id)
-    }));
+    const buildRankGroups = (spellList) => {
+      const groups = rankOrder.map(rank => ({ rank, spells: [] }));
+
+      for (const spell of spellList) {
+        const rank = this._getSpellRank(spell.system.level);
+        const group = groups.find(g => g.rank === rank);
+        if (group) group.spells.push(spell);
+      }
+
+      return groups.filter(group => group.spells.length);
+    };
+
+    const pactbook = pacts.map((pact, index) => {
+      const pactSpells = spells.filter(spell => spell.system.pactId === pact.id);
+
+      return {
+        ...pact,
+        index,
+        description: pact.description ?? "",
+        spells: pactSpells,
+        rankGroups: buildRankGroups(pactSpells)
+      };
+    });
 
     const unlinked = spells.filter(spell => {
       const pactId = spell.system.pactId ?? "";
@@ -56298,9 +56326,10 @@ class CharacterActorSheet extends BaseActorSheet {
         id: "",
         index: -1,
         name: game.i18n.localize("SHMN.UnlinkedPact"),
-        img: "icons/svg/mystery-man.svg",
+        img: this.actor.img,
         description: "",
         spells: unlinked,
+        rankGroups: buildRankGroups(unlinked),
         unlinked: true
       });
     }

@@ -1,7 +1,7 @@
-2026/03/26-02:52:05.809 4d18 Recovering log #88
-2026/03/26-02:52:05.814 4d18 Delete type=0 #88
-2026/03/26-02:52:05.814 4d18 Delete type=3 #86
-2026/03/26-02:52:34.266 3bc Level-0 table #93: started
-2026/03/26-02:52:34.267 3bc Level-0 table #93: 0 bytes OK
-2026/03/26-02:52:34.268 3bc Delete type=0 #91
-2026/03/26-02:52:34.270 3bc Manual compaction at level-0 from '!folders!3SjcO2acsFnWegp4' @ 72057594037927935 : 1 .. '!items.effects!phbsplZoneofTrut.BgkyT4A5qyArRveO' @ 0 : 0; will stop at (end)
+2026/03/26-04:52:32.837 478c Recovering log #105
+2026/03/26-04:52:32.844 478c Delete type=0 #105
+2026/03/26-04:52:32.844 478c Delete type=3 #104
+2026/03/26-05:04:11.758 19cc Level-0 table #109: started
+2026/03/26-05:04:11.758 19cc Level-0 table #109: 0 bytes OK
+2026/03/26-05:04:11.760 19cc Delete type=0 #107
+2026/03/26-05:04:11.760 19cc Manual compaction at level-0 from '!folders!3SjcO2acsFnWegp4' @ 72057594037927935 : 1 .. '!items.effects!phbsplZoneofTrut.BgkyT4A5qyArRveO' @ 0 : 0; will stop at (end)
