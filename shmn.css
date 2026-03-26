@@ -15545,61 +15545,6 @@ document-embed.spells ul li {
   white-space: pre-wrap;
 }
 
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells {
-  display: flex;
-  flex-direction: column;
-  padding: 0 0.75rem 0.5rem;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: 34px;
-  padding: 0.25rem 0;
-  border-bottom: var(--shmn-border-dotted);
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item:last-child {
-  border-bottom: none;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item-name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item-name img {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item-name span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .item-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-spells .empty {
-  margin: 0;
-  padding: 0.25rem 0;
-  color: var(--color-text-secondary);
-  font-style: italic;
-}
-
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pact-description {
   padding: 0.5rem 0.75rem;
 }
@@ -15675,4 +15620,18 @@ document-embed.spells ul li {
   color: var(--shmn-color-gold);
   text-shadow: 0 0 4px rgb(0 0 0 / 0.9);
 } 
+.pact-spells .item-name,
+.pact-spells .item-name * {
+  cursor: default;
+}
+
+.pact-spells .item-name:hover .title {
+  color: inherit;
+  text-shadow: none;
+}
+
+.pact-spells .item-name.rollable,
+.pact-spells .item-name.rollable * {
+  cursor: var(--cursor-pointer);
+}
 /*# sourceMappingURL=shmn.css.map */

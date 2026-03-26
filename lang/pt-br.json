@@ -7,8 +7,8 @@
   }
 },
 
-"TYPES.Actor.character": "Personagem de Jogador",
-"TYPES.Actor.characterPl": "Personagens de Jogador",
+"TYPES.Actor.character": "Personagem do Jogador",
+"TYPES.Actor.characterPl": "Personagens do Jogador",
 "TYPES.Actor.encounter": "Encontro",
 "TYPES.Actor.encounterPl": "Encontros",
 "TYPES.Actor.group": "Grupo",
@@ -4012,12 +4012,12 @@
 "SHMN.SpecialHint": "Valores especiais separados por ponto e vírgula.",
 "SHMN.SpecialTraits": "Traços Especiais",
 "SHMN.Species": {
-  "Label": "Espécie",
-  "Add": "Adicionar Espécie",
+  "Label": "Casa",
+  "Add": "Adicionar Casa",
   "AddLegacy": "Adicionar Raça",
-  "Features": "Características de Espécie",
+  "Features": "Características de Casa",
   "FeaturesLegacy": "Características Raciais",
-  "Name": "Nome da Espécie"
+  "Name": "Nome da Casa"
 },
 "SHMN.Speed": "Velocidade",
 "SHMN.SpeedSpecial": "Movimento Especial",

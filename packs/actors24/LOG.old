@@ -1,3 +1,7 @@
-2026/03/22-04:26:12.621 bb8 Recovering log #56
-2026/03/22-04:26:12.627 bb8 Delete type=0 #56
-2026/03/22-04:26:12.628 bb8 Delete type=3 #55
+2026/03/26-02:51:05.547 52f0 Recovering log #86
+2026/03/26-02:51:05.551 52f0 Delete type=0 #86
+2026/03/26-02:51:05.551 52f0 Delete type=3 #84
+2026/03/26-02:51:48.629 3bc Level-0 table #91: started
+2026/03/26-02:51:48.629 3bc Level-0 table #91: 0 bytes OK
+2026/03/26-02:51:48.630 3bc Delete type=0 #89
+2026/03/26-02:51:48.635 3bc Manual compaction at level-0 from '!actors!AkraLv0100000000' @ 72057594037927935 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at (end)
