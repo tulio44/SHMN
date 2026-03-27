@@ -1,3 +1,11 @@
-2026/03/26-04:03:03.420 46ec Recovering log #102
-2026/03/26-04:03:03.425 46ec Delete type=0 #102
-2026/03/26-04:03:03.425 46ec Delete type=3 #100
+2026/03/27-02:37:00.182 1dac Delete type=3 #1
+2026/03/27-05:07:58.075 5830 Level-0 table #113: started
+2026/03/27-05:07:58.075 5830 Level-0 table #113: 0 bytes OK
+2026/03/27-05:07:58.077 5830 Delete type=0 #111
+2026/03/27-05:07:58.117 5830 Manual compaction at level-0 from '!items!2nadB2MBSHTQ0kcl' @ 72057594037927935 : 1 .. '!items!uqd2q6WjVfcsaaGb' @ 0 : 0; will stop at '!items!uqd2q6WjVfcsaaGb' @ 5 : 1
+2026/03/27-05:07:58.118 5830 Compacting 1@0 + 0@1 files
+2026/03/27-05:07:58.122 5830 Generated table #114@0: 12 keys, 18228 bytes
+2026/03/27-05:07:58.122 5830 Compacted 1@0 + 0@1 files => 18228 bytes
+2026/03/27-05:07:58.124 5830 compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/03/27-05:07:58.124 5830 Delete type=2 #65
+2026/03/27-05:07:58.141 5830 Manual compaction at level-0 from '!items!uqd2q6WjVfcsaaGb' @ 5 : 1 .. '!items!uqd2q6WjVfcsaaGb' @ 0 : 0; will stop at (end)

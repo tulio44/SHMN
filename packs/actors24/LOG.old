@@ -1,3 +1,16 @@
-2026/03/26-04:03:03.622 46f4 Recovering log #104
-2026/03/26-04:03:03.625 46f4 Delete type=0 #104
-2026/03/26-04:03:03.626 46f4 Delete type=3 #102
+2026/03/27-02:37:00.982 51dc Delete type=3 #1
+2026/03/27-02:37:00.983 5830 Moved #11 to level-1 2123490 bytes OK: files[ 3 1 0 0 0 0 0 ]
+2026/03/27-05:07:58.413 5830 Level-0 table #115: started
+2026/03/27-05:07:58.413 5830 Level-0 table #115: 0 bytes OK
+2026/03/27-05:07:58.414 5830 Delete type=0 #113
+2026/03/27-05:07:58.419 5830 Manual compaction at level-0 from '!actors!AkraLv0100000000' @ 72057594037927935 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at '!folders!xmXOrBADA4LyJOGl' @ 853 : 1
+2026/03/27-05:07:58.419 5830 Compacting 3@0 + 0@1 files
+2026/03/27-05:07:58.752 5830 Generated table #116@0: 1636 keys, 2125509 bytes
+2026/03/27-05:07:58.834 5830 Generated table #117@0: 1706 keys, 2126440 bytes
+2026/03/27-05:07:58.978 5830 Generated table #118@0: 3443 keys, 1818897 bytes
+2026/03/27-05:07:58.978 5830 Compacted 3@0 + 0@1 files => 6070846 bytes
+2026/03/27-05:07:58.979 5830 compacted to: files[ 0 4 0 0 0 0 0 ]
+2026/03/27-05:07:58.979 5830 Delete type=2 #65
+2026/03/27-05:07:58.980 5830 Delete type=2 #66
+2026/03/27-05:07:58.980 5830 Delete type=2 #67
+2026/03/27-05:07:58.983 5830 Manual compaction at level-0 from '!folders!xmXOrBADA4LyJOGl' @ 853 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at (end)
