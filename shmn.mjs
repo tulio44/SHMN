@@ -44786,9 +44786,7 @@ SHMN.spellLevels = {
   4: "SHMN.SpellLevel4",
   5: "SHMN.SpellLevel5",
   6: "SHMN.SpellLevel6",
-  7: "SHMN.SpellLevel7",
-  8: "SHMN.SpellLevel8",
-  9: "SHMN.SpellLevel9"
+  7: "SHMN.SpellLevel7"
 };
 preLocalize("spellLevels");
 
@@ -53723,28 +53721,28 @@ class BaseActorSheet extends PrimarySheetMixin(
 
   /** @inheritDoc */
   _configureRenderParts(options) {
-  if (this.actor.limited) return foundry.utils.deepClone(this.constructor.LIMITED_PARTS);
+    if (this.actor.limited) return foundry.utils.deepClone(this.constructor.LIMITED_PARTS);
 
-  const parts = super._configureRenderParts(options);
-  const inventoryTemplates = customElements.get(this.options.elements.inventory).templates;
+    const parts = super._configureRenderParts(options);
+    const inventoryTemplates = customElements.get(this.options.elements.inventory).templates;
 
-  if ("inventory" in parts) {
-    parts.inventory.templates ??= [];
-    parts.inventory.templates.push(...inventoryTemplates);
+    if ("inventory" in parts) {
+      parts.inventory.templates ??= [];
+      parts.inventory.templates.push(...inventoryTemplates);
+    }
+
+    if ("features" in parts) {
+      parts.features.templates ??= [];
+      parts.features.templates.push(...inventoryTemplates);
+    }
+
+    if ("spells" in parts) {
+      parts.spells.templates ??= [];
+      parts.spells.templates.push(...inventoryTemplates);
+    }
+
+    return parts;
   }
-
-  if ("features" in parts) {
-    parts.features.templates ??= [];
-    parts.features.templates.push(...inventoryTemplates);
-  }
-
-  if ("spells" in parts) {
-    parts.spells.templates ??= [];
-    parts.spells.templates.push(...inventoryTemplates);
-  }
-
-  return parts;
-}
 
   /* -------------------------------------------- */
 
@@ -56289,84 +56287,86 @@ class CharacterActorSheet extends BaseActorSheet {
 
   _getSpellRank(level) {
     level = Number(level ?? 0);
-    if (level <= 1) return "E";
+    if (level === 0) return "PASSIVE";
+    if (level === 1) return "E";
     if (level === 2) return "D";
     if (level === 3) return "C";
     if (level === 4) return "B";
     if (level === 5) return "A";
-    return "S";
+    if (level === 6) return "S";
+    return "SS";
   }
 
-_preparePactbook(context) {
-  const Inventory = customElements.get(this.options.elements.inventory);
-  const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-  const rankOrder = ["E", "D", "C", "B", "A", "S"];
+  _preparePactbook(context) {
+    const Inventory = customElements.get(this.options.elements.inventory);
+    const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    const rankOrder = ["PASSIVE", "E", "D", "C", "B", "A", "S", "SS"];
 
-  const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+    const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
 
-  const buildRankSections = (spellList, pactId) => {
-    const sections = [];
+    const buildRankSections = (spellList, pactId) => {
+      const sections = [];
 
-    for (const rank of rankOrder) {
-      const rankSpells = spellList.filter(spell => this._getSpellRank(spell.system.level) === rank);
-      if (!rankSpells.length) continue;
+      for (const rank of rankOrder) {
+        const rankSpells = spellList.filter(spell => this._getSpellRank(spell.system.level) === rank);
+        if (!rankSpells.length) continue;
 
-      sections.push({
-        id: `${pactId || "unlinked"}-${rank}`,
-        label: `Rank ${rank}`,
-        items: rankSpells,
-        columns: [
-          "school",
-          "time",
-          "range",
-          "target",
-          "roll",
-          "uses",
-          "formula",
-          "controls"
-        ],
-        minWidth: 220,
-        dataset: {
-          rank,
-          type: "spell",
-          pactId: pactId ?? ""
-        }
+        sections.push({
+          id: `${pactId || "unlinked"}-${rank}`,
+          label: rank === "PASSIVE" ? "Passiva" : `Rank ${rank}`,
+          items: rankSpells,
+          columns: [
+            "school",
+            "time",
+            "range",
+            "target",
+            "roll",
+            "uses",
+            "formula",
+            "controls"
+          ],
+          minWidth: 220,
+          dataset: {
+            rank,
+            type: "spell",
+            pactId: pactId ?? ""
+          }
+        });
+      }
+
+      return Inventory.prepareSections(sections);
+    };
+
+    const pactbook = pacts.map((pact, index) => {
+      const pactSpells = spells.filter(spell => spell.system.pactId === pact.id);
+
+      return {
+        ...pact,
+        index,
+        description: pact.description ?? "",
+        sections: buildRankSections(pactSpells, pact.id)
+      };
+    });
+
+    const unlinked = spells.filter(spell => {
+      const pactId = spell.system.pactId ?? "";
+      return !pactId || !pacts.some(p => p.id === pactId);
+    });
+
+    if (unlinked.length) {
+      pactbook.push({
+        id: "",
+        index: -1,
+        name: game.i18n.localize("SHMN.UnlinkedPact"),
+        img: this.actor.img,
+        description: "",
+        sections: buildRankSections(unlinked, ""),
+        unlinked: true
       });
     }
 
-    return Inventory.prepareSections(sections);
-  };
-
-  const pactbook = pacts.map((pact, index) => {
-    const pactSpells = spells.filter(spell => spell.system.pactId === pact.id);
-
-    return {
-      ...pact,
-      index,
-      description: pact.description ?? "",
-      sections: buildRankSections(pactSpells, pact.id)
-    };
-  });
-
-  const unlinked = spells.filter(spell => {
-    const pactId = spell.system.pactId ?? "";
-    return !pactId || !pacts.some(p => p.id === pactId);
-  });
-
-  if (unlinked.length) {
-    pactbook.push({
-      id: "",
-      index: -1,
-      name: game.i18n.localize("SHMN.UnlinkedPact"),
-      img: this.actor.img,
-      description: "",
-      sections: buildRankSections(unlinked, ""),
-      unlinked: true
-    });
+    return pactbook;
   }
-
-  return pactbook;
-}
 
   /* -------------------------------------------- */
 
@@ -58448,14 +58448,14 @@ class NPCActorSheet extends BaseActorSheet {
       scrollable: [""]
     },
     spells: {
-  container: { classes: ["tab-body"], id: "tabs" },
-  template: "systems/shmn/templates/actors/tabs/creature-spells.hbs",
-  templates: [
-    "systems/shmn/templates/inventory/inventory.hbs",
-    "systems/shmn/templates/inventory/activity.hbs"
-  ],
-  scrollable: [""]
-},
+      container: { classes: ["tab-body"], id: "tabs" },
+      template: "systems/shmn/templates/actors/tabs/creature-spells.hbs",
+      templates: [
+        "systems/shmn/templates/inventory/inventory.hbs",
+        "systems/shmn/templates/inventory/activity.hbs"
+      ],
+      scrollable: [""]
+    },
     effects: {
       container: { classes: ["tab-body"], id: "tabs" },
       template: "systems/shmn/templates/actors/tabs/actor-effects.hbs",

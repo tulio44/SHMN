@@ -1,13 +1,4 @@
-2026/03/27-02:36:59.715 1dac Delete type=3 #1
-2026/03/27-05:07:57.866 5830 Level-0 table #117: started
-2026/03/27-05:07:57.866 5830 Level-0 table #117: 0 bytes OK
-2026/03/27-05:07:57.868 5830 Delete type=0 #115
-2026/03/27-05:07:57.877 5830 Manual compaction at level-0 from '!actors!0m8QyDN52qw9zzOM' @ 72057594037927935 : 1 .. '!folders!v8gFGdEluEFQdRQg' @ 0 : 0; will stop at '!folders!v8gFGdEluEFQdRQg' @ 1271 : 1
-2026/03/27-05:07:57.877 5830 Compacting 2@0 + 0@1 files
-2026/03/27-05:07:57.951 5830 Generated table #118@0: 1580 keys, 2128085 bytes
-2026/03/27-05:07:58.013 5830 Generated table #119@0: 638 keys, 582596 bytes
-2026/03/27-05:07:58.013 5830 Compacted 2@0 + 0@1 files => 2710681 bytes
-2026/03/27-05:07:58.014 5830 compacted to: files[ 0 2 0 0 0 0 0 ]
-2026/03/27-05:07:58.014 5830 Delete type=2 #68
-2026/03/27-05:07:58.014 5830 Delete type=2 #69
-2026/03/27-05:07:58.072 5830 Manual compaction at level-0 from '!folders!v8gFGdEluEFQdRQg' @ 1271 : 1 .. '!folders!v8gFGdEluEFQdRQg' @ 0 : 0; will stop at (end)
+2026/03/29-02:28:37.670 2038 Table #118: 1580 entries OK
+2026/03/29-02:28:37.673 2038 Table #119: 638 entries OK
+2026/03/29-02:28:37.676 2038 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\monsters/MANIFEST-000120: OK
+2026/03/29-02:28:37.679 2038 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\monsters; recovered 2 files; 2710681 bytes. Some data may have been lost. ****
