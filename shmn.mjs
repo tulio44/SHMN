@@ -11233,7 +11233,7 @@ class BaseCastActivityData extends BaseActivityData {
           override: new BooleanField$J()
         }),
         level: new NumberField$J(),
-        properties: new SetField$B(new StringField$1b(), { initial: ["vocal", "somatic", "material"] }),
+        properties: new SetField$B(new StringField$1b(), { initial: ["vocal", "scream", "somatic", "dance", "material", "tattoo"] }),
         spellbook: new BooleanField$J({ initial: true }),
         uuid: new DocumentUUIDField$b({
           type: "Item",
@@ -43438,6 +43438,11 @@ SHMN.itemProperties = {
     reference: "Compendium.shmn.rules.JournalEntry.NizgRXLNUqtdlC1s.JournalEntryPage.ow58p27ctAnr4VPH",
     isTag: true
   },
+  dance: {
+    label: "SHMN.ITEM.Property.Dance",
+    abbreviation: "SHMN.ComponentDanceAbbr",
+    reference: ""
+  },
   fin: {
     label: "SHMN.ITEM.Property.Finesse"
   },
@@ -43489,6 +43494,11 @@ SHMN.itemProperties = {
     label: "SHMN.ITEM.Property.Silvered",
     isPhysical: true
   },
+  scream: {
+    label: "SHMN.ITEM.Property.Scream",
+    abbreviation: "SHMN.ComponentScreamAbbr",
+    reference: "Compendium.shmn.rules.JournalEntry.NizgRXLNUqtdlC1s.JournalEntryPage.qwUNgUNilEmZkSC9"
+  },
   somatic: {
     label: "SHMN.ITEM.Property.Somatic",
     abbreviation: "SHMN.ComponentSomaticAbbr",
@@ -43499,6 +43509,11 @@ SHMN.itemProperties = {
   },
   stealthDisadvantage: {
     label: "SHMN.ITEM.Property.StealthDisadvantage"
+  },
+  tattoo: {
+    label: "SHMN.ITEM.Property.Tattoo",
+    abbreviation: "SHMN.ComponentTattooAbbr",
+    reference: ""
   },
   thr: {
     label: "SHMN.ITEM.Property.Thrown"
@@ -43573,11 +43588,14 @@ SHMN.validProperties = {
     "ver"
   ]),
   spell: new Set([
+    "dance",
     "vocal",
+    "scream",
     "somatic",
     "material",
     "concentration",
-    "ritual"
+    "ritual",
+    "tattoo"
   ]),
   tool: new Set([
     "foc",
@@ -56313,7 +56331,7 @@ class CharacterActorSheet extends BaseActorSheet {
 
         sections.push({
           id: `${pactId || "unlinked"}-${rank}`,
-          label: rank === "PASSIVE" ? "Passiva" : `Rank ${rank}`,
+          label: rank === "PASSIVE" ? "Passivo" : `Rank ${rank}`,
           items: rankSpells,
           columns: [
             "school",

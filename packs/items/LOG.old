@@ -1,3 +1,3 @@
-2026/03/29-02:28:37.742 5548 Table #114: 941 entries OK
-2026/03/29-02:28:37.745 5548 Archiving C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\items/MANIFEST-000115: OK
-2026/03/29-02:28:37.749 5548 **** Repaired leveldb C:\Users\tulio\AppData\Local\FoundryVTT\Data\systems\shmn\packs\items; recovered 1 files; 1068987 bytes. Some data may have been lost. ****
+2026/03/29-02:50:20.525 5548 Recovering log #117
+2026/03/29-02:50:20.529 5548 Delete type=0 #117
+2026/03/29-02:50:20.529 5548 Delete type=3 #115
