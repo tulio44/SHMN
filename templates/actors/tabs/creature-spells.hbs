@@ -15,26 +15,31 @@
                 {{/if}}
                 {{else}}
                 <button type="button" class="radio-button" data-action="setSpellcastingAbility"
-                        data-tooltip="DND5E.SpellAbilitySet" aria-pressed="{{#if primary}}true{{else}}false{{/if}}"
-                        aria-label="{{ localize "DND5E.SpellAbilitySet" }}"></button>
+                    data-tooltip="SHMN.SpellAbilitySet" aria-pressed="{{#if primary}}true{{else}}false{{/if}}"
+                    aria-label="{{ localize "SHMN.SpellAbilitySet" }}">
+                </button>
                 {{/if}}
             </div>
+
             <div class="info">
                 <div class="ability">
-                    <span class="label">{{ localize "DND5E.Ability" }}</span>
-                    <span class="value">{{ dnd5e-formatModifier ability.mod }}</span>
+                    <span class="label">{{ localize "SHMN.Ability" }}</span>
+                    <span class="value">{{ shmn-formatModifier ability.mod }}</span>
                 </div>
+
                 <div class="attack">
-                    <span class="label">{{ localize "DND5E.Attack" }}</span>
-                    <span class="value">{{ dnd5e-formatModifier attack }}</span>
+                    <span class="label">{{ localize "SHMN.Attack" }}</span>
+                    <span class="value">{{ shmn-formatModifier attack }}</span>
                 </div>
+
                 <div class="save">
-                    <span class="label">{{ localize "DND5E.SpellDC" }}</span>
+                    <span class="label">{{ localize "SHMN.SpellDC" }}</span>
                     <span class="value">{{ save }}</span>
                 </div>
+
                 {{#if (or preparation.value preparation.max)}}
                 <div class="prepared">
-                    <span class="label">{{ localize "DND5E.Prepared" }}</span>
+                    <span class="label">{{ localize "SHMN.Prepared" }}</span>
                     <span class="value {{#if preparation.max}}max-preparations{{/if}}">
                         <span class="count">{{ preparation.value }}</span>
                         {{#if preparation.max}}
@@ -44,26 +49,29 @@
                     </span>
                 </div>
                 {{/if}}
+
                 {{#if @root.isNPC}}
                 <div class="level">
-                    <span class="label">{{ localize "DND5E.Level" }}</span>
+                    <span class="label">{{ localize "SHMN.Level" }}</span>
                     {{#if (and @root.editable noSpellcaster)}}
                     {{ numberInput @root.system.attributes.spell.level name="system.attributes.spell.level" min=0 step=1
-                                placeholder="—" }}
+                    placeholder="—" }}
                     {{else}}
                     <span class="value">{{ level }}</span>
                     {{/if}}
                 </div>
+
                 <div class="concentration" data-ability="concentration">
-                    <a class="label saving-throw {{ @root.rollableClass }}" data-action="roll"
-                       data-type="ability">{{ localize "DND5E.Concentration" }}</a>
+                    <a class="label saving-throw {{ @root.rollableClass }}" data-action="roll" data-type="ability">
+                        {{ localize "SHMN.Concentration" }}
+                    </a>
                     {{#if @root.editable}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="ability" data-tooltip="{{ tooltip }}" aria-label="{{ tooltip }}">
+                        data-config="ability" data-tooltip="{{ tooltip }}" aria-label="{{ tooltip }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{else}}
-                    <span class="value">{{ dnd5e-formatModifier concentration.mod }}</span>
+                    <span class="value">{{ shmn-formatModifier concentration.mod }}</span>
                     {{/if}}
                 </div>
                 {{/if}}
@@ -72,7 +80,183 @@
         {{/each}}
     </section>
 
-    {{!-- Spells --}}
-    {{> "systems/dnd5e/templates/inventory/inventory.hbs" keepEmpty=true }}
+    {{!-- Spells by Pact --}}
+    <section class="pactbook">
+        {{#if @root.editable}}
+        <header class="pactbook-header">
+            <button type="button" class="config-button pact-create-button" data-action="createPact"
+                data-tooltip="{{ localize "SHMN.PactCreate" }}" aria-label="{{ localize "SHMN.PactCreate" }}">
+                <span class="pact-create-icon">
+                    <i class="fas fa-handshake" inert></i>
+                    <i class="fas fa-plus pact-create-plus" inert></i>
+                </span>
+            </button>
+        </header>
+        {{/if}}
 
+        {{#each pactbook as |pact|}}
+        <section class="pact card" data-pact-id="{{ pact.id }}">
+            <div class="header pact-banner">
+                {{#if @root.editable}}
+                {{#unless pact.unlinked}}
+                <img class="pact-img editable" src="{{ pact.img }}" alt="{{ pact.name }}" data-action="editPactImage"
+                    data-pact-id="{{ pact.id }}">
+                {{else}}
+                <img class="pact-img" src="{{ pact.img }}" alt="{{ pact.name }}">
+                {{/unless}}
+                {{else}}
+                <img class="pact-img" src="{{ pact.img }}" alt="{{ pact.name }}">
+                {{/if}}
+
+                <div class="pact-heading">
+                    {{#if @root.editable}}
+                    {{#unless pact.unlinked}}
+                    <input type="text" class="pact-name-input" name="flags.shmn.pactsData.{{ pact.id }}.name"
+                        value="{{ pact.name }}" placeholder="{{ localize "SHMN.Pact" }}">
+                    {{else}}
+                    <h3>{{ pact.name }}</h3>
+                    {{/unless}}
+                    {{else}}
+                    <h3>{{ pact.name }}</h3>
+                    {{/if}}
+
+                    <span class="subtitle">{{ localize "SHMN.Pact" }}</span>
+                </div>
+
+                {{#if @root.editable}}
+                {{#unless pact.unlinked}}
+                <div class="pact-controls">
+                    <button type="button" class="config-button unbutton" data-action="createPactSpell"
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize "SHMN.PactSpellCreate" }}"
+                        aria-label="{{ localize "SHMN.PactSpellCreate" }}">
+                        <i class="fas fa-plus" inert></i>
+                    </button>
+
+                    <button type="button" class="config-button unbutton" data-action="deletePact"
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize "SHMN.ContextMenuActionDelete" }}"
+                        aria-label="{{ localize "SHMN.ContextMenuActionDelete" }}">
+                        <i class="fas fa-trash" inert></i>
+                    </button>
+                </div>
+                {{/unless}}
+                {{/if}}
+            </div>
+
+            {{#if @root.editable}}
+            <div class="pact-description">
+                {{#unless pact.unlinked}}
+                <prose-mirror name="flags.shmn.pactsData.{{ pact.id }}.description" value="{{ pact.description }}"
+                    document-uuid="{{ @root.actor.uuid }}">
+                </prose-mirror>
+                {{/unless}}
+            </div>
+            {{else}}
+            {{#if pact.description}}
+            <div class="pact-description">
+                <div class="editor">
+                    <div class="editor-content pact-description-text">{{{ pact.description }}}</div>
+                </div>
+            </div>
+            {{/if}}
+            {{/if}}
+
+            <div class="pact-spells">
+                {{#if pact.sections.length}}
+                <shmn-inventory class="inventory-element">
+                    <section class="items-list spells-list">
+                        {{#each pact.sections}}
+                        <div class="items-section card" {{ shmn-dataset dataset }}>
+                            <div class="items-header header">
+                                <h3 class="item-name">{{ label }}</h3>
+                                {{#each columns}}
+                                <div class="item-header item-{{ id }}" data-column-id="{{ id }}"
+                                    data-column-width="{{ width }}" data-column-priority="{{ priority }}">
+                                    {{#if label}}{{ localize label }}{{/if}}
+                                </div>
+                                {{/each}}
+                            </div>
+
+                            <ol class="item-list unlist">
+                                {{#each items as |item|}}
+                                {{#shmn-itemContext item as |ctx|}}
+                                <li class="item collapsible {{#unless ctx.isExpanded}}collapsed{{/unless}}"
+                                    data-uuid="{{ item.uuid }}" data-item-id="{{ item.id }}"
+                                    data-entry-id="{{ item.id }}" data-item-name="{{ item.name }}"
+                                    data-item-sort="{{ item.sort }}" {{ shmn-dataset ctx.dataset }}>
+
+                                    <div class="item-row">
+                                        <div class="item-name item-action item-tooltip {{#if ctx.clickAction}}{{ @root.rollableClass }}{{/if}}"
+                                            role="button" data-action="{{ ctx.clickAction }}"
+                                            aria-label="{{ item.name }}">
+
+                                            {{#if ctx.concentration}}
+                                            <i class="concentration fa-solid fa-arrow-rotate-left fa-spin fa-spin-reverse"
+                                                aria-label="{{ localize "SHMN.Concentration" }}"></i>
+                                            {{/if}}
+
+                                            <img class="item-image gold-icon" src="{{ item.img }}" alt="{{ item.name }}"
+                                                draggable="false">
+
+                                            <div class="name name-stacked">
+                                                <span class="title">{{ item.name }}</span>
+                                                {{#if ctx.subtitle}}
+                                                <span class="subtitle">{{{ ctx.subtitle }}}</span>
+                                                {{/if}}
+                                            </div>
+
+                                            <div class="tags">
+                                                {{#if item.labels.components}}
+                                                {{#each item.labels.components.all}}
+                                                {{#if tag}}
+                                                <span aria-label="{{ label }}">
+                                                    <shmn-icon src="{{ icon }}"></shmn-icon>
+                                                </span>
+                                                {{/if}}
+                                                {{/each}}
+                                                {{/if}}
+                                            </div>
+                                        </div>
+
+                                        {{#if ctx.columns.length}}
+                                        {{#each ctx.columns}}
+                                        {{> (lookup . "template") entry=item item=item ctx=ctx isItem=true }}
+                                        {{/each}}
+                                        {{else}}
+                                        {{#each ../columns}}
+                                        {{> (lookup . "template") entry=item item=item ctx=ctx isItem=true }}
+                                        {{/each}}
+                                        {{/if}}
+                                    </div>
+
+                                    <div class="item-description collapsible-content">
+                                        <div class="wrapper">
+                                            {{#if ctx.activities.length}}
+                                            <ol class="activities unlist">
+                                                {{#each ctx.activities}}
+                                                {{> "systems/shmn/templates/inventory/activity.hbs"
+                                                columns=../../columns item=../item }}
+                                                {{/each}}
+                                            </ol>
+                                            {{/if}}
+
+                                            {{#if ctx.isExpanded}}
+                                            {{> "shmn.item-summary" ctx.expanded }}
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                </li>
+                                {{/shmn-itemContext}}
+                                {{/each}}
+                            </ol>
+                        </div>
+                        {{/each}}
+                    </section>
+                </shmn-inventory>
+                {{else}}
+                <p class="empty">{{ localize "SHMN.None" }}</p>
+                {{/if}}
+            </div>
+        </section>
+        {{/each}}
+    </section>
 </section>

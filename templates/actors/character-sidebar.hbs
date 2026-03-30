@@ -4,9 +4,9 @@
     <div class="card">
 
         {{!-- Collapser --}}
-        <button type="button" class="sidebar-collapser collapser card-tab vertical unbutton always-interactive"
-            {{~#if sidebarCollapsed}} data-tooltip="JOURNAL.ViewExpand" aria-label="{{ localize 'JOURNAL.ViewExpand' }}"
-            {{~else}} data-tooltip="JOURNAL.ViewCollapse" aria-label="{{ localize 'JOURNAL.ViewCollapse' }}"{{/if}}
+        <button type="button" class="sidebar-collapser collapser card-tab vertical unbutton always-interactive" {{~#if
+            sidebarCollapsed}} data-tooltip="JOURNAL.ViewExpand" aria-label="{{ localize 'JOURNAL.ViewExpand' }}"
+            {{~else}} data-tooltip="JOURNAL.ViewCollapse" aria-label="{{ localize 'JOURNAL.ViewCollapse' }}" {{/if}}
             data-action="toggleSidebar">
             <i class="fas fa-caret-{{#if sidebarCollapsed}}right{{else}}left{{/if}}" inert></i>
         </button>
@@ -15,26 +15,26 @@
         <div class="portrait {{#if portrait.token}}token{{/if}}">
             {{#if editable}}
             <label class="slide-toggle roboto-upper">
-                <input type="checkbox" name="flags.dnd5e.showTokenPortrait" {{ checked portrait.token }}>
+                <input type="checkbox" name="flags.shmn.showTokenPortrait" {{ checked portrait.token }}>
                 {{#if portrait.token}}
                 <i class="fas fa-toggle-on" inert></i>
                 {{ localize "DOCUMENT.Token" }}
                 {{else}}
                 <i class="fas fa-toggle-off" inert></i>
-                {{ localize "DND5E.Portrait" }}
+                {{ localize "SHMN.Portrait" }}
                 {{/if}}
             </label>
             {{/if}}
 
             {{#with portrait}}
             {{#if isVideo}}
-            <video src="{{ src }}" autoplay muted disablepictureinpicture loop playsinline
-                   {{#if @root.editable}}data-action="{{ action }}"{{else}}data-action="showArtwork"{{/if}}
-                   {{#if (and @root.editable path)}}data-edit="{{ path }}" data-type="{{ type }}"{{/if}}></video>
+            <video src="{{ src }}" autoplay muted disablepictureinpicture loop playsinline {{#if
+                @root.editable}}data-action="{{ action }}" {{else}}data-action="showArtwork" {{/if}} {{#if (and
+                @root.editable path)}}data-edit="{{ path }}" data-type="{{ type }}" {{/if}}></video>
             {{else}}
-            <img src="{{ src }}" alt="{{ @root.actor.name }}"
-                 {{#if @root.editable}}data-action="{{ action }}"{{else}}data-action="showArtwork"{{/if}}
-                 {{#if (and @root.editable path)}}data-edit="{{ path }}" data-type="{{ type }}"{{/if}}>
+            <img src="{{ src }}" alt="{{ @root.actor.name }}" {{#if @root.editable}}data-action="{{ action }}"
+                {{else}}data-action="showArtwork" {{/if}} {{#if (and @root.editable path)}}data-edit="{{ path }}"
+                data-type="{{ type }}" {{/if}}>
             {{/if}}
             {{/with}}
         </div>
@@ -54,16 +54,16 @@
                 {{/if}}
 
                 {{!-- AC --}}
-                <div class="ac-badge badge" aria-label="{{ localize 'DND5E.ArmorClass' }}">
+                <div class="ac-badge badge" aria-label="{{ localize 'SHMN.ArmorClass' }}">
                     {{#if editable}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="armorClass" data-tooltip="DND5E.ArmorConfig"
-                            aria-label="{{ localize 'DND5E.ArmorConfig' }}">
+                        data-config="armorClass" data-tooltip="SHMN.ArmorConfig"
+                        aria-label="{{ localize 'SHMN.ArmorConfig' }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{else}}
-                    <div data-attribution="attributes.ac" data-attribution-caption="DND5E.ArmorClass"
-                         data-tooltip-direction="DOWN">
+                    <div data-attribution="attributes.ac" data-attribution-caption="SHMN.ArmorClass"
+                        data-tooltip-direction="DOWN">
                         {{ system.attributes.ac.value }}
                     </div>
                     {{/if}}
@@ -82,22 +82,22 @@
             <div class="lozenges">
 
                 {{!-- Initiative --}}
-                <div class="lozenge {{#unless editable}}{{ rollableClass }}{{/unless}}"
-                     data-action="roll" data-type="initiative">
+                <div class="lozenge {{#unless editable}}{{ rollableClass }}{{/unless}}" data-action="roll"
+                    data-type="initiative">
                     <div class="value">
                         {{#if editable}}
                         <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                                data-config="initiative" data-tooltip="DND5E.InitiativeConfig"
-                                aria-label="{{ localize 'DND5E.InitiativeConfig' }}">
+                            data-config="initiative" data-tooltip="SHMN.InitiativeConfig"
+                            aria-label="{{ localize 'SHMN.InitiativeConfig' }}">
                             <i class="fas fa-cog" inert></i>
                         </button>
                         {{else}}
                         <span>
-                            {{ dnd5e-numberFormat system.attributes.init.total signDisplay="always" }}
+                            {{ shmn-numberFormat system.attributes.init.total signDisplay="always" }}
                         </span>
                         {{/if}}
                     </div>
-                    <div class="label roboto-condensed-upper">{{ localize "DND5E.Initiative" }}</div>
+                    <div class="label roboto-condensed-upper">{{ localize "SHMN.Initiative" }}</div>
                 </div>
 
                 {{!-- Speed --}}
@@ -105,7 +105,7 @@
                     <div class="value">
                         {{#if editable}}
                         <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                                data-config="movement" data-tooltip="DND5E.MOVEMENT.Action.Configure">
+                            data-config="movement" data-tooltip="SHMN.MOVEMENT.Action.Configure">
                             <i class="fas fa-cog" inert></i>
                         </button>
                         {{else}}
@@ -118,20 +118,20 @@
                 {{!-- Proficiency --}}
                 <div class="lozenge">
                     <div class="value">
-                        {{ dnd5e-numberFormat system.attributes.prof signDisplay="always" }}
+                        {{ shmn-numberFormat system.attributes.prof signDisplay="always" }}
                     </div>
-                    <div class="label roboto-condensed-upper">{{ localize "DND5E.Proficiency" }}</div>
+                    <div class="label roboto-condensed-upper">{{ localize "SHMN.Proficiency" }}</div>
                 </div>
             </div>
 
             {{!-- Hit Points --}}
             <div class="meter-group">
                 <div class="label roboto-condensed-upper">
-                    <span>{{ localize "DND5E.HitPoints" }}</span>
+                    <span>{{ localize "SHMN.HitPoints" }}</span>
                     {{#if editable}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="hitPoints" data-tooltip="DND5E.HitPointsConfig"
-                            aria-label="{{ localize 'DND5E.HitPointsConfig' }}">
+                        data-config="hitPoints" data-tooltip="SHMN.HitPointsConfig"
+                        aria-label="{{ localize 'SHMN.HitPointsConfig' }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{/if}}
@@ -140,24 +140,52 @@
                 <div class="meter sectioned hit-points">
                     <div class="progress hit-points
                          {{~#if (gt tempmax 0)}} temp-positive
-                         {{~else if (lt tempmax 0)}} temp-negative{{/if}}"
-                         role="meter" aria-valuemin="0" aria-valuenow="{{ value }}"
-                         aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
+                         {{~else if (lt tempmax 0)}} temp-negative{{/if}}" role="meter" aria-valuemin="0"
+                        aria-valuenow="{{ value }}" aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
                         <div class="label">
                             <span class="value">{{ value }}</span>
                             <span class="separator">&sol;</span>
                             <span class="max">{{ effectiveMax }}</span>
                             {{#if tempmax}}
-                            <span class="bonus">{{dnd5e-numberFormat tempmax signDisplay="always"}}</span>
+                            <span class="bonus">{{shmn-numberFormat tempmax signDisplay="always"}}</span>
                             {{/if}}
                         </div>
-                        <input type="text" name="system.attributes.hp.value" data-dtype="Number"
-                               placeholder="0" value="{{ value }}" hidden>
+                        <input type="text" name="system.attributes.hp.value" data-dtype="Number" placeholder="0"
+                            value="{{ value }}" hidden>
                     </div>
                     <div class="tmp">
                         <input type="text" name="system.attributes.hp.temp" data-dtype="Number"
-                               placeholder="{{ localize 'DND5E.TMP' }}"
-                               value="{{#if temp}}{{ temp }}{{/if}}">
+                            placeholder="{{ localize 'SHMN.TMP' }}" value="{{#if temp}}{{ temp }}{{/if}}">
+                    </div>
+
+                </div>
+                {{/with}}
+            </div>
+
+            {{!-- Energy Points --}}
+            <div class="meter-group">
+                <div class="label roboto-condensed-upper">
+                    <span>{{ localize "SHMN.EnergyPoints" }}</span>
+                    {{#if editable}}
+                    <button type="button" class="config-button unbutton" data-action="showConfiguration"
+                        data-config="energyPoints" data-tooltip="SHMN.EnergyPointsConfig"
+                        aria-label="{{ localize 'SHMN.EnergyPointsConfig' }}">
+                        <i class="fas fa-cog" inert></i>
+                    </button>
+                    {{/if}}
+                </div>
+
+                {{#with system.attributes.ep}}
+                <div class="meter hit-points energy-points">
+                    <div class="progress hit-points energy-points" role="meter" aria-valuemin="0"
+                        aria-valuenow="{{ value }}" aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
+                        <div class="label">
+                            <span class="value">{{ value }}</span>
+                            <span class="separator">&sol;</span>
+                            <span class="max">{{ max }}</span>
+                        </div>
+                        <input type="text" name="system.attributes.ep.value" data-dtype="Number" placeholder="0"
+                            value="{{ value }}" hidden>
                     </div>
                 </div>
                 {{/with}}
@@ -167,18 +195,17 @@
             {{#with system.attributes.hd}}
             <div class="meter-group">
                 <div class="label roboto-condensed-upper">
-                    <span>{{ localize "DND5E.HitDice" }}</span>
+                    <span>{{ localize "SHMN.HitDice" }}</span>
                     {{#if @root.editable}}
                     <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="hitDice" data-tooltip="DND5E.HitDiceConfig"
-                            aria-label="{{ localize 'DND5E.HitDiceConfig' }}">
+                        data-config="hitDice" data-tooltip="SHMN.HitDiceConfig"
+                        aria-label="{{ localize 'SHMN.HitDiceConfig' }}">
                         <i class="fas fa-cog" inert></i>
                     </button>
                     {{/if}}
                 </div>
-                <div class="meter hit-dice progress" role="meter" aria-valuemin="0"
-                     aria-valuenow="{{ value }}" aria-valuemax="{{ max }}"
-                     style="--bar-percentage: {{ pct }}%">
+                <div class="meter hit-dice progress" role="meter" aria-valuemin="0" aria-valuenow="{{ value }}"
+                    aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
                     <div class="label">
                         <span class="value">{{ value }}</span>
                         <span class="separator">&sol;</span>
@@ -203,15 +230,15 @@
                 {{!-- Roll Death Save --}}
                 {{#if editable}}
                 <button type="button" class="death-save config-button unbutton" data-action="showConfiguration"
-                        data-config="death" data-tooltip="DND5E.DeathSaveConfigure"
-                        aria-label="{{ localize 'DND5E.DeathSaveConfigure' }}">
+                    data-config="death" data-tooltip="SHMN.DeathSaveConfigure"
+                    aria-label="{{ localize 'SHMN.DeathSaveConfigure' }}">
                     <i class="fas fa-cog" inert></i>
                 </button>
                 {{else}}
                 <button type="button" class="{{ rollableClass }} death-save unbutton" data-action="roll"
-                        data-type="deathSave" data-tooltip="DND5E.DeathSaveRoll"
-                        aria-label="{{ localize 'DND5E.DeathSaveRoll' }}">
-                    <dnd5e-icon src="systems/dnd5e/icons/svg/statuses/dead.svg"></dnd5e-icon>
+                    data-type="deathSave" data-tooltip="SHMN.DeathSaveRoll"
+                    aria-label="{{ localize 'SHMN.DeathSaveRoll' }}">
+                    <shmn-icon src="systems/shmn/icons/svg/statuses/dead.svg"></shmn-icon>
                 </button>
                 {{/if}}
 
@@ -225,9 +252,9 @@
             </div>
 
             <button type="button" class="death-tab card-tab horizontal unbutton always-interactive"
-                    data-action="toggleDeathTray" {{#if death.open~}}
-                    data-tooltip="DND5E.DeathSaveShow" aria-label="{{ localize 'DND5E.DeathSaveShow' }}"{{else~}}
-                    data-tooltip="DND5E.DeathSaveHide" aria-label="{{ localize 'DND5E.DeathSaveHide' }}"{{/if}}>
+                data-action="toggleDeathTray" {{#if death.open~}} data-tooltip="SHMN.DeathSaveShow"
+                aria-label="{{ localize 'SHMN.DeathSaveShow' }}" {{else~}} data-tooltip="SHMN.DeathSaveHide"
+                aria-label="{{ localize 'SHMN.DeathSaveHide' }}" {{/if}}>
                 <i class="fas fa-skull" inert></i>
             </button>
         </div>
@@ -238,22 +265,19 @@
     <div class="favorites">
         <h3 class="icon">
             <i class="fas fa-bookmark" inert></i>
-            <span class="roboto-upper">{{ localize "DND5E.Favorites" }}</span>
+            <span class="roboto-upper">{{ localize "SHMN.Favorites" }}</span>
         </h3>
         <ul class="unlist">
             {{#each favorites}}
 
             {{!-- Favorite --}}
             <li class="{{#if itemId}}item-tooltip{{/if}} {{ type }} {{~#if suppressed}} suppressed{{/if}}
-                {{~#if draggable}} draggable{{/if}}" data-favorite-id="{{ id }}"
-                {{#if key}}data-key="{{ key }}"{{/if}}
-                {{#if itemId}}data-item-id="{{ itemId }}"{{/if}}
-                {{#if effectId}}data-effect-id="{{ effectId }}" data-action="useFavorite"{{/if}}
-                {{#if parentId}}data-parent-id="{{ parentId }}"{{/if}}
-                {{#if activityId}}data-activity-id="{{ activityId }}" data-action="useFavorite"{{/if}}
-                {{#if reference}}data-reference-tooltip="{{ reference }}"{{/if}}
-                {{#if method}}data-method="{{ method }}"{{/if}}
-                {{#if level}}data-level="{{ level }}"{{/if}}>
+                {{~#if draggable}} draggable{{/if}}" data-favorite-id="{{ id }}" {{#if key}}data-key="{{ key }}"
+                {{/if}} {{#if itemId}}data-item-id="{{ itemId }}" {{/if}} {{#if
+                effectId}}data-effect-id="{{ effectId }}" data-action="useFavorite" {{/if}} {{#if
+                parentId}}data-parent-id="{{ parentId }}" {{/if}} {{#if activityId}}data-activity-id="{{ activityId }}"
+                data-action="useFavorite" {{/if}} {{#if reference}}data-reference-tooltip="{{ reference }}" {{/if}}
+                {{#if method}}data-method="{{ method }}" {{/if}} {{#if level}}data-level="{{ level }}" {{/if}}>
 
                 {{!-- Icon --}}
                 <figure>
@@ -262,8 +286,8 @@
                     {{!-- Favorite Deletion --}}
                     {{#if @root.editable}}
                     <button type="button" class="deletion-control unbutton" data-action="deleteFavorite"
-                            data-tooltip-class data-tooltip-direction data-tooltip="DND5E.FavoriteRemove"
-                            aria-label="{{ localize 'DND5E.FavoriteRemove' }}">
+                        data-tooltip-class data-tooltip-direction data-tooltip="SHMN.FavoriteRemove"
+                        aria-label="{{ localize 'SHMN.FavoriteRemove' }}">
                         <i class="fas fa-circle-xmark" inert></i>
                     </button>
                     {{/if}}
@@ -284,9 +308,9 @@
                         {{#if uses.max}}
                         {{#with uses}}
                         {{#if (and name @root.actor.isOwner)}}
-                        <input type="text" class="uninput value" value="{{ value }}"
-                               {{#unless ../bareName}}data-{{/unless}}name="{{ name }}"
-                               data-dtype="Number" inputmode="numeric" pattern="[+=\-]?\d*">
+                        <input type="text" class="uninput value" value="{{ value }}" {{#unless
+                            ../bareName}}data-{{/unless}}name="{{ name }}" data-dtype="Number" inputmode="numeric"
+                            pattern="[+=\-]?\d*">
                         {{else}}
                         <span class="value">{{ value }}</span>
                         {{/if}}
@@ -296,7 +320,7 @@
 
                         {{!-- Modifiers --}}
                         {{else if modifier includeZero=true}}
-                        {{ dnd5e-formatModifier modifier }}
+                        {{ shmn-formatModifier modifier }}
 
                         {{!-- Passive Score --}}
                         {{#if passive}}
@@ -328,17 +352,15 @@
                         {{!-- Legacy Resources --}}
                         {{else if resource}}
                         {{#if @root.actor.isOwner}}
-                        <input type="text" class="uninput value" value="{{ resource.value }}"
-                               data-dtype="Number" name="system.{{ id }}.value" inputmode="numeric"
-                               pattern="[+=\-]?\d*">
+                        <input type="text" class="uninput value" value="{{ resource.value }}" data-dtype="Number"
+                            name="system.{{ id }}.value" inputmode="numeric" pattern="[+=\-]?\d*">
                         {{else}}
                         <span class="value">{{ resource.value }}</span>
                         {{/if}}
                         <span class="separator">&sol;</span>
                         {{#if @root.editable}}
-                        <input type="text" class="uninput max" value="{{ resource.source.max }}"
-                               data-dtype="Number" name="system.{{ id }}.max" inputmode="numeric"
-                               pattern="[+=\-]?\d*">
+                        <input type="text" class="uninput max" value="{{ resource.source.max }}" data-dtype="Number"
+                            name="system.{{ id }}.max" inputmode="numeric" pattern="[+=\-]?\d*">
                         {{else}}
                         <span class="max">{{ resource.max }}</span>
                         {{/if}}
@@ -371,12 +393,12 @@
             {{/each}}
 
             {{!-- Drop Indicator --}}
-            <li class="drop roboto-upper">{{ localize "DND5E.FavoriteDrop" }}</li>
+            <li class="drop roboto-upper">{{ localize "SHMN.FavoriteDrop" }}</li>
         </ul>
     </div>
 </div>
 
 {{#*inline ".pip"}}
 <button type="button" class="{{ classes }}" data-action="togglePip" data-n="{{ n }}" data-tooltip="{{ tooltip }}"
-        aria-label="{{ label }}" aria-pressed="{{ filled }}"></button>
+    aria-label="{{ label }}" aria-pressed="{{ filled }}"></button>
 {{/inline}}

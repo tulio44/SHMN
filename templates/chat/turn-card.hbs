@@ -2,12 +2,12 @@
     {{#if actor}}
 
     {{!-- Deltas --}}
-    {{#if deltas.length}}{{> "dnd5e.card-deltas" }}{{/if}}
+    {{#if deltas.length}}{{> "shmn.card-deltas" }}{{/if}}
 
     {{!-- Actions --}}
-    {{#if activities.length}}{{> "dnd5e.card-activities" }}{{/if}}
+    {{#if activities.length}}{{> "shmn.card-activities" }}{{/if}}
 
     {{else}}
-    <p>{{ localize "DND5E.CHATMESSAGE.TURN.NoCombatant" }}</p>
+    <p>{{ localize "SHMN.CHATMESSAGE.TURN.NoCombatant" }}</p>
     {{/if}}
 </div>

@@ -1,29 +1,29 @@
 <fieldset>
-    <legend>{{ localize "DND5E.ItemClassDetails" }}</legend>
+    <legend>{{ localize "SHMN.ItemClassDetails" }}</legend>
 
     {{!-- Identifier --}}
     <div class="form-group">
-        <label>{{ localize "DND5E.Identifier" }}</label>
+        <label>{{ localize "SHMN.Identifier" }}</label>
         <div class="form-fields">
             {{ formInput fields.identifier value=source.identifier placeholder=item.identifier }}
         </div>
         <p class="hint">
-            {{{ localize "DND5E.ClassIdentifierHint" identifier=item.identifier }}}
-            {{ localize "DND5E.IdentifierError" }}
+            {{{ localize "SHMN.ClassIdentifierHint" identifier=item.identifier }}}
+            {{ localize "SHMN.IdentifierError" }}
         </p>
     </div>
 
     {{!-- Hit Dice --}}
     <div class="form-group split-group">
-        <label>{{ localize "DND5E.CLASS.FIELDS.hd.label" }}</label>
+        <label>{{ localize "SHMN.CLASS.FIELDS.hd.label" }}</label>
         <div class="form-fields">
 
             {{!-- Denomination --}}
             {{ formField fields.hd.fields.denomination value=source.hd.denomination options=hitDieOptions
-                         label="DND5E.Denomination" localize=true classes="label-top" rootId=partId }}
+                         label="SHMN.Denomination" localize=true classes="label-top" rootId=partId }}
 
             {{!-- Spent --}}
-            {{ formField fields.hd.fields.spent value=source.hd.spent placeholder="0" localize=true label="DND5E.Spent"
+            {{ formField fields.hd.fields.spent value=source.hd.spent placeholder="0" localize=true label="SHMN.Spent"
                          classes="label-top" rootId=partId }}
         </div>
     </div>
@@ -38,7 +38,7 @@
 </fieldset>
 
 <fieldset>
-    <legend>{{ localize "DND5E.CLASS.Multiclass.Title" }}</legend>
+    <legend>{{ localize "SHMN.CLASS.Multiclass.Title" }}</legend>
 
     {{!-- Primary Ability --}}
     {{ formField fields.primaryAbility.fields.value value=source.primaryAbility.value options=primaryAbilities
