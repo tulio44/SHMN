@@ -1490,14 +1490,14 @@
       "label": "Dado de Vida",
       "additional": {
         "label": "Dados de Vida Adicionais",
-        "hint": "Fórmula para dados de vida que estão disponíveis para esta classe além da quantidade normal."
+        "hint": "Fórmula para dados de vida que estão disponíveis para esta casa além da quantidade normal."
       },
       "spent": {
         "label": "Dados de Vida Gastos"
       }
     },
     "levels": {
-      "label": "Níveis de Classe"
+      "label": "Níveis da Casa"
     },
     "primaryAbility": {
       "all": {
@@ -1506,23 +1506,23 @@
       },
       "value": {
         "label": "Habilidade Primária",
-        "hint": "Habilidades mais usadas por esta classe. Usadas para determinar restrições de multiclasse."
+        "hint": "Habilidades mais usadas por esta casa. Usadas para determinar restrições de multiclasse."
       }
     },
     "properties": {
-      "label": "Propriedades da Classe"
+      "label": "Propriedades da Casa"
     }
   }
 },
 
-"SHMN.ClassAdd": "Adicionar Classe",
-"SHMN.ClassIdentifier": "Identificador da Classe",
-"SHMN.ClassIdentifierHint": "Os dados desta classe estarão acessíveis usando <strong>@classes.{identifier}</strong> em fórmulas de rolagem.",
-"SHMN.ClassLevels": "Níveis de Classe",
-"SHMN.ClassMakeOriginal": "Classe Original",
-"SHMN.ClassMakeOriginalHint": "Primeira classe escolhida pelo personagem, usada para determinar certos traços de classe ao fazer multiclasse.",
-"SHMN.ClassName": "Nome da Classe",
-"SHMN.ClassOriginal": "Classe Original",
+"SHMN.ClassAdd": "Adicionar Casa",
+"SHMN.ClassIdentifier": "Identificador da Casa",
+"SHMN.ClassIdentifierHint": "Os dados desta casa estarão acessíveis usando <strong>@classes.{identifier}</strong> em fórmulas de rolagem.",
+"SHMN.ClassLevels": "Níveis da Casa",
+"SHMN.ClassMakeOriginal": "Casa Original",
+"SHMN.ClassMakeOriginalHint": "Primeira casa escolhida pelo personagem, usada para determinar certos traços de classe ao fazer multiclasse.",
+"SHMN.ClassName": "Nome da Casa",
+"SHMN.ClassOriginal": "Casa Original",
 "SHMN.ClassSaves": "Testes de Resistência",
 "SHMN.Confirm": "Confirmar",
 
@@ -1901,7 +1901,7 @@
   },
   "Warning": {
     "MissingAttribute": "O atributo {attribute} configurado para ser consumido pela atividade {activity} em {item} não pôde ser encontrado.",
-    "MissingHitDice": "O ator não possui uma classe com um dado de vida {denomination}.",
+    "MissingHitDice": "O ator não possui uma casa com um dado de vida {denomination}.",
     "MissingItem": "O item configurado para ser consumido pela atividade {activity} em {item} não pôde ser encontrado.",
     "MissingSpellSlot": "Nenhum espaço de nível {level} disponível.",
     "None": "Nenhum {type} disponível para gastar; {cost} necessário.",
@@ -2260,8 +2260,8 @@
     "enchant": {
       "label": "Configuração de Encantamento",
       "identifier": {
-        "label": "Identificador da Classe",
-        "hint": "Identificador usado para determinar se o nível do personagem ou o nível de uma classe específica deve ser usado para limites de nível do encantamento."
+        "label": "Identificador da Casa",
+        "hint": "Identificador usado para determinar se o nível do personagem ou o nível de uma casa específica deve ser usado para limites de nível do encantamento."
       },
       "self": {
         "label": "Encantar a Si Mesmo Automaticamente",
@@ -2718,7 +2718,7 @@
 "SHMN.Feature": {
   "Background": "Característica de Antecedente",
   "Class": {
-    "Label": "Característica de Classe",
+    "Label": "Característica de Casa",
     "ArcaneShot": "Disparo Arcano",
     "ArtificerInfusion": "Infusão de Artífice",
     "ArtificerPlan": "Plano de Artífice",
@@ -3075,7 +3075,7 @@
 "SHMN.HitDie": "Dado de Vida",
 "SHMN.HitDice": "Dados de Vida",
 "SHMN.HitDiceConfig": "Ajustar Dados de Vida",
-"SHMN.HitDiceConfigHint": "Ajuste os níveis restantes de dados de vida para cada classe.",
+"SHMN.HitDiceConfigHint": "Ajuste os níveis restantes de dados de vida para cada casa.",
 "SHMN.HitDiceMax": "Máximo de Dados de Vida",
 "SHMN.HitDiceRemaining": "Dados de Vida Restantes",
 "SHMN.HitDiceRoll": "Rolar Dados de Vida",
@@ -3107,7 +3107,7 @@
 "SHMN.ItemAttackFlat": "Bônus Fixo",
 "SHMN.ItemAttackFlatHint": "Se marcado, não adiciona proficiência, modificador de habilidade ou quaisquer outros bônus à rolagem de ataque, exceto o que está incluído aqui.",
 "SHMN.ItemBackgroundDetails": "Detalhes do Antecedente",
-"SHMN.ItemClassDetails": "Detalhes da Classe",
+"SHMN.ItemClassDetails": "Detalhes da Casa",
 "SHMN.ItemConsumableActivation": "Ativação do Consumível",
 "SHMN.ItemConsumableUsage": "Uso do Consumível",
 "SHMN.ItemConsumableDetails": "Detalhes do Consumível",
@@ -4021,12 +4021,12 @@
 "SHMN.SpecialHint": "Valores especiais separados por ponto e vírgula.",
 "SHMN.SpecialTraits": "Traços Especiais",
 "SHMN.Species": {
-  "Label": "Casa",
-  "Add": "Adicionar Casa",
+  "Label": "Raça",
+  "Add": "Adicionar Raça",
   "AddLegacy": "Adicionar Raça",
-  "Features": "Características de Casa",
+  "Features": "Características de Raça",
   "FeaturesLegacy": "Características Raciais",
-  "Name": "Nome da Casa"
+  "Name": "Nome da Raça"
 },
 "SHMN.Speed": "Velocidade",
 "SHMN.SpeedSpecial": "Movimento Especial",
@@ -5919,7 +5919,26 @@
 "SIDEBAR.SortModePriority": "Ordenar por prioridade",
 
 "SHMN.Pact": "Barganha",
-"SHMN.UnlinkedPact": "Inato",
-"SHMN.PactCreate": "Nova Barganha",
-"SHMN.PactSpellCreate": "Novo ritual"
+"SHMN.PactCreate": "Criar Barganha",
+"SHMN.PactSpellCreate": "Criar Ritual",
+"SHMN.UnlinkedPact": "Rituais sem Barganha",
+
+"SHMN.PactTypeFire": "Fogo",
+"SHMN.PactTypeWater": "Água",
+"SHMN.PactTypeEarth": "Terra",
+"SHMN.PactTypeAir": "Ar",
+"SHMN.PactTypeLightning": "Raio",
+"SHMN.PactTypeHealing": "Cura",
+"SHMN.PactTypeEmotion": "Emoção",
+"SHMN.PactTypeBlood": "Sangue",
+"SHMN.PactTypeNecrotic": "Necrótico",
+"SHMN.PactTypeSand": "Areia",
+"SHMN.PactTypeTime": "Tempo",
+"SHMN.PactTypeMetal": "Metal",
+"SHMN.PactTypeIce": "Gelo",
+"SHMN.PactTypeWildEnergy": "Energia Selvagem",
+"SHMN.PactTypeCelestial": "Celestial",
+"SHMN.PactTypeForce": "Força",
+"SHMN.PactTypeLava": "Lava"
 }
+

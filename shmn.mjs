@@ -42930,6 +42930,29 @@ preLocalize("creatureTypes", { keys: ["label", "plural"], sort: true });
 
 /* -------------------------------------------- */
 
+SHMN.pactTypes = {
+  fire: { label: "SHMN.PactTypeFire", icon: "fas fa-fire" },
+  water: { label: "SHMN.PactTypeWater", icon: "fas fa-water" },
+  earth: { label: "SHMN.PactTypeEarth", icon: "fas fa-mountain" },
+  air: { label: "SHMN.PactTypeAir", icon: "fas fa-wind" },
+  lightning: { label: "SHMN.PactTypeLightning", icon: "fas fa-bolt" },
+  healing: { label: "SHMN.PactTypeHealing", icon: "fas fa-heart" },
+  emotion: { label: "SHMN.PactTypeEmotion", icon: "fas fa-masks-theater" },
+  blood: { label: "SHMN.PactTypeBlood", icon: "fas fa-tint" },
+  necrotic: { label: "SHMN.PactTypeNecrotic", icon: "fas fa-skull" },
+  sand: { label: "SHMN.PactTypeSand", icon: "fas fa-mound" },
+  time: { label: "SHMN.PactTypeTime", icon: "fas fa-clock" },
+  metal: { label: "SHMN.PactTypeMetal", icon: "fas fa-cubes" },
+  ice: { label: "SHMN.PactTypeIce", icon: "fas fa-snowflake" },
+  wildEnergy: { label: "SHMN.PactTypeWildEnergy", icon: "fas fa-explosion" },
+  celestial: { label: "SHMN.PactTypeCelestial", icon: "fas fa-sparkles" },
+  force: { label: "SHMN.PactTypeForce", icon: "fas fa-wave-square" },
+  lava: { label: "SHMN.PactTypeLava", icon: "fas fa-volcano" }
+};
+preLocalize("pactTypes", { key: "label", sort: true });
+
+/* -------------------------------------------- */
+
 /**
  * Classification types for item action types.
  * @enum {string}
@@ -56319,8 +56342,11 @@ class CharacterActorSheet extends BaseActorSheet {
     const Inventory = customElements.get(this.options.elements.inventory);
     const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
     const rankOrder = ["PASSIVE", "E", "D", "C", "B", "A", "S", "SS"];
-
     const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+
+    const pactTypeChoices = Object.fromEntries(
+      Object.entries(CONFIG.SHMN.pactTypes ?? {}).map(([key, data]) => [key, data.label])
+    );
 
     const buildRankSections = (spellList, pactId) => {
       const sections = [];
@@ -56331,7 +56357,7 @@ class CharacterActorSheet extends BaseActorSheet {
 
         sections.push({
           id: `${pactId || "unlinked"}-${rank}`,
-          label: rank === "PASSIVE" ? "Passivo" : `Rank ${rank}`,
+          label: rank === "PASSIVE" ? game.i18n.localize("SHMN.Passive") : `Rank ${rank}`,
           items: rankSpells,
           columns: [
             "school",
@@ -56358,10 +56384,24 @@ class CharacterActorSheet extends BaseActorSheet {
     const pactbook = pacts.map((pact, index) => {
       const pactSpells = spells.filter(spell => spell.system.pactId === pact.id);
 
+      const types = Array.isArray(pact.types) ? pact.types.slice(0, 3) : [];
+      while (types.length < 3) types.push("");
+
+      const selectedTypes = types
+        .filter(type => type && CONFIG.SHMN.pactTypes?.[type])
+        .map(type => ({
+          key: type,
+          label: game.i18n.localize(CONFIG.SHMN.pactTypes[type].label),
+          icon: CONFIG.SHMN.pactTypes[type].icon
+        }));
+
       return {
         ...pact,
         index,
         description: pact.description ?? "",
+        types,
+        typeChoices: pactTypeChoices,
+        selectedTypes,
         sections: buildRankSections(pactSpells, pact.id)
       };
     });
@@ -56390,30 +56430,37 @@ class CharacterActorSheet extends BaseActorSheet {
 
   /** @inheritDoc */
   _processFormData(event, form, formData) {
-    const submitData = super._processFormData(event, form, formData);
+  const submitData = super._processFormData(event, form, formData);
 
-    const pactUpdates = foundry.utils.getProperty(submitData, "flags.shmn.pactsData");
-    if (pactUpdates && (foundry.utils.getType(pactUpdates) === "Object")) {
-      const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+  const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+  const pactUpdates = foundry.utils.expandObject(formData.object).flags?.shmn?.pactsData ?? {};
 
-      const next = existing.map(pact => {
-        const update = pactUpdates[pact.id] ?? {};
-        return {
-          ...pact,
-          name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
-          description: update.description ?? pact.description ?? ""
-        };
-      });
+  const next = existing.map(pact => {
+    const update = pactUpdates[pact.id] ?? {};
 
-      foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+    const rawTypes = update.types ?? pact.types ?? [];
+    const normalizedTypes = Array.isArray(rawTypes) ? rawTypes : Object.values(rawTypes);
 
-      delete submitData.flags.shmn.pactsData;
-      if (Object.keys(submitData.flags.shmn).length === 0) delete submitData.flags.shmn;
-      if (Object.keys(submitData.flags ?? {}).length === 0) delete submitData.flags;
-    }
+    const cleanedTypes = normalizedTypes
+      .map(type => String(type ?? "").trim())
+      .filter((type, index, arr) => !type || arr.indexOf(type) === index)
+      .slice(0, 3);
 
-    return submitData;
-  }
+    while (cleanedTypes.length < 3) cleanedTypes.push("");
+
+    return {
+      ...pact,
+      name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
+      description: update.description ?? pact.description ?? "",
+      types: cleanedTypes
+    };
+  });
+
+  foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+  foundry.utils.setProperty(submitData, "flags.shmn.-=pactsData", null);
+
+  return submitData;
+}
 
   /* -------------------------------------------- */
 
@@ -56859,7 +56906,8 @@ class CharacterActorSheet extends BaseActorSheet {
       id: foundry.utils.randomID(),
       name: game.i18n.localize("SHMN.Pact"),
       img: "icons/svg/mystery-man.svg",
-      description: ""
+      description: "",
+      types: ["", "", ""]
     });
     await this.actor.setFlag("shmn", "pacts", pacts);
   }
@@ -61827,7 +61875,7 @@ class InventoryElement extends (foundry.applications.elements.AdoptableHTMLEleme
       width: 40,
       order: 600,
       priority: 800,
-      label: "SHMN.SpellHeader.Roll",
+      label: "  .Roll",
       template: "systems/shmn/templates/inventory/columns/roll.hbs"
     },
     school: {
