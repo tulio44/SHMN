@@ -1263,15 +1263,10 @@ function getHumanReadableAttributeLabel(attr, { actor, item } = {}) {
     label = game.i18n.format("SHMN.SkillPassiveScore", { skill: CONFIG.SHMN.skills[key].label });
   }
 
-  // Spell slots.
-  else if (attr.startsWith("spells.")) {
+  // Subenergies.
+  else if (attr.startsWith("subenergies.")) {
     const [, key] = attr.split(".");
-    if (!/spell\d+/.test(key)) label = `SHMN.SpellSlots${key.capitalize()}`;
-    else {
-      const plurals = new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
-      const level = Number(key.slice(5));
-      label = game.i18n.format(`SHMN.SpellSlotsN.${plurals.select(level)}`, { n: level });
-    }
+    label = `SHMN.Subenergy.${key}`;
   }
 
   // Currency
@@ -3440,40 +3435,6 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
   /* -------------------------------------------- */
 
   /**
-   * Prepare consumption updates for "Spell Slots" consumption type.
-   * @this {ConsumptionTargetData}
-   * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {ActivityUsageUpdates} updates     Updates to be performed.
-   * @throws ConsumptionError
-   */
-  static async consumeSpellSlots(config, updates) {
-    const levelNumber = Math.clamp(
-      this.resolveLevel({ config, rolls: updates.rolls }), 1, Object.keys(CONFIG.SHMN.spellLevels).length - 1
-    );
-    const keyPath = `system.spells.spell${levelNumber}.value`;
-    const cost = (await this.resolveCost({ config, delta: { keyPath }, rolls: updates.rolls })).total;
-
-    // Check to see if enough slots are available at the specified level
-    const levelData = this.actor.system.spells?.[`spell${levelNumber}`];
-    const newValue = (levelData?.value ?? 0) - cost;
-    let warningMessage;
-    if (!levelData?.max) warningMessage = "SHMN.CONSUMPTION.Warning.MissingSpellSlot";
-    else if ((cost > 0) && !levelData.value) warningMessage = "SHMN.CONSUMPTION.Warning.None";
-    else if (newValue < 0) warningMessage = "SHMN.CONSUMPTION.Warning.NotEnough";
-    if (warningMessage) {
-      const level = CONFIG.SHMN.spellLevels[levelNumber];
-      const type = game.i18n.format("SHMN.CONSUMPTION.Type.SpellSlots.Warning", { level });
-      throw new ConsumptionError(game.i18n.format(warningMessage, {
-        type, level, cost: formatNumber(cost), available: formatNumber(levelData.value)
-      }));
-    }
-
-    updates.actor[keyPath] = Math.max(0, newValue);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Calculate updates to activity or item uses.
    * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
    * @param {object} options
@@ -3676,35 +3637,6 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
   /* -------------------------------------------- */
 
   /**
-   * Create hint text indicating how much of this resource will be consumed/recovered.
-   * @this {ConsumptionTargetData}
-   * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {object} [options={}]
-   * @param {boolean} [options.consumed]       Is this consumption currently set to be consumed?
-   * @returns {ConsumptionLabels}
-   */
-  static consumptionLabelsSpellSlots(config, { consumed } = {}) {
-    const { cost, simplifiedCost, increaseKey, pluralRule } = this._resolveHintCost(config);
-    const levelNumber = Math.clamp(this.resolveLevel({ config }), 1, Object.keys(CONFIG.SHMN.spellLevels).length - 1);
-    const level = CONFIG.SHMN.spellLevels[levelNumber].toLowerCase();
-    const available = this.actor.system.spells?.[`spell${levelNumber}`]?.value ?? 0;
-    return {
-      label: game.i18n.localize(`SHMN.CONSUMPTION.Type.SpellSlots.Prompt${increaseKey}`),
-      hint: game.i18n.format(
-        `SHMN.CONSUMPTION.Type.SpellSlots.PromptHint${increaseKey}`,
-        {
-          cost,
-          slot: game.i18n.format(`SHMN.CONSUMPTION.Type.SpellSlot.${pluralRule}`, { level }),
-          available: formatNumber(available)
-        }
-      ),
-      warn: simplifiedCost > available
-    };
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Resolve the cost for the consumption hint.
    * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
    * @returns {{ cost: string, simplifiedCost: number, increaseKey: string, pluralRule: string }}
@@ -3738,17 +3670,33 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
    */
   static validAttributeTargets() {
     if (!this.actor) return [];
-    return TokenDocument.implementation.getConsumedAttributes(this.actor.type).map(attr => {
+
+    const base = TokenDocument.implementation.getConsumedAttributes(this.actor.type) ?? [];
+
+    const normal = base.map(attr => {
       let group;
       if (attr.startsWith("abilities.")) group = game.i18n.localize("SHMN.AbilityScorePl");
       else if (attr.startsWith("currency.")) group = game.i18n.localize("SHMN.Currency");
-      else if (attr.startsWith("spells.")) group = game.i18n.localize("SHMN.CONSUMPTION.Type.SpellSlots.Label");
       else if (attr.startsWith("attributes.movement.")) group = game.i18n.localize("SHMN.Speed");
       else if (attr.startsWith("attributes.senses.")) group = game.i18n.localize("SHMN.Senses");
       else if (attr.startsWith("attributes.actions.")) group = game.i18n.localize("SHMN.Vehicle");
       else if (attr.startsWith("resources.")) group = game.i18n.localize("SHMN.Resources");
-      return { group, value: attr, label: getHumanReadableAttributeLabel(attr, { actor: this.actor }) || attr };
+      else group = game.i18n.localize("SHMN.Attributes");
+
+      return {
+        group,
+        value: attr,
+        label: getHumanReadableAttributeLabel(attr, { actor: this.actor }) || attr
+      };
     });
+
+    const subenergies = Object.keys(this.actor.system.subenergies ?? {}).map(key => ({
+      group: game.i18n.localize("SHMN.Subenergies"),
+      value: `subenergies.${key}`,
+      label: getHumanReadableAttributeLabel(`subenergies.${key}`, { actor: this.actor }) || key
+    }));
+
+    return [...normal, ...subenergies];
   }
 
   /* -------------------------------------------- */
@@ -5027,7 +4975,6 @@ class ActivitySheet extends PseudoDocumentSheet {
         validTargets: showTextTarget ? null : target.validTargets
       };
     });
-    context.showConsumeSpellSlot = (this.activity.isSpell || this.activity.isRider) && (this.item.system.level !== 0);
     context.showScaling = !this.activity.isSpell || this.activity.isRider;
 
     // Uses recovery
@@ -7739,26 +7686,6 @@ function ActivityMixin(Base) {
         }
       }
 
-      // Handle spell slot consumption
-      else if (((config.consume === true) || config.consume.spellSlot)
-        && this.requiresSpellSlot && this.consumption.spellSlot) {
-        const spellcasting = CONFIG.SHMN.spellcasting[this.item.system.method];
-        const effectiveLevel = this.item.system.level + (config.scaling ?? 0);
-        const slot = config.spell?.slot ?? spellcasting?.getSpellSlotKey(effectiveLevel) ?? this.item.system.method;
-        const slotData = this.actor.system.spells?.[slot];
-        if (slotData) {
-          if (slotData.value) {
-            const newValue = Math.max(slotData.value - 1, 0);
-            foundry.utils.mergeObject(updates.actor, { [`system.spells.${slot}.value`]: newValue });
-          } else {
-            const err = new ConsumptionError(game.i18n.format("SHMN.SpellCastNoSlots", {
-              name: this.item.name, level: slotData.label
-            }));
-            errors.push(err);
-          }
-        }
-      }
-
       // Ensure concentration can be handled
       if (config.concentration?.begin) {
         const { effects } = this.actor.concentration;
@@ -9779,17 +9706,6 @@ class BaseActivityData extends foundry.abstract.DataModel {
    */
   get requiresConcentration() {
     return this.duration.concentration;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Does activating this activity consume a spell slot?
-   * @type {boolean}
-   */
-  get requiresSpellSlot() {
-    if (!this.isSpell || !this.actor?.system.spells) return false;
-    return this.canScale;
   }
 
   /* -------------------------------------------- */
@@ -22859,7 +22775,6 @@ class ForwardSheet extends ActivitySheet {
   /** @inheritDoc */
   async _prepareActivationContext(context, options) {
     context = await super._prepareActivationContext(context, options);
-    context.showConsumeSpellSlot = false;
     context.showScaling = true;
     return context;
   }
@@ -42696,13 +42611,6 @@ SHMN.activityConsumptionTypes = {
     consumptionLabels: ConsumptionTargetData.consumptionLabelsHitDice,
     validTargets: ConsumptionTargetData.validHitDiceTargets
   },
-  spellSlots: {
-    label: "SHMN.CONSUMPTION.Type.SpellSlots.Label",
-    consume: ConsumptionTargetData.consumeSpellSlots,
-    consumptionLabels: ConsumptionTargetData.consumptionLabelsSpellSlots,
-    scalingModes: [{ value: "level", label: "SHMN.CONSUMPTION.Scaling.SlotLevel" }],
-    validTargets: ConsumptionTargetData.validSpellSlotsTargets
-  },
   attribute: {
     label: "SHMN.CONSUMPTION.Type.Attribute.Label",
     consume: ConsumptionTargetData.consumeAttribute,
@@ -55735,6 +55643,7 @@ class CharacterActorSheet extends BaseActorSheet {
       deletePact: CharacterActorSheet.#deletePact,
       editPactSpell: CharacterActorSheet.#editPactSpell,
       deletePactSpell: CharacterActorSheet.#deletePactSpell,
+      toggleSubenergies: CharacterActorSheet.#toggleSubenergies,
       toggleDeathTray: CharacterActorSheet.#toggleDeathTray,
       toggleInspiration: CharacterActorSheet.#toggleInspiration,
       useFacility: CharacterActorSheet.#useFacility,
@@ -56240,6 +56149,13 @@ class CharacterActorSheet extends BaseActorSheet {
     const { attributes } = this.actor.system;
     context.portrait = await this._preparePortrait(context);
 
+    context.subenergies = Object.entries(this.actor.system.subenergies ?? {}).map(([id, value]) => ({
+      id,
+      value: value ?? 0,
+      label: `SHMN.Subenergy.${id}`,
+      inputName: `system.subenergies.${id}`
+    }));
+
     // Death Saves
     const plurals = new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
     context.death = {
@@ -56430,37 +56346,37 @@ class CharacterActorSheet extends BaseActorSheet {
 
   /** @inheritDoc */
   _processFormData(event, form, formData) {
-  const submitData = super._processFormData(event, form, formData);
+    const submitData = super._processFormData(event, form, formData);
 
-  const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
-  const pactUpdates = foundry.utils.expandObject(formData.object).flags?.shmn?.pactsData ?? {};
+    const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    const pactUpdates = foundry.utils.expandObject(formData.object).flags?.shmn?.pactsData ?? {};
 
-  const next = existing.map(pact => {
-    const update = pactUpdates[pact.id] ?? {};
+    const next = existing.map(pact => {
+      const update = pactUpdates[pact.id] ?? {};
 
-    const rawTypes = update.types ?? pact.types ?? [];
-    const normalizedTypes = Array.isArray(rawTypes) ? rawTypes : Object.values(rawTypes);
+      const rawTypes = update.types ?? pact.types ?? [];
+      const normalizedTypes = Array.isArray(rawTypes) ? rawTypes : Object.values(rawTypes);
 
-    const cleanedTypes = normalizedTypes
-      .map(type => String(type ?? "").trim())
-      .filter((type, index, arr) => !type || arr.indexOf(type) === index)
-      .slice(0, 3);
+      const cleanedTypes = normalizedTypes
+        .map(type => String(type ?? "").trim())
+        .filter((type, index, arr) => !type || arr.indexOf(type) === index)
+        .slice(0, 3);
 
-    while (cleanedTypes.length < 3) cleanedTypes.push("");
+      while (cleanedTypes.length < 3) cleanedTypes.push("");
 
-    return {
-      ...pact,
-      name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
-      description: update.description ?? pact.description ?? "",
-      types: cleanedTypes
-    };
-  });
+      return {
+        ...pact,
+        name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
+        description: update.description ?? pact.description ?? "",
+        types: cleanedTypes
+      };
+    });
 
-  foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
-  foundry.utils.setProperty(submitData, "flags.shmn.-=pactsData", null);
+    foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+    foundry.utils.setProperty(submitData, "flags.shmn.-=pactsData", null);
 
-  return submitData;
-}
+    return submitData;
+  }
 
   /* -------------------------------------------- */
 
@@ -56969,6 +56885,20 @@ class CharacterActorSheet extends BaseActorSheet {
     await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
+  /* -------------------------------------------- */
+
+  static async #toggleSubenergies(event, target) {
+    event.preventDefault();
+
+    const group = target.closest(".subenergy-group");
+    if (!group) return;
+
+    const willExpand = group.classList.contains("collapsed");
+
+    group.classList.toggle("collapsed", !willExpand);
+
+    await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
+  }
 
   /* -------------------------------------------- */
 
@@ -69340,6 +69270,25 @@ class CharacterData extends CreatureTemplate {
         }, { label: "SHMN.DeathSave" }),
         inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" })
       }, { label: "SHMN.Attributes" }),
+      subenergies: new SchemaField$j({
+        fire: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        water: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        earth: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        air: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        lightning: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        healing: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        emotion: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        blood: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        necrotic: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        sand: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        time: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        metal: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        ice: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        wild: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        celestial: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        force: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        lava: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 })
+      }, { label: "SHMN.Subenergies" }),
       bastion: new SchemaField$j({
         name: new StringField$n({ required: true }),
         description: new HTMLField$5()

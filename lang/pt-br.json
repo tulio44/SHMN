@@ -5939,6 +5939,25 @@
 "SHMN.PactTypeWildEnergy": "Energia Selvagem",
 "SHMN.PactTypeCelestial": "Celestial",
 "SHMN.PactTypeForce": "Força",
-"SHMN.PactTypeLava": "Lava"
+"SHMN.PactTypeLava": "Lava",
+
+"SHMN.Subenergies": "Subenergias",
+"SHMN.Subenergy.fire": "Fogo",
+"SHMN.Subenergy.water": "Água",
+"SHMN.Subenergy.earth": "Terra",
+"SHMN.Subenergy.air": "Ar",
+"SHMN.Subenergy.lightning": "Raio",
+"SHMN.Subenergy.healing": "Cura",
+"SHMN.Subenergy.emotion": "Emoção",
+"SHMN.Subenergy.blood": "Sangue",
+"SHMN.Subenergy.necrotic": "Necrótico",
+"SHMN.Subenergy.sand": "Areia",
+"SHMN.Subenergy.time": "Tempo",
+"SHMN.Subenergy.metal": "Metal",
+"SHMN.Subenergy.ice": "Gelo",
+"SHMN.Subenergy.wild": "Energia Selvagem",
+"SHMN.Subenergy.celestial": "Celestial",
+"SHMN.Subenergy.force": "Força",
+"SHMN.Subenergy.lava": "Lava"
 }
 

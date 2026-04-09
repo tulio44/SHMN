@@ -18600,4 +18600,245 @@ document-embed.spells ul li {
   display: none;
 }
 
-/*# sourceMappingURL=shmn.css.map */
+/* ---------------------------------- */
+/*  Subenergies Sidebar               */
+/* ---------------------------------- */
+
+.shmn2.sheet.actor.character .subenergy-group {
+  margin: 0 0 8px 0;
+  overflow: hidden;
+}
+
+.shmn2.sheet.actor.character .subenergy-header,
+.shmn2.sheet.actor.character .subenergy-header .label,
+.shmn2.sheet.actor.character .subenergy-header .collapse-icon {
+  box-shadow: none;
+  text-shadow: none;
+  filter: none;
+}
+
+.shmn2.sheet.actor.character .subenergy-header .collapse-icon {
+  font-size: var(--font-size-10);
+  color: var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.character .subenergy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--shmn-color-gold);
+  background: transparent;
+  border: 0;
+}
+
+.shmn2.sheet.actor.character .subenergy-header .label {
+  margin: 0;
+  color: var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list > .wrapper {
+  padding-bottom: 0;
+}
+
+.shmn2.sheet.actor.character .subenergy-list {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 220ms linear;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list {
+  grid-template-rows: 0fr;
+}
+
+.shmn2.sheet.actor.character .subenergy-list > .wrapper {
+  padding: 0 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  opacity: 1;
+  transition: opacity 110ms linear;
+}
+
+.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list > .wrapper {
+  opacity: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+}
+
+.shmn2.sheet.actor.character .subenergy-row + .subenergy-row {
+  margin-top: 6px;
+}
+
+/* visual praticamente igual ao hit dice */
+.shmn2.sheet.actor.character .subenergy-row {
+  --subenergy-accent: var(--shmn-color-hd-2);
+  --subenergy-gradient: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--subenergy-accent) 55%, black 45%) 0%,
+    var(--subenergy-accent) 100%
+  );
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 25px;
+  border: 1px solid var(--shmn-color-gold);
+  border-radius: 3px;
+  background: var(--meter-background);
+  box-shadow: inset 0 0 0 1px var(--shmn-highlight-10);
+  overflow: hidden;
+  font-size: var(--font-size-14);
+}
+
+.shmn2.sheet.actor.character .subenergy-row::before {
+  content: "";
+  position: absolute;
+  inset: 1px auto 1px 1px;
+  inline-size: calc(100% - 2px);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 1px var(--shmn-highlight-40);
+  background: var(--subenergy-gradient);
+  pointer-events: none;
+}
+
+.shmn2.sheet.actor.character .subenergy-row .name,
+.shmn2.sheet.actor.character .subenergy-input {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text-light-0);
+}
+
+.shmn2.sheet.actor.character .subenergy-row .name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-inline: 12px;
+  font-family: var(--shmn-font-roboto-condensed);
+  font-size: var(--font-size-14);
+  font-weight: bold;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--shmn-shadow-45);
+}
+
+.shmn2.sheet.actor.character .subenergy-input {
+  flex: 0 0 50px;
+  width: 50px;
+  min-width: 50px;
+  height: 100%;
+  margin: 0;
+  padding: 0 6px;
+  border: none;
+  border-left: 1px dashed var(--shmn-color-gold);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.20);
+  box-shadow: none;
+  text-align: center;
+  font-weight: bold;
+  color: var(--color-text-light-0);
+}
+
+.shmn2.sheet.actor.character .subenergy-input:hover,
+.shmn2.sheet.actor.character .subenergy-input:focus {
+  border: none;
+  border-left: 1px dashed var(--shmn-color-gold);
+  outline: none;
+  box-shadow: 0 0 8px var(--shmn-color-gold);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+/* cores */
+/* cores */
+.shmn2.sheet.actor.character .subenergy-fire {
+  --subenergy-accent: #d96c1f;
+  --subenergy-gradient: linear-gradient(to right, #7a2d08 0%, #d96c1f 58%, #e2a35f 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-water {
+  --subenergy-accent: #3d72c7;
+  --subenergy-gradient: linear-gradient(to right, #203f76 0%, #3d72c7 58%, #7fa6dc 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-earth {
+  --subenergy-accent: #8a5a2b;
+  --subenergy-gradient: linear-gradient(to right, #4e2f12 0%, #8a5a2b 58%, #b18455 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-air {
+  --subenergy-accent: #c4c8d0;
+  --subenergy-gradient: linear-gradient(to right, #7d848f 0%, #c4c8d0 58%, #e2e5ea 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-lightning {
+  --subenergy-accent: #7a56d1;
+  --subenergy-gradient: linear-gradient(to right, #41267a 0%, #7a56d1 58%, #ab90e6 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-healing {
+  --subenergy-accent: #67c88a;
+  --subenergy-gradient: linear-gradient(to right, #2f6e49 0%, #67c88a 58%, #9ad8af 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-emotion {
+  --subenergy-accent: #cf6ca0;
+  --subenergy-gradient: linear-gradient(to right, #7a375a 0%, #cf6ca0 58%, #dea0bf 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-blood {
+  --subenergy-accent: #8c1836;
+  --subenergy-gradient: linear-gradient(to right, #470716 0%, #8c1836 58%, #b14f66 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-necrotic {
+  --subenergy-accent: #2a2b31;
+  --subenergy-gradient: linear-gradient(to right, #0c0d10 0%, #2a2b31 58%, #555862 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-sand {
+  --subenergy-accent: #b79b5e;
+  --subenergy-gradient: linear-gradient(to right, #6d5930 0%, #b79b5e 58%, #d2bf92 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-time {
+  --subenergy-accent: #6f7f9c;
+  --subenergy-gradient: linear-gradient(to right, #3d4758 0%, #6f7f9c 58%, #9aa7bc 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-metal {
+  --subenergy-accent: #8f98a8;
+  --subenergy-gradient: linear-gradient(to right, #4f5764 0%, #8f98a8 58%, #bcc3cf 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-ice {
+  --subenergy-accent: #69b8d6;
+  --subenergy-gradient: linear-gradient(to right, #2f6176 0%, #69b8d6 58%, #9fd0e2 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-wild {
+  --subenergy-accent: #4d8a42;
+  --subenergy-gradient: linear-gradient(to right, #23411f 0%, #4d8a42 58%, #79ad71 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-celestial {
+  --subenergy-accent: #c9a61a;
+  --subenergy-gradient: linear-gradient(to right, #977324 0%, #c9a61a 56%, #f3dc7a 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-force {
+  --subenergy-accent: #4d63ff;
+  --subenergy-gradient: linear-gradient(to right, #1f2f9e 0%, #4d63ff 52%, #8ea2ff 100%);
+}
+
+.shmn2.sheet.actor.character .subenergy-lava {
+  --subenergy-accent: #ff4a2a;
+  --subenergy-gradient: linear-gradient(to right, #8f1e10 0%, #ff4a2a 54%, #ff9a52 100%);
+}
+/*# sourceMappingURL=shmn.css.map */  

@@ -191,6 +191,31 @@
                 {{/with}}
             </div>
 
+            {{!-- Subenergies --}}
+            {{#if subenergies}}
+            <div
+                class="subenergy-group collapsible {{#unless actor.flags.shmn.subenergiesExpanded}}collapsed{{/unless}}">
+                <button type="button" class="subenergy-header unbutton always-interactive"
+                    data-action="toggleSubenergies">
+                    <div class="label roboto-condensed-upper">
+                        <span>{{ localize "SHMN.Subenergies" }}</span>
+                    </div>
+                    <i class="fas fa-caret-down collapse-icon" inert></i>
+                </button>
+
+                <div class="subenergy-list collapsible-content">
+                    <div class="wrapper">
+                        {{#each subenergies}}
+                        <div class="subenergy-row subenergy-{{ id }}" data-subenergy="{{ id }}">
+                            <span class="name">{{ localize label }}</span>
+                            <input type="text" class="subenergy-input uninput always-interactive" name="{{ inputName }}"
+                                value="{{ value }}" data-dtype="Number" inputmode="numeric" pattern="[+=\\-]?\\d*">
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
             {{!-- Hit Dice --}}
             {{#with system.attributes.hd}}
             <div class="meter-group">
