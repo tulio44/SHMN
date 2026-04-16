@@ -1,0 +1,117 @@
+<section class="tab col-2 collective-combat {{ tab.cssClass }}" data-tab="{{ tab.id }}" data-group="{{ tab.group }}">
+
+    <div class="left">
+        <filigree-box class="cc-skills">
+            <h3>
+                <i class="fas fa-people-group" inert></i>
+                <span class="roboto-upper">{{ localize "SHMN.CollectiveCombatProficiencies" }}</span>
+            </h3>
+            <ul>
+                {{#each ccSkills}}
+                {{> ".skill-prof"
+                    key=key
+                    path=(concat "system.skills." key)
+                    config="SHMN.SkillConfigure"
+                    type="skill"
+                    hasPassive=true
+                    roll="skill-name"
+                }}
+                {{else}}
+                <li class="empty">{{ localize "SHMN.None" }}</li>
+                {{/each}}
+            </ul>
+        </filigree-box>
+    </div>
+
+    <div class="right">
+        <filigree-box class="cc-right-panel cc-barriers">
+            <h3>
+                <i class="fas fa-shield-halved" inert></i>
+                <span class="roboto-upper">{{ localize "SHMN.Barriers" }}</span>
+            </h3>
+
+            <div class="cc-barriers-list">
+                {{#each barriers}}
+                {{> ".barrier-row" this}}
+                {{else}}
+                <div class="empty">{{ localize "SHMN.None" }}</div>
+                {{/each}}
+            </div>
+        </filigree-box>
+    </div>
+</section>
+
+{{#*inline ".skill-prof"}}
+<li data-key="{{ key }}" {{~#if reference}} data-reference-tooltip="{{ reference }}" {{/if}}>
+    <proficiency-cycle
+        type="skill"
+        name="{{ path }}.value"
+        data-tooltip="{{ hover }}"
+        value="{{#if @root.editable}}{{ source.value }}{{else}}{{ value }}{{/if}}"
+        aria-label="{{ localize hover }}"
+        {{disabled (not @root.editable)}}>
+    </proficiency-cycle>
+
+    {{#if @root.editable}}
+    <select name="{{ path }}.ability" class="ability roboto-upper unselect">
+        {{ selectOptions @root.CONFIG.abilities selected=baseAbility labelAttr="abbreviation" }}
+    </select>
+    {{else}}
+    <div class="ability roboto-upper">{{ abbreviation }}</div>
+    {{/if}}
+
+    <a class="draggable name {{ @root.rollableClass }} {{ roll }}" data-action="roll" data-type="{{ type }}">
+        {{ label }}
+    </a>
+
+    <div class="bonus">{{ shmn-formatModifier total }}</div>
+
+    {{#if @root.editable}}
+    <button
+        type="button"
+        class="config-button unbutton"
+        data-action="showConfiguration"
+        data-config="{{ type }}"
+        data-tooltip="{{ config }}"
+        aria-label="{{ localize config }}">
+        <i class="fas fa-cog" inert></i>
+    </button>
+    {{else if hasPassive}}
+    <div class="passive">{{ passive }}</div>
+    {{/if}}
+</li>
+{{/inline}}
+
+{{#*inline ".barrier-row"}}
+<div class="cc-barrier-row" data-barrier="{{ key }}">
+    <div class="cc-barrier-main">
+        <div class="cc-barrier-badge">{{ letter }}</div>
+
+        <div class="cc-barrier-info">
+    <button
+        type="button"
+        class="cc-barrier-title cc-barrier-roll-trigger unbutton always-interactive roboto-upper"
+        data-action="rollBarrier"
+        data-barrier="{{ key }}"
+        aria-label="{{ localize "SHMN.BarrierRoll" }}">
+        {{ label }}
+    </button>
+    <div class="cc-barrier-formula">{{ formula }}</div>
+</div>
+    </div>
+
+    <div class="cc-barrier-pips">
+        {{#each pips}}
+        <button
+            type="button"
+            class="cc-barrier-pip always-interactive {{#if filled}}filled{{/if}}"
+            data-action="setBarrier"
+            data-barrier="{{ ../key }}"
+            data-value="{{ value }}"
+            aria-pressed="{{ pressed }}">
+            {{ value }}
+        </button>
+        {{/each}}
+    </div>
+</div>
+{{/inline}}

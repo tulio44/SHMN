@@ -55644,6 +55644,8 @@ class CharacterActorSheet extends BaseActorSheet {
       editPactSpell: CharacterActorSheet.#editPactSpell,
       deletePactSpell: CharacterActorSheet.#deletePactSpell,
       toggleSubenergies: CharacterActorSheet.#toggleSubenergies,
+      setBarrier: CharacterActorSheet.#setBarrier,
+      rollBarrier: CharacterActorSheet.#rollBarrier,
       toggleDeathTray: CharacterActorSheet.#toggleDeathTray,
       toggleInspiration: CharacterActorSheet.#toggleInspiration,
       useFacility: CharacterActorSheet.#useFacility,
@@ -55709,6 +55711,11 @@ class CharacterActorSheet extends BaseActorSheet {
       template: "systems/shmn/templates/actors/tabs/character-bastion.hbs",
       scrollable: [""]
     },
+    collectiveCombat: {
+      container: { classes: ["tab-body"], id: "tabs" },
+      template: "systems/shmn/templates/actors/tabs/actor-collective-combat.hbs",
+      scrollable: [""]
+    },
     specialTraits: {
       classes: ["flexcol"],
       container: { classes: ["tab-body"], id: "tabs" },
@@ -55749,6 +55756,7 @@ class CharacterActorSheet extends BaseActorSheet {
     { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
     { tab: "features", label: "SHMN.Features", icon: "fas fa-list" },
     { tab: "spells", label: "TYPES.Item.spellPl", icon: "fas fa-handshake" },
+    { tab: "collectiveCombat", label: "SHMN.CollectiveCombat", icon: "fa-solid fa-people-group" },
     { tab: "effects", label: "SHMN.Effects", icon: "fas fa-bolt" },
     { tab: "biography", label: "SHMN.Biography", icon: "fas fa-feather" },
     { tab: "bastion", label: "SHMN.Bastion.Label", icon: "fas fa-chess-rook" },
@@ -55819,6 +55827,7 @@ class CharacterActorSheet extends BaseActorSheet {
       case "abilityScores": return this._prepareAbilityScoresContext(context, options);
       case "bastion": return this._prepareBastionContext(context, options);
       case "biography": return this._prepareBiographyContext(context, options);
+      case "collectiveCombat": return this._prepareCollectiveCombatContext(context, options);
       case "details": return this._prepareDetailsContext(context, options);
       case "effects": return this._prepareEffectsContext(context, options);
       case "features": return this._prepareFeaturesContext(context, options);
@@ -55926,6 +55935,38 @@ class CharacterActorSheet extends BaseActorSheet {
         name, label: field.label,
         value: foundry.utils.getProperty(this.actor, name) ?? "",
         source: foundry.utils.getProperty(this.actor._source, name) ?? ""
+      };
+    });
+
+    return context;
+  }
+
+  /* -------------------------------------------- */
+
+  async _prepareCollectiveCombatContext(context, options) {
+    context = await this._prepareDetailsContext(context, options);
+
+    const letters = ["A", "B", "C", "D", "E", "F", "G"];
+    const keys = ["a", "b", "c", "d", "e", "f", "g"];
+    const barriersData = this.actor.system.attributes.collectiveCombat?.barriers ?? {};
+
+    context.barriers = keys.map((key, index) => {
+      const value = Number(barriersData[key]?.value ?? 0);
+
+      return {
+        key,
+        letter: letters[index],
+        label: game.i18n.localize(`SHMN.Barrier${letters[index]}`),
+        value,
+        formula: `1d20 + ${value}`,
+        pips: Array.from({ length: 10 }, (_, i) => {
+          const pipValue = i + 1;
+          return {
+            value: pipValue,
+            filled: pipValue <= value,
+            pressed: pipValue <= value ? "true" : "false"
+          };
+        })
       };
     });
 
@@ -56898,6 +56939,117 @@ class CharacterActorSheet extends BaseActorSheet {
     group.classList.toggle("collapsed", !willExpand);
 
     await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
+  }
+
+  /* -------------------------------------------- */
+
+  static async #setBarrier(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = target.closest("[data-action='setBarrier']");
+    if (!button) return;
+
+    const barrierKey = button.dataset.barrier;
+    const clickedValue = Number(button.dataset.value);
+
+    if (!barrierKey || !Number.isFinite(clickedValue)) return;
+
+    const propertyPath = `attributes.collectiveCombat.barriers.${barrierKey}.value`;
+    const documentPath = `system.${propertyPath}`;
+
+    const currentValue = Number(
+      foundry.utils.getProperty(this.actor.system, propertyPath) ?? 0
+    );
+
+    let nextValue = clickedValue;
+    if (clickedValue === currentValue) nextValue = Math.max(0, clickedValue - 1);
+
+    console.log("ANTES", {
+      currentPrepared: foundry.utils.getProperty(this.actor.system, propertyPath),
+      currentSource: foundry.utils.getProperty(this.actor._source, documentPath),
+      nextValue,
+      documentPath
+    });
+
+    const updated = await this.actor.update({
+      [documentPath]: nextValue
+    });
+
+    console.log("DEPOIS", {
+      updatedPrepared: foundry.utils.getProperty(updated.system, propertyPath),
+      updatedSource: foundry.utils.getProperty(updated._source, documentPath),
+      actorPrepared: foundry.utils.getProperty(this.actor.system, propertyPath),
+      actorSource: foundry.utils.getProperty(this.actor._source, documentPath)
+    });
+
+    this.render({ force: true });
+  }
+
+  /* -------------------------------------------- */
+
+  static async #rollBarrier(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = target.closest("[data-action='rollBarrier']");
+    if (!button) return;
+
+    const { barrier } = button.dataset;
+    if (!barrier) return;
+
+    const path = `attributes.collectiveCombat.barriers.${barrier}.value`;
+    const value = Number(foundry.utils.getProperty(this.actor.system, path) ?? 0);
+    const barrierLabel = game.i18n.localize(`SHMN.Barrier${barrier.toUpperCase()}`);
+    const flavor = `${game.i18n.localize("SHMN.BarrierRoll")}: ${barrierLabel}`;
+
+    const rollConfig = {
+      event,
+      hookNames: ["barrier", "d20Test"],
+      subject: this.actor,
+      rolls: [
+        CONFIG.Dice.D20Roll.mergeConfigs({
+          parts: [String(value)],
+          data: this.actor.getRollData(),
+          options: {}
+        }, {})
+      ]
+    };
+
+    const dialogConfig = {
+      applicationClass: CONFIG.Dice.D20Roll.DefaultConfigurationDialog,
+      options: {
+        window: {
+          title: flavor,
+          subtitle: this.actor.name
+        }
+      }
+    };
+
+    const messageConfig = {
+      create: true,
+      data: {
+        flags: {
+          shmn: {
+            messageType: "roll",
+            roll: {
+              type: "barrier",
+              barrier
+            }
+          }
+        },
+        flavor,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor })
+      }
+    };
+
+    const rolls = await CONFIG.Dice.D20Roll.build(rollConfig, dialogConfig, messageConfig);
+    if (!rolls?.length) return null;
+
+    Hooks.callAll("shmn.rollBarrier", rolls, { barrier, subject: this.actor });
+    Hooks.callAll("shmn.rollBarrierV2", rolls, { barrier, subject: this.actor });
+
+    return rolls;
   }
 
   /* -------------------------------------------- */
@@ -58062,7 +58214,9 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   _prepareMemberSkills(actor, context) {
-    context.skills = Object.fromEntries(Object.entries(actor.system.skills ?? {}).map(([key, skill]) => {
+    const ccKeys = ["occ", "dcc", "ccc", "scc"];
+
+    const allSkills = Object.fromEntries(Object.entries(actor.system.skills ?? {}).map(([key, skill]) => {
       const { ability, passive, total } = skill;
       const css = [actor.isOwner ? "rollable" : "", "skill"].filterJoin(" ");
       const label = game.i18n.format(actor.isOwner ? "SHMN.SkillRoll" : "SHMN.SkillTitle", {
@@ -58071,8 +58225,15 @@ class GroupActorSheet extends MultiActorSheet {
       });
       return [key, { css, label, passive, total }];
     }));
-  }
 
+    context.skills = {};
+    context.ccSkills = {};
+
+    for (const [key, skill] of Object.entries(allSkills)) {
+      if (ccKeys.includes(key)) context.ccSkills[key] = skill;
+      else context.skills[key] = skill;
+    }
+  }
   /* -------------------------------------------- */
 
   /**
@@ -69268,8 +69429,36 @@ class CharacterData extends CreatureTemplate {
             save: new FormulaField({ required: true, label: "SHMN.DeathSaveBonus" })
           })
         }, { label: "SHMN.DeathSave" }),
-        inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" })
+        inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" }),
+
+        collectiveCombat: new SchemaField$j({
+          barriers: new SchemaField$j({
+            a: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierA" }),
+            b: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierB" }),
+            c: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierC" }),
+            d: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierD" }),
+            e: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierE" }),
+            f: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierF" }),
+            g: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierG" })
+          }, { label: "SHMN.Barriers" })
+        }, { label: "SHMN.CollectiveCombat" })
+
       }, { label: "SHMN.Attributes" }),
+
       subenergies: new SchemaField$j({
         fire: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
         water: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
@@ -69289,10 +69478,12 @@ class CharacterData extends CreatureTemplate {
         force: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
         lava: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 })
       }, { label: "SHMN.Subenergies" }),
+
       bastion: new SchemaField$j({
         name: new StringField$n({ required: true }),
         description: new HTMLField$5()
       }),
+
       details: new SchemaField$j({
         ...DetailsField.common,
         ...DetailsField.creature,
@@ -69316,6 +69507,7 @@ class CharacterData extends CreatureTemplate {
         age: new StringField$n({ label: "SHMN.Age" }),
         weight: new StringField$n({ label: "SHMN.Weight" })
       }, { label: "SHMN.Details" }),
+
       traits: new SchemaField$j({
         ...TraitsField.common,
         ...TraitsField.creature,
@@ -69327,11 +69519,13 @@ class CharacterData extends CreatureTemplate {
         }, { label: "SHMN.TraitWeaponProf" }),
         armorProf: new SimpleTraitField({}, { label: "SHMN.TraitArmorProf" })
       }, { label: "SHMN.Traits" }),
+
       resources: new SchemaField$j({
         primary: makeResourceField({ label: "SHMN.ResourcePrimary" }),
         secondary: makeResourceField({ label: "SHMN.ResourceSecondary" }),
         tertiary: makeResourceField({ label: "SHMN.ResourceTertiary" })
       }, { label: "SHMN.Resources" }),
+
       favorites: new ArrayField$9(new SchemaField$j({
         type: new StringField$n({ required: true, blank: false }),
         id: new StringField$n({ required: true, blank: false }),

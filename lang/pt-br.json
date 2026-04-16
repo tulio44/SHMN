@@ -5958,6 +5958,19 @@
 "SHMN.Subenergy.wild": "Energia Selvagem",
 "SHMN.Subenergy.celestial": "Celestial",
 "SHMN.Subenergy.force": "Força",
-"SHMN.Subenergy.lava": "Lava"
+"SHMN.Subenergy.lava": "Lava",
+
+
+"SHMN.CollectiveCombat": "Combate Coletivo",
+"SHMN.CollectiveCombatProficiencies": "Proficiências de Combate Coletivo",
+"SHMN.Barriers": "Barreiras",
+"SHMN.BarrierA": "Barreira A",
+"SHMN.BarrierB": "Barreira B",
+"SHMN.BarrierC": "Barreira C",
+"SHMN.BarrierD": "Barreira D",
+"SHMN.BarrierE": "Barreira E",
+"SHMN.BarrierF": "Barreira F",
+"SHMN.BarrierG": "Barreira G",
+"SHMN.BarrierRoll": "Rolar Barreira"
 }
 

@@ -206,7 +206,7 @@
                 <div class="subenergy-list collapsible-content">
                     <div class="wrapper">
                         {{#each subenergies}}
-                        <div class="subenergy-row subenergy-{{ id }}" data-subenergy="{{ id }}">
+                        <div class="subenergy-row subenergy-{{ id }} {{#unless value}}depleted{{/unless}}" data-subenergy="{{ id }}">
                             <span class="name">{{ localize label }}</span>
                             <input type="text" class="subenergy-input uninput always-interactive" name="{{ inputName }}"
                                 value="{{ value }}" data-dtype="Number" inputmode="numeric" pattern="[+=\\-]?\\d*">

@@ -18641,7 +18641,7 @@ document-embed.spells ul li {
   color: var(--shmn-color-gold);
 }
 
-.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list > .wrapper {
+.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list>.wrapper {
   padding-bottom: 0;
 }
 
@@ -18657,7 +18657,7 @@ document-embed.spells ul li {
   grid-template-rows: 0fr;
 }
 
-.shmn2.sheet.actor.character .subenergy-list > .wrapper {
+.shmn2.sheet.actor.character .subenergy-list>.wrapper {
   padding: 0 10px 10px 10px;
   display: flex;
   flex-direction: column;
@@ -18667,24 +18667,22 @@ document-embed.spells ul li {
   transition: opacity 110ms linear;
 }
 
-.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list > .wrapper {
+.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list>.wrapper {
   opacity: 0;
   padding-bottom: 0;
   pointer-events: none;
 }
 
-.shmn2.sheet.actor.character .subenergy-row + .subenergy-row {
+.shmn2.sheet.actor.character .subenergy-row+.subenergy-row {
   margin-top: 6px;
 }
 
 /* visual praticamente igual ao hit dice */
 .shmn2.sheet.actor.character .subenergy-row {
   --subenergy-accent: var(--shmn-color-hd-2);
-  --subenergy-gradient: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--subenergy-accent) 55%, black 45%) 0%,
-    var(--subenergy-accent) 100%
-  );
+  --subenergy-gradient: linear-gradient(to right,
+      color-mix(in srgb, var(--subenergy-accent) 55%, black 45%) 0%,
+      var(--subenergy-accent) 100%);
 
   position: relative;
   display: flex;
@@ -18819,7 +18817,7 @@ document-embed.spells ul li {
 
 .shmn2.sheet.actor.character .subenergy-ice {
   --subenergy-accent: #69b8d6;
-  --subenergy-gradient: linear-gradient(to right, #2f6176 0%, #69b8d6 58%, #9fd0e2 100%);
+  --subenergy-gradient: linear-gradient(to right, #3f87a7 0%, #69b8d6 58%, #9fd0e2 100%);
 }
 
 .shmn2.sheet.actor.character .subenergy-wild {
@@ -18841,4 +18839,201 @@ document-embed.spells ul li {
   --subenergy-accent: #ff4a2a;
   --subenergy-gradient: linear-gradient(to right, #8f1e10 0%, #ff4a2a 54%, #ff9a52 100%);
 }
-/*# sourceMappingURL=shmn.css.map */  
+
+.shmn2.sheet.actor.character .subenergy-row.depleted {
+  --subenergy-accent: #5e5e5e;
+  --subenergy-gradient: linear-gradient(to right, #353535 0%, #5e5e5e 58%, rgb(80, 80, 80) 100%);
+  opacity: 0.82;
+}
+
+.shmn2.sheet.actor.character .subenergy-row.depleted::before {
+  opacity: 0.95;
+}
+
+.shmn2.sheet.actor.character .subenergy-row.depleted .name,
+.shmn2.sheet.actor.character .subenergy-row.depleted .subenergy-input {
+  color: #e2e2e2;
+  text-shadow: none;
+}
+
+.shmn2.sheet.actor.character .subenergy-row.depleted .subenergy-input {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.shmn2.sheet.actor.character .sheet-body .cc-skills>ul {
+  list-style: none;
+  padding: 0 1rem 0.75rem;
+  margin: 0;
+}
+
+.shmn2.sheet.actor.character .sheet-body .cc-skills>ul>li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.375rem;
+  border-bottom: var(--shmn-border-dotted);
+}
+
+.shmn2.sheet.actor.character .sheet-body .cc-skills>ul>li:last-child {
+  border: none;
+}
+
+.shmn2.sheet.actor.character .sheet-body .cc-skills>ul>li .config-button {
+  font-size: var(--font-size-11);
+  color: var(--color-text-tertiary);
+  width: 20px;
+  text-align: center;
+}
+
+/* ---------- barreiras ---------- */
+
+.shmn2.sheet.actor.character .collective-combat .cc-right-panel.cc-barriers {
+  padding-bottom: 0.75rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barriers-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 1rem 0.75rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-row {
+  margin: 0;
+  padding: 0.625rem 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-row + .cc-barrier-row {
+  border-top: var(--shmn-border-separator-faint);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-main {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-badge {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--shmn-color-gold);
+  background: linear-gradient(to bottom, var(--shmn-card-header-1), var(--shmn-card-header-2));
+  color: var(--color-text-light-0);
+  font-family: var(--shmn-font-roboto-slab);
+  font-size: var(--font-size-16);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-title {
+  line-height: 1;
+  font-size: var(--font-size-11);
+  color: var(--color-text-primary);
+  font-family: var(--shmn-font-roboto-condensed);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-title:hover,
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-title:focus-visible {
+  text-shadow: 0 0 6px var(--color-shadow-primary);
+  outline: none;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-formula {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-10);
+  margin: 0;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-roll {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--color-text-tertiary);
+  border-radius: 4px;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-roll:hover,
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-roll:focus-visible {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 6px var(--color-shadow-primary);
+  box-shadow: none;
+  outline: none;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pips {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0.2rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip {
+  width: 100%;
+  max-width: 14px;
+  aspect-ratio: 1;
+  justify-self: center;
+  border-radius: 999px;
+  border: 1px solid var(--shmn-color-gold);
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip:hover {
+  background: var(--shmn-background-5);
+  transform: scale(1.08);
+  box-shadow: 0 0 4px var(--shmn-shadow-15);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip:focus,
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--shmn-shadow-15);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip.filled {
+  border-color: var(--shmn-color-gold);
+  background: linear-gradient(to bottom, var(--shmn-card-header-1), var(--shmn-card-header-2));
+  box-shadow: inset 0 1px 0 var(--shmn-highlight-10);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-barrier-pip.filled:hover {
+  box-shadow:
+    inset 0 1px 0 var(--shmn-highlight-10),
+    0 0 4px var(--shmn-shadow-15);
+}
+
+.shmn2.sheet.actor.character .collective-combat .empty {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-11);
+  font-style: italic;
+  padding: 0.25rem 0;
+}
