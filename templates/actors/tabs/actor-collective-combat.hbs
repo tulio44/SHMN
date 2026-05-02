@@ -1,6 +1,38 @@
 <section class="tab col-2 collective-combat {{ tab.cssClass }}" data-tab="{{ tab.id }}" data-group="{{ tab.group }}">
 
     <div class="left">
+        <figure class="cc-team-image {{#unless collectiveCombatTeam.hasImage}}empty{{/unless}}">
+            <img
+                src="{{ collectiveCombatTeam.img }}"
+                alt="{{ collectiveCombatTeam.label }}"
+                {{#if editable}}
+                data-action="editCollectiveCombatImage"
+                data-tooltip="SHMN.CollectiveCombatTeamImageEdit"
+                {{else}}
+                data-action="showArtwork"
+                {{/if}}>
+        </figure>
+
+        <div class="cc-team-details">
+            {{#if editable}}
+            <input
+                type="text"
+                class="cc-team-name uninput"
+                name="system.attributes.collectiveCombat.name"
+                value="{{ collectiveCombatTeam.name }}"
+                placeholder="{{ localize "SHMN.CollectiveCombatTeamName" }}">
+            <input
+                type="text"
+                class="cc-team-position uninput roboto-upper"
+                name="system.attributes.collectiveCombat.position"
+                value="{{ collectiveCombatTeam.position }}"
+                placeholder="{{ localize "SHMN.CollectiveCombatTeamPosition" }}">
+            {{else}}
+            <div class="cc-team-name">{{#if collectiveCombatTeam.name}}{{ collectiveCombatTeam.name }}{{else}}{{ localize "SHMN.CollectiveCombatTeamName" }}{{/if}}</div>
+            <div class="cc-team-position roboto-upper">{{#if collectiveCombatTeam.position}}{{ collectiveCombatTeam.position }}{{else}}{{ localize "SHMN.CollectiveCombatTeamPosition" }}{{/if}}</div>
+            {{/if}}
+        </div>
+
         <filigree-box class="cc-skills">
             <h3>
                 <i class="fas fa-people-group" inert></i>
@@ -88,30 +120,28 @@
         <div class="cc-barrier-badge">{{ letter }}</div>
 
         <div class="cc-barrier-info">
-    <button
-        type="button"
-        class="cc-barrier-title cc-barrier-roll-trigger unbutton always-interactive roboto-upper"
-        data-action="rollBarrier"
-        data-barrier="{{ key }}"
-        aria-label="{{ localize "SHMN.BarrierRoll" }}">
-        {{ label }}
-    </button>
-    <div class="cc-barrier-formula">{{ formula }}</div>
-</div>
-    </div>
+            <button
+                type="button"
+                class="cc-barrier-title cc-barrier-roll-trigger unbutton always-interactive roboto-upper"
+                data-action="rollBarrier"
+                data-barrier="{{ key }}"
+                aria-label="{{ localize "SHMN.BarrierRoll" }}"><span class="cc-barrier-title-text">{{ label }}</span></button>
+            <div class="cc-barrier-formula">{{ formula }}</div>
 
-    <div class="cc-barrier-pips">
-        {{#each pips}}
-        <button
-            type="button"
-            class="cc-barrier-pip always-interactive {{#if filled}}filled{{/if}}"
-            data-action="setBarrier"
-            data-barrier="{{ ../key }}"
-            data-value="{{ value }}"
-            aria-pressed="{{ pressed }}">
-            {{ value }}
-        </button>
-        {{/each}}
+            <div class="cc-barrier-pips pips">
+                {{#each pips}}
+                <button
+                    type="button"
+                    class="cc-barrier-pip pip always-interactive {{#if filled}}filled{{/if}}"
+                    data-action="setBarrier"
+                    data-barrier="{{ ../key }}"
+                    data-value="{{ value }}"
+                    aria-pressed="{{ pressed }}">
+                    {{ value }}
+                </button>
+                {{/each}}
+            </div>
+        </div>
     </div>
 </div>
 {{/inline}}

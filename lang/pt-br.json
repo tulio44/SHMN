@@ -960,7 +960,7 @@
   "NoDestinations": "Nenhum Destino Disponível",
   "NoPrimaryParty": "Nenhum grupo principal definido; exibindo personagens atribuídos a jogadores em vez disso.",
   "NotGMError": "O comando /award está disponível apenas para Mestres.",
-  "UnrecognizedWarning": "Não foi possível interpretar {commands}. O comando /award deve ser usado com valores de XP e moedas, como '/award 10gp 50xp'."
+  "UnrecognizedWarning": "Não foi possível interpretar {commands}. O comando /award deve ser usado com valores de XP e moedas, como '/award 10usd 50xp'."
 },
 "SHMN.Background": "Antecedente",
 "SHMN.BackgroundAdd": "Adicionar Antecedente",
@@ -1671,7 +1671,7 @@
 "SHMN.ConsumeTitle": "Consumo de Recurso",
 "SHMN.ConsumeAmount": "Quantidade Consumida",
 "SHMN.ConsumeHint": {
-  "Attribute": "Atributo a consumir (ex.: currency.gp)",
+  "Attribute": "Atributo a consumir (ex.: currency.usd)",
   "Item": "UUID do alvo no compêndio"
 },
 "SHMN.ConsumeTarget": "Alvo de Consumo",
@@ -1852,6 +1852,15 @@
       "PromptHintIncrease": "Aumente <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}).",
       "Warning": "quantidade de {attribute}"
     },
+    "RestAttribute": {
+      "Label": "Atributo (Descanso Curto/Longo)",
+      "NonEmbeddedHint": "Caminho do atributo a ser consumido e recuperado em descanso curto ou longo (ex.: resources.primary.value).",
+      "PromptDecrease": "Consumir Atributo de Descanso?",
+      "PromptIncrease": "Restaurar Atributo de Descanso?",
+      "PromptHintDecrease": "Reduza <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}); recupera em descanso curto ou longo.",
+      "PromptHintIncrease": "Aumente <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}); recupera em descanso curto ou longo.",
+      "Warning": "quantidade de {attribute}"
+    },
     "HitDice": {
       "Label": "Dados de Vida",
       "PromptDecrease": "Consumir Dado de Vida?",
@@ -1919,6 +1928,7 @@
 "SHMN.CoverTotal": "Total",
 "SHMN.Cost": "Custo",
 "SHMN.CostGP": "Custo (PO)",
+"SHMN.CostUSD": "Custo (USD)",
 "SHMN.CreatureAberration": "Aberração",
 "SHMN.CreatureAberrationPl": "Aberrações",
 "SHMN.CreatureBeast": "Besta",
@@ -1962,16 +1972,24 @@
 "SHMN.PowerfulCritical": "Crítico Poderoso",
 "SHMN.CRLabel": "ND {cr}",
 "SHMN.Currency": "Moeda",
+"SHMN.CurrencyAbbrBRL": "BRL",
 "SHMN.CurrencyAbbrCP": "pc",
+"SHMN.CurrencyAbbrEUR": "EUR",
 "SHMN.CurrencyAbbrEP": "pe",
+"SHMN.CurrencyAbbrGBP": "GBP",
 "SHMN.CurrencyAbbrGP": "po",
 "SHMN.CurrencyAbbrPP": "pp",
 "SHMN.CurrencyAbbrSP": "pp",
+"SHMN.CurrencyAbbrUSD": "USD",
+"SHMN.CurrencyBRL": "Real Brasileiro",
 "SHMN.CurrencyCP": "Cobre",
+"SHMN.CurrencyEUR": "Euro",
 "SHMN.CurrencyEP": "Electrum",
+"SHMN.CurrencyGBP": "Libra Esterlina",
 "SHMN.CurrencyGP": "Ouro",
 "SHMN.CurrencyPP": "Platina",
 "SHMN.CurrencySP": "Prata",
+"SHMN.CurrencyUSD": "Dólar Americano",
 "SHMN.CurrencyManager": {
   "Title": "Gerenciar Moeda",
   "Convert": {
@@ -5971,6 +5989,10 @@
 "SHMN.BarrierE": "Barreira E",
 "SHMN.BarrierF": "Barreira F",
 "SHMN.BarrierG": "Barreira G",
-"SHMN.BarrierRoll": "Rolar Barreira"
+"SHMN.BarrierRoll": "Rolar Barreira",
+"SHMN.CollectiveCombatTeamImage": "Imagem do Time",
+"SHMN.CollectiveCombatTeamImageEdit": "Alterar imagem do time",
+"SHMN.CollectiveCombatTeamName": "Nome do Time",
+"SHMN.CollectiveCombatTeamPosition": "Posição"
 }
 

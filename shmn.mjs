@@ -3271,7 +3271,7 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
    * Prepare consumption updates for "Attribute" consumption type.
    * @this {ConsumptionTargetData}
    * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {ActivityUsageUpdates} updates     Updates to be performed.
+     * @param {ActivityUsageUpdates} updates     Updates to be performed.
    * @throws ConsumptionError
    */
   static async consumeAttribute(config, updates) {
@@ -17678,7 +17678,7 @@ class StartingEquipmentTemplate extends SystemDataModel$1 {
       || (!this.source.rules && (game.settings.get("shmn", "rulesVersion") === "modern"));
     if (modernStyle) {
       const entries = topLevel[0].type === "OR" ? topLevel[0].children : topLevel;
-      if (this.wealth) entries.push(new EquipmentEntryData({ type: "currency", key: "gp", count: this.wealth }));
+      if (this.wealth) entries.push(new EquipmentEntryData({ type: "currency", key: "usd", count: this.wealth }));
       if (entries.length > 1) {
         const usedPrefixes = [];
         const choices = EquipmentEntryData.prefixOrEntries(
@@ -18574,7 +18574,7 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
           required: true, nullable: false, initial: 0, min: 0, label: "SHMN.Price"
         }),
         denomination: new StringField$Z({
-          required: true, blank: false, initial: "gp", label: "SHMN.Currency"
+          required: true, blank: false, initial: "usd", label: "SHMN.Currency"
         })
       }, { label: "SHMN.Price" }),
       rarity: new StringField$Z({ required: true, blank: true, label: "SHMN.Rarity" })
@@ -18683,7 +18683,7 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
     if (!("price" in source) || foundry.utils.getType(source.price) === "Object") return;
     source.price = {
       value: Number.isNumeric(source.price) ? Number(source.price) : 0,
-      denomination: "gp"
+      denomination: "usd"
     };
   }
 
@@ -18722,12 +18722,12 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
    * Prepare physical item properties.
    */
   preparePhysicalData() {
-    if (!("gp" in CONFIG.SHMN.currencies)) return;
+    if (!("usd" in CONFIG.SHMN.currencies)) return;
     const { value, denomination } = this.price;
     const { conversion } = CONFIG.SHMN.currencies[denomination] ?? {};
-    const { gp } = CONFIG.SHMN.currencies;
+    const { usd } = CONFIG.SHMN.currencies;
     if (conversion) {
-      const multiplier = gp.conversion / conversion;
+      const multiplier = usd.conversion / conversion;
       this.price.valueInGP = Math.floor(value * multiplier);
     }
   }
@@ -23176,7 +23176,7 @@ class OrderUsageDialog extends ActivityUsageDialog {
         value: this.config.costs?.days ?? days ?? duration
       },
       gold: {
-        field: new NumberField$w({ nullable: true, integer: true, min: 0, label: "SHMN.CurrencyGP" }),
+        field: new NumberField$w({ nullable: true, integer: true, min: 0, label: "SHMN.CurrencyUSD" }),
         name: "costs.gold",
         value: this.config.costs?.gold ?? gold ?? 0
       }
@@ -24164,6 +24164,9 @@ class CurrencyManager extends Application5e {
     const currencies = Object.entries(CONFIG.SHMN.currencies)
       .filter(([, c]) => c.conversion)
       .sort((a, b) => a[1].conversion - b[1].conversion);
+    if (new Set(currencies.map(([, config]) => config.conversion)).size <= 1) {
+      return doc.update({ "system.currency": currency });
+    }
 
     // Convert all currently to smallest denomination
     const smallestConversion = currencies.at(-1)[1].conversion;
@@ -24479,7 +24482,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
       ${game.i18n.format("SHMN.FACILITY.Costs.Days", { days: costs.days })}
     `);
     if (costs.gold) supplements.push(`
-      <strong>${game.i18n.localize("SHMN.CurrencyGP")}</strong>
+      <strong>${game.i18n.localize("SHMN.CurrencyUSD")}</strong>
       ${formatNumber(costs.gold)}
       (${game.i18n.localize(`SHMN.FACILITY.Costs.${costs.paid ? "Paid" : "Unpaid"}`)})
     `);
@@ -24494,7 +24497,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
     if (trade?.stock?.value && trade.sell) supplements.push(`
       <strong>${game.i18n.localize("SHMN.FACILITY.Trade.Sell.Supplement")}</strong>
       ${formatNumber(trade.stock.value)}
-      ${CONFIG.SHMN.currencies.gp?.abbreviation ?? ""}
+      ${CONFIG.SHMN.currencies.usd?.abbreviation ?? ""}
     `);
     if (trade?.creatures) {
       const creatures = [];
@@ -24541,7 +24544,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
     const config = foundry.utils.expandObject({ "data.flags.shmn.order": order });
     if (method === "automatic") {
       try {
-        await CurrencyManager.deductActorCurrency(this.actor, order.costs.gold, "gp", {
+        await CurrencyManager.deductActorCurrency(this.actor, order.costs.gold, "usd", {
           recursive: true,
           priority: "high"
         });
@@ -41111,7 +41114,7 @@ class VehicleData extends CommonTemplate {
         }, { label: "SHMN.VEHICLE.FIELDS.attributes.capacity.label" }),
         price: new SchemaField$n({
           value: new NumberField$j({ initial: null, min: 0, label: "SHMN.Price" }),
-          denomination: new StringField$t({ required: true, blank: false, initial: "gp", label: "SHMN.Currency" })
+          denomination: new StringField$t({ required: true, blank: false, initial: "usd", label: "SHMN.Currency" })
         }, { label: "SHMN.Price" }),
         quality: new SchemaField$n({
           value: new NumberField$j({ required: true, nullable: false, integer: true, min: -10, max: 10, initial: 4 })
@@ -43572,39 +43575,29 @@ preLocalize("lootTypes", { key: "label" });
 
 /**
  * The valid currency denominations with localized labels, abbreviations, and conversions.
- * The conversion number defines how many of that currency are equal to one GP.
+ * The conversion number defines how many of that currency are equal to one base currency unit.
  * @enum {CurrencyConfiguration}
  */
 SHMN.currencies = {
-  pp: {
-    label: "SHMN.CurrencyPP",
-    abbreviation: "SHMN.CurrencyAbbrPP",
-    conversion: 0.1,
-    icon: "systems/shmn/icons/currency/platinum.webp"
+  usd: {
+    label: "SHMN.CurrencyUSD",
+    abbreviation: "SHMN.CurrencyAbbrUSD",
+    conversion: 1
   },
-  gp: {
-    label: "SHMN.CurrencyGP",
-    abbreviation: "SHMN.CurrencyAbbrGP",
-    conversion: 1,
-    icon: "systems/shmn/icons/currency/gold.webp"
+  eur: {
+    label: "SHMN.CurrencyEUR",
+    abbreviation: "SHMN.CurrencyAbbrEUR",
+    conversion: 1
   },
-  ep: {
-    label: "SHMN.CurrencyEP",
-    abbreviation: "SHMN.CurrencyAbbrEP",
-    conversion: 2,
-    icon: "systems/shmn/icons/currency/electrum.webp"
+  brl: {
+    label: "SHMN.CurrencyBRL",
+    abbreviation: "SHMN.CurrencyAbbrBRL",
+    conversion: 1
   },
-  sp: {
-    label: "SHMN.CurrencySP",
-    abbreviation: "SHMN.CurrencyAbbrSP",
-    conversion: 10,
-    icon: "systems/shmn/icons/currency/silver.webp"
-  },
-  cp: {
-    label: "SHMN.CurrencyCP",
-    abbreviation: "SHMN.CurrencyAbbrCP",
-    conversion: 100,
-    icon: "systems/shmn/icons/currency/copper.webp"
+  gbp: {
+    label: "SHMN.CurrencyGBP",
+    abbreviation: "SHMN.CurrencyAbbrGBP",
+    conversion: 1
   }
 };
 preLocalize("currencies", { keys: ["label", "abbreviation"] });
@@ -53796,7 +53789,14 @@ class BaseActorSheet extends PrimarySheetMixin(
     const Inventory = customElements.get(this.options.elements.inventory);
 
     // Currency
-    context.currency = this.inventorySource.system._source.currency;
+    context.currency = this.inventorySource.system._source.currency ?? {};
+    context.selectedCurrency = this.actor.getFlag("shmn", "selectedCurrency");
+    if (!(context.selectedCurrency in CONFIG.SHMN.currencies)) context.selectedCurrency = Object.keys(CONFIG.SHMN.currencies)[0];
+    context.selectedCurrencyValue = context.currency[context.selectedCurrency] ?? 0;
+    context.selectedCurrencyDisplayValue = formatNumber(context.selectedCurrencyValue, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
     // Containers
     context.itemContext ??= {};
@@ -54655,8 +54655,15 @@ class BaseActorSheet extends PrimarySheetMixin(
       }
 
       // Handle delta inputs
-      this.element.querySelectorAll('input[type="text"]:is([data-dtype="Number"], [inputmode="numeric"])')
+      this.element.querySelectorAll('input[type="text"]:is([data-dtype="Number"], [inputmode="numeric"]):not(.currency-value-mask)')
         .forEach(i => i.addEventListener("change", this._onChangeInputDelta.bind(this)));
+
+      // Currency display masks
+      this.element.querySelectorAll("input.currency-value-mask").forEach(input => {
+        input.addEventListener("focus", event => this._onFocusCurrencyMask(event));
+        input.addEventListener("change", event => this._onChangeCurrencyMask(event));
+        input.addEventListener("blur", event => this._onBlurCurrencyMask(event));
+      });
 
       // Meter editing
       for (const meter of this.element.querySelectorAll('.meter > [role="meter"]:has(> input)')) {
@@ -54817,6 +54824,63 @@ class BaseActorSheet extends PrimarySheetMixin(
       }
       else target.update({ [input.dataset.name]: result });
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Display raw currency values while editing masked currency inputs.
+   * @param {FocusEvent} event  Triggering event.
+   * @protected
+   */
+  _onFocusCurrencyMask(event) {
+    const input = event.target;
+    const value = Number(input.dataset.value || 0);
+    input.value = Number.isInteger(value) ? value.toString() : value.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+    input.select();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Save masked currency input changes through the numeric hidden field.
+   * @param {Event} event  Triggering event.
+   * @protected
+   */
+  async _onChangeCurrencyMask(event) {
+    const input = event.target;
+    const hidden = input.closest(".currency-picker")?.querySelector('input[type="hidden"][name^="system.currency."]');
+    if (!hidden) return;
+    event.stopPropagation();
+
+    const current = Number(hidden.value || 0);
+    const raw = input.value.trim();
+    let normalized = raw.replace(/\s/g, "");
+    const comma = normalized.lastIndexOf(",");
+    const dot = normalized.lastIndexOf(".");
+    if (comma > dot) normalized = normalized.replace(/\./g, "").replace(",", ".");
+    else if (dot > comma) normalized = normalized.replace(/,/g, "");
+    const value = raw ? parseDelta(normalized, current) : 0;
+    hidden.value = Number.isNaN(value) ? current.toString() : value.toString();
+    input.dataset.value = hidden.value;
+
+    const actor = input.closest(".inventory-element") ? this.inventorySource : this.actor;
+    await actor.update({ [hidden.name]: Number(hidden.value) });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Restore masked currency formatting after editing.
+   * @param {FocusEvent} event  Triggering event.
+   * @protected
+   */
+  _onBlurCurrencyMask(event) {
+    const input = event.target;
+    input.value = formatNumber(Number(input.dataset.value || 0), {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
 
   /* -------------------------------------------- */
@@ -55640,6 +55704,7 @@ class CharacterActorSheet extends BaseActorSheet {
       createPact: CharacterActorSheet.#createPact,
       createPactSpell: CharacterActorSheet.#createPactSpell,
       editPactImage: CharacterActorSheet.#editPactImage,
+      editCollectiveCombatImage: CharacterActorSheet.#editCollectiveCombatImage,
       deletePact: CharacterActorSheet.#deletePact,
       editPactSpell: CharacterActorSheet.#editPactSpell,
       deletePactSpell: CharacterActorSheet.#deletePactSpell,
@@ -55946,9 +56011,19 @@ class CharacterActorSheet extends BaseActorSheet {
   async _prepareCollectiveCombatContext(context, options) {
     context = await this._prepareDetailsContext(context, options);
 
+    const collectiveCombat = this.actor.system.attributes.collectiveCombat ?? {};
+    const teamImage = collectiveCombat.img || "systems/shmn/icons/svg/actors/group.svg";
+    context.collectiveCombatTeam = {
+      img: teamImage,
+      hasImage: !!collectiveCombat.img,
+      name: collectiveCombat.name ?? "",
+      position: collectiveCombat.position ?? "",
+      label: game.i18n.localize("SHMN.CollectiveCombatTeamImage")
+    };
+
     const letters = ["A", "B", "C", "D", "E", "F", "G"];
     const keys = ["a", "b", "c", "d", "e", "f", "g"];
-    const barriersData = this.actor.system.attributes.collectiveCombat?.barriers ?? {};
+    const barriersData = collectiveCombat.barriers ?? {};
 
     context.barriers = keys.map((key, index) => {
       const value = Number(barriersData[key]?.value ?? 0);
@@ -56897,6 +56972,27 @@ class CharacterActorSheet extends BaseActorSheet {
         if (!pact) return;
         pact.img = path;
         await this.actor.setFlag("shmn", "pacts", pacts);
+      }
+    }).render(true);
+  }
+
+  static async #editCollectiveCombatImage(event, target) {
+    if (!this.isEditable) return;
+
+    const current = this.actor.system.attributes.collectiveCombat?.img || target.getAttribute("src")
+      || "systems/shmn/icons/svg/actors/group.svg";
+
+    new CONFIG.ux.FilePicker({
+      type: "image",
+      current,
+      callback: async path => {
+        target.src = path;
+        await this.actor.update({ "system.attributes.collectiveCombat.img": path });
+        this.render({ force: true });
+      },
+      position: {
+        top: this.position.top + 40,
+        left: this.position.left + 10
       }
     }).render(true);
   }
@@ -69432,6 +69528,24 @@ class CharacterData extends CreatureTemplate {
         inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" }),
 
         collectiveCombat: new SchemaField$j({
+          img: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamImage"
+          }),
+          name: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamName"
+          }),
+          position: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamPosition"
+          }),
           barriers: new SchemaField$j({
             a: new SchemaField$j({
               value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
@@ -70496,7 +70610,7 @@ class NPCData extends CreatureTemplate {
         }, { label: "SHMN.DeathSave" }),
         price: new SchemaField$e({
           value: new NumberField$b({ initial: null, min: 0 }),
-          denomination: new StringField$l({ required: true, blank: false, initial: "gp" })
+          denomination: new StringField$l({ required: true, blank: false, initial: "usd" })
         }),
         spell: new SchemaField$e({
           level: new NumberField$b({
@@ -72260,7 +72374,7 @@ class FacilityData extends ItemDataModel$1.mixin(ActivitiesTemplate, ItemDescrip
     // Price
     if (this.type.value === "basic") {
       const { value, days } = CONFIG.SHMN.facilities.sizes[this.size];
-      this.price = { value, days, denomination: "gp" };
+      this.price = { value, days, denomination: "usd" };
     }
 
     // Squares
@@ -77079,9 +77193,9 @@ class Bastion {
     const results = message.getFlag("shmn", "bastion");
     const { gold } = results;
     const actor = message.getAssociatedActor();
-    const { gp } = actor?.system?.currency ?? {};
-    if (!gold?.value || gold.claimed || (gp === undefined)) return;
-    await actor.update({ "system.currency.gp": gp + gold.value });
+    const { usd } = actor?.system?.currency ?? {};
+    if (!gold?.value || gold.claimed || (usd === undefined)) return;
+    await actor.update({ "system.currency.usd": usd + gold.value });
     gold.claimed = true;
     const content = await this.#renderTurnSummary(actor, results);
     return message.update({ content, flags: { shmn: { bastion: results } } });
@@ -77231,7 +77345,7 @@ class Bastion {
     context.supplements = [];
     if (results.gold.value) {
       context.supplements.push(`
-        <strong>${game.i18n.localize("SHMN.CurrencyGP")}</strong>
+        <strong>${game.i18n.localize("SHMN.CurrencyUSD")}</strong>
         ${formatNumber(results.gold.value)}
         (${game.i18n.localize(`SHMN.Bastion.Gold.${results.gold.claimed ? "Claimed" : "Unclaimed"}`)})
       `);
@@ -80079,6 +80193,7 @@ Hooks.once("setup", function () {
   // Create CSS for currencies
   const style = document.createElement("style");
   const currencies = append => Object.entries(CONFIG.SHMN.currencies)
+    .filter(([, { icon }]) => icon)
     .map(([key, { icon }]) => `&.${key}${append ?? ""} { background-image: url("${icon}"); }`);
   style.innerHTML = `
     :is(.shmn2, .shmn2-journal) :is(i, span).currency {

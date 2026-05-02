@@ -960,7 +960,7 @@
   "NoDestinations": "No Destinations Available",
   "NoPrimaryParty": "No primary party set, displaying characters assigned to players instead.",
   "NotGMError": "The /award command is only available to GMs.",
-  "UnrecognizedWarning": "Unable to parse {commands}. The /award command should be used with XP & currencies values such as '/award 10gp 50xp'."
+  "UnrecognizedWarning": "Unable to parse {commands}. The /award command should be used with XP & currencies values such as '/award 10usd 50xp'."
 },
 "SHMN.Background": "Background",
 "SHMN.BackgroundAdd": "Add Background",
@@ -1665,7 +1665,7 @@
 "SHMN.ConsumeTitle": "Resource Consumption",
 "SHMN.ConsumeAmount": "Consumption Amount",
 "SHMN.ConsumeHint": {
-  "Attribute": "Attribute to consume (e.g. currency.gp)",
+  "Attribute": "Attribute to consume (e.g. currency.usd)",
   "Item": "UUID of target in compendium"
 },
 "SHMN.ConsumeTarget": "Consumption Target",
@@ -1846,6 +1846,15 @@
       "PromptHintIncrease": "Increase <code>{attribute}</code> by <strong>{cost}</strong> (currently {current}).",
       "Warning": "{attribute} amount"
     },
+    "RestAttribute": {
+      "Label": "Attribute (Short/Long Rest)",
+      "NonEmbeddedHint": "Path of the attribute to consume and recover on a short or long rest (e.g. resources.primary.value).",
+      "PromptDecrease": "Consume Rest Attribute?",
+      "PromptIncrease": "Restore Rest Attribute?",
+      "PromptHintDecrease": "Decrease <code>{attribute}</code> by <strong>{cost}</strong> (currently {current}); it recovers on a short or long rest.",
+      "PromptHintIncrease": "Increase <code>{attribute}</code> by <strong>{cost}</strong> (currently {current}); it recovers on a short or long rest.",
+      "Warning": "{attribute} amount"
+    },
     "HitDice": {
       "Label": "Hit Dice",
       "PromptDecrease": "Consume Hit Die?",
@@ -1913,6 +1922,7 @@
 "SHMN.CoverTotal": "Total",
 "SHMN.Cost": "Cost",
 "SHMN.CostGP": "Cost (GP)",
+"SHMN.CostUSD": "Cost (USD)",
 "SHMN.CreatureAberration": "Aberration",
 "SHMN.CreatureAberrationPl": "Aberrations",
 "SHMN.CreatureBeast": "Beast",
@@ -1956,16 +1966,24 @@
 "SHMN.PowerfulCritical": "Powerful Critical",
 "SHMN.CRLabel": "CR {cr}",
 "SHMN.Currency": "Currency",
+"SHMN.CurrencyAbbrBRL": "BRL",
 "SHMN.CurrencyAbbrCP": "cp",
+"SHMN.CurrencyAbbrEUR": "EUR",
 "SHMN.CurrencyAbbrEP": "ep",
+"SHMN.CurrencyAbbrGBP": "GBP",
 "SHMN.CurrencyAbbrGP": "gp",
 "SHMN.CurrencyAbbrPP": "pp",
 "SHMN.CurrencyAbbrSP": "sp",
+"SHMN.CurrencyAbbrUSD": "USD",
+"SHMN.CurrencyBRL": "Brazilian Real",
 "SHMN.CurrencyCP": "Copper",
+"SHMN.CurrencyEUR": "Euro",
 "SHMN.CurrencyEP": "Electrum",
+"SHMN.CurrencyGBP": "Pound Sterling",
 "SHMN.CurrencyGP": "Gold",
 "SHMN.CurrencyPP": "Platinum",
 "SHMN.CurrencySP": "Silver",
+"SHMN.CurrencyUSD": "US Dollar",
 "SHMN.CurrencyManager": {
   "Title": "Manage Currency",
   "Convert": {
@@ -5896,5 +5914,9 @@
 "SOURCE.BOOK.FreeRules": "Free Rules",
 "SOURCE.BOOK.SRD51": "System Reference Document 5.1",
 "SOURCE.BOOK.SRD52": "System Reference Document 5.2",
+"SHMN.CollectiveCombatTeamImage": "Team Image",
+"SHMN.CollectiveCombatTeamImageEdit": "Change team image",
+"SHMN.CollectiveCombatTeamName": "Team Name",
+"SHMN.CollectiveCombatTeamPosition": "Position",
 "SIDEBAR.SortModePriority": "Sort by priority"
 }
