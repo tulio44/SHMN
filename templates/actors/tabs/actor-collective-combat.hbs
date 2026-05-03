@@ -132,11 +132,14 @@
                 {{#each pips}}
                 <button
                     type="button"
-                    class="cc-barrier-pip pip always-interactive {{#if filled}}filled{{/if}}"
+                    class="cc-barrier-pip pip {{#if @root.editable}}always-interactive{{/if}} {{#if filled}}filled{{/if}}"
+                    {{#if @root.editable}}
                     data-action="setBarrier"
+                    {{/if}}
                     data-barrier="{{ ../key }}"
                     data-value="{{ value }}"
-                    aria-pressed="{{ pressed }}">
+                    aria-pressed="{{ pressed }}"
+                    {{disabled (not @root.editable)}}>
                     {{ value }}
                 </button>
                 {{/each}}

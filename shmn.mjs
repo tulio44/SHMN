@@ -57043,6 +57043,8 @@ class CharacterActorSheet extends BaseActorSheet {
     event.preventDefault();
     event.stopPropagation();
 
+    if (!this.isEditable) return;
+
     const button = target.closest("[data-action='setBarrier']");
     if (!button) return;
 
@@ -57061,22 +57063,8 @@ class CharacterActorSheet extends BaseActorSheet {
     let nextValue = clickedValue;
     if (clickedValue === currentValue) nextValue = Math.max(0, clickedValue - 1);
 
-    console.log("ANTES", {
-      currentPrepared: foundry.utils.getProperty(this.actor.system, propertyPath),
-      currentSource: foundry.utils.getProperty(this.actor._source, documentPath),
-      nextValue,
-      documentPath
-    });
-
-    const updated = await this.actor.update({
+    await this.actor.update({
       [documentPath]: nextValue
-    });
-
-    console.log("DEPOIS", {
-      updatedPrepared: foundry.utils.getProperty(updated.system, propertyPath),
-      updatedSource: foundry.utils.getProperty(updated._source, documentPath),
-      actorPrepared: foundry.utils.getProperty(this.actor.system, propertyPath),
-      actorSource: foundry.utils.getProperty(this.actor._source, documentPath)
     });
 
     this.render({ force: true });
