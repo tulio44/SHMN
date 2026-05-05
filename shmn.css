@@ -5261,7 +5261,7 @@ h5 {
   background: transparent no-repeat center / contain;
 }
 
-:is(.shmn2, .shmn2-journal) :is(i, span).currency:is(.usd, .eur, .brl, .gbp) {
+:is(.shmn2, .shmn2-journal) :is(i, span).currency:is(.usd, .eur, .brl, .gbp, .rub, .jpy) {
   width: auto;
   min-width: 1.5em;
   height: auto;
@@ -5276,9 +5276,11 @@ h5 {
 }
 
 :is(.shmn2, .shmn2-journal) .currency.usd::before { content: "$"; }
-:is(.shmn2, .shmn2-journal) .currency.eur::before { content: "€"; }
 :is(.shmn2, .shmn2-journal) .currency.brl::before { content: "R$"; }
-:is(.shmn2, .shmn2-journal) .currency.gbp::before { content: "£"; }
+:is(.shmn2, .shmn2-journal) .currency.eur::before { content: "\20AC"; }
+:is(.shmn2, .shmn2-journal) .currency.gbp::before { content: "\00A3"; }
+:is(.shmn2, .shmn2-journal) .currency.rub::before { content: "\20BD"; }
+:is(.shmn2, .shmn2-journal) .currency.jpy::before { content: "\00A5"; }
 
 /* ---------------------------------- */
 /*  Document Sheets                   */
@@ -8440,6 +8442,10 @@ dialog.shmn2.application {
   --underlay-sorcerer: url("ui/official/classes/sorcerer.webp");
   --underlay-warlock: url("ui/official/classes/warlock.webp");
   --underlay-wizard: url("ui/official/classes/wizard.webp");
+  --underlay-team-catcher: url("ui/official/classes/monk.webp");
+  --underlay-team-defense: url("ui/official/classes/fighter.webp");
+  --underlay-team-offensive: url("ui/official/classes/rogue.webp");
+  --underlay-team-support: url("ui/official/classes/cleric.webp");
   --underlay-npc-aberration: url("ui/official/npcs/aberration.webp");
   --underlay-npc-beast: url("ui/official/npcs/beast.webp");
   --underlay-npc-celestial: url("ui/official/npcs/celestial.webp");
@@ -12736,6 +12742,48 @@ dialog.shmn2.application {
   scrollbar-gutter: stable;
   inset: 0 4px 0 0;
   gap: 0;
+  padding-top: 8px;
+}
+
+.shmn2.sheet.actor.group .team-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px 8px 16px;
+}
+
+.shmn2.sheet.actor.group .team-header h2 {
+  font-size: var(--font-size-18);
+  margin: 0;
+}
+
+.shmn2.sheet.actor.group .team-header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-11);
+  margin: 2px 0 0;
+}
+
+.shmn2.sheet.actor.group .team-header .team-contest-action {
+  flex: 0 0 34px;
+  height: 34px;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0;
+  width: 34px;
+}
+
+.shmn2.sheet.actor.group .team-section h3 {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+.shmn2.sheet.actor.group .team-section h3 span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-11);
+  font-weight: normal;
 }
 
 .shmn2.sheet.actor.group .sheet-body .tab-body [data-application-part=members] h3 {
@@ -12802,6 +12850,112 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group menu.members .vitals .classes img:hover {
   box-shadow: 0 0 6px var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.group menu.members .team-role {
+  max-width: 120px;
+}
+
+.shmn2.sheet.actor.group menu.members .member.draggable {
+  cursor: grab;
+}
+
+.shmn2.sheet.actor.group menu.members .member.draggable:active {
+  cursor: grabbing;
+}
+
+.shmn2.sheet.actor.group.editable .team-section {
+  border-radius: 4px;
+}
+
+.shmn2.sheet.actor.group.editable .team-section:hover {
+  outline: 1px dashed color-mix(in oklab, var(--shmn-color-gold), transparent 45%);
+  outline-offset: 2px;
+}
+
+.shmn2.sheet.actor.group menu.members .team-empty-slot .vitals {
+  min-height: 72px;
+  opacity: 0.65;
+}
+
+.shmn2.sheet.actor.group menu.members .team-empty-slot .portrait {
+  align-items: center;
+  color: var(--color-text-tertiary);
+  display: flex;
+  font-size: var(--font-size-24);
+  justify-content: center;
+}
+
+.team-contest-card header h3 {
+  margin: 0 0 8px;
+}
+
+.team-contest-card .contestants {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.team-contest-card .contestant {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  min-width: 0;
+}
+
+.team-contest-card .contestant .name {
+  font-family: var(--shmn-font-roboto-slab);
+  font-weight: bold;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-contest-card .contestant .roll {
+  align-items: center;
+  border: var(--shmn-border-gold);
+  border-radius: 4px;
+  display: flex;
+  font-size: var(--font-size-24);
+  font-weight: bold;
+  height: 42px;
+  justify-content: center;
+  min-width: 42px;
+}
+
+.team-contest-card .contestant .gold-button {
+  height: 28px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0;
+  width: 28px;
+}
+
+.team-contest-card .versus {
+  color: var(--color-text-secondary);
+  font-family: var(--shmn-font-roboto-condensed);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.team-contest-card footer {
+  border-top: var(--shmn-border-gold);
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.team-contest-card footer.critical span {
+  color: var(--shmn-color-gold);
+  font-family: var(--shmn-font-roboto-condensed);
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .shmn2.sheet.actor.group menu.members .vitals .pills {

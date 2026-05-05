@@ -43582,22 +43582,38 @@ SHMN.currencies = {
   usd: {
     label: "SHMN.CurrencyUSD",
     abbreviation: "SHMN.CurrencyAbbrUSD",
-    conversion: 1
+    conversion: 1,
+    decimals: 2
   },
   eur: {
     label: "SHMN.CurrencyEUR",
     abbreviation: "SHMN.CurrencyAbbrEUR",
-    conversion: 1
+    conversion: 1,
+    decimals: 2
   },
   brl: {
     label: "SHMN.CurrencyBRL",
     abbreviation: "SHMN.CurrencyAbbrBRL",
-    conversion: 1
+    conversion: 1,
+    decimals: 2
   },
   gbp: {
     label: "SHMN.CurrencyGBP",
     abbreviation: "SHMN.CurrencyAbbrGBP",
-    conversion: 1
+    conversion: 1,
+    decimals: 2
+  },
+  rub: {
+    label: "SHMN.CurrencyRUB",
+    abbreviation: "SHMN.CurrencyAbbrRUB",
+    conversion: 1,
+    decimals: 2
+  },
+  jpy: {
+    label: "SHMN.CurrencyJPY",
+    abbreviation: "SHMN.CurrencyAbbrJPY",
+    conversion: 1,
+    decimals: 0
   }
 };
 preLocalize("currencies", { keys: ["label", "abbreviation"] });
@@ -53793,9 +53809,10 @@ class BaseActorSheet extends PrimarySheetMixin(
     context.selectedCurrency = this.actor.getFlag("shmn", "selectedCurrency");
     if (!(context.selectedCurrency in CONFIG.SHMN.currencies)) context.selectedCurrency = Object.keys(CONFIG.SHMN.currencies)[0];
     context.selectedCurrencyValue = context.currency[context.selectedCurrency] ?? 0;
+    const currencyDecimals = CONFIG.SHMN.currencies[context.selectedCurrency]?.decimals ?? 2;
     context.selectedCurrencyDisplayValue = formatNumber(context.selectedCurrencyValue, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      minimumFractionDigits: currencyDecimals,
+      maximumFractionDigits: currencyDecimals
     });
 
     // Containers
@@ -54861,7 +54878,10 @@ class BaseActorSheet extends PrimarySheetMixin(
     if (comma > dot) normalized = normalized.replace(/\./g, "").replace(",", ".");
     else if (dot > comma) normalized = normalized.replace(/,/g, "");
     const value = raw ? parseDelta(normalized, current) : 0;
-    hidden.value = Number.isNaN(value) ? current.toString() : value.toString();
+    const currency = hidden.name.split(".").at(-1);
+    const currencyDecimals = CONFIG.SHMN.currencies[currency]?.decimals ?? 2;
+    const normalizedValue = currencyDecimals ? value : Math.round(value);
+    hidden.value = Number.isNaN(normalizedValue) ? current.toString() : normalizedValue.toString();
     input.dataset.value = hidden.value;
 
     const actor = input.closest(".inventory-element") ? this.inventorySource : this.actor;
@@ -54877,9 +54897,11 @@ class BaseActorSheet extends PrimarySheetMixin(
    */
   _onBlurCurrencyMask(event) {
     const input = event.target;
+    const currency = input.name?.split(".").at(-1) || input.dataset.name?.split(".").at(-1);
+    const currencyDecimals = CONFIG.SHMN.currencies[currency]?.decimals ?? 2;
     input.value = formatNumber(Number(input.dataset.value || 0), {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      minimumFractionDigits: currencyDecimals,
+      maximumFractionDigits: currencyDecimals
     });
   }
 
@@ -58047,9 +58069,15 @@ class GroupActorSheet extends MultiActorSheet {
     actions: {
       award: GroupActorSheet.#onAward,
       changePace: GroupActorSheet.#onChangePace,
+      changeMemberRole: GroupActorSheet.#onChangeMemberRole,
       roll: GroupActorSheet.#onRoll,
+      teamContest: GroupActorSheet.#onTeamContest,
       toggleInventory: GroupActorSheet.#onToggleInventory
     },
+    dragDrop: [{
+      dragSelector: ".draggable",
+      dropSelector: null
+    }],
     tab: "members"
   };
 
@@ -58091,9 +58119,23 @@ class GroupActorSheet extends MultiActorSheet {
 
   /** @override */
   static TABS = [
-    { tab: "members", label: "SHMN.Group.Member.other", icon: "fa-solid fa-users" },
+    { tab: "members", label: "SHMN.Team.Members", icon: "fa-solid fa-people-group" },
     { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
     { tab: "biography", label: "SHMN.Biography", icon: "fa-solid fa-feather" }
+  ];
+
+  /* -------------------------------------------- */
+
+  /**
+   * Team role layout for group actors.
+   * @type {{ key: string, label: string, capacity: number|null }[]}
+   */
+  static TEAM_ROLES = [
+    { key: "defense", label: "SHMN.Team.Role.Defense", capacity: 2 },
+    { key: "support", label: "SHMN.Team.Role.Support", capacity: 2 },
+    { key: "catcher", label: "SHMN.Team.Role.Catcher", capacity: 1 },
+    { key: "offensive", label: "SHMN.Team.Role.Offensive", capacity: 1 },
+    { key: "reserve", label: "SHMN.Team.Role.Reserve", capacity: null }
   ];
 
   /* -------------------------------------------- */
@@ -58170,17 +58212,26 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   async _prepareMembersContext(context, options) {
-    context.sections = {
-      character: { members: [], hasStats: true },
-      npc: { members: [], label: "TYPES.Actor.npcPl", hasStats: true },
-      vehicle: { members: [], label: "TYPES.Actor.vehiclePl" }
-    };
-    for (const { actor } of this.document.system.members) {
+    context.roleOptions = this.constructor.TEAM_ROLES.map(({ key, label }) => ({ value: key, label }));
+    context.sections = this.constructor.TEAM_ROLES.map(({ key, label, capacity }) => ({
+      key,
+      label,
+      capacity,
+      emptySlots: [],
+      hasStats: true,
+      members: []
+    }));
+    const sections = Object.fromEntries(context.sections.map(section => [section.key, section]));
+
+    for (const [index, memberData] of this.document.system.members.entries()) {
+      const { actor } = memberData;
       if (!actor) continue;
       const { id, type, img, name, system, uuid } = actor;
-      const section = context.sections[type];
+      const roleKey = memberData.role === "attack" ? "offensive" : memberData.role;
+      const role = sections[roleKey] ? roleKey : "reserve";
+      const section = sections[role];
       if (!section) continue;
-      const member = { id, type, img, name, system, uuid };
+      const member = { id, index, role, type, img, name, system, uuid };
       member.canView = actor.testUserPermission(game.user, "LIMITED");
       member.hiddenStats = !actor.testUserPermission(game.user, "OBSERVER");
       member.classes = member.hiddenStats ? [] : actor.itemTypes.class;
@@ -58192,10 +58243,14 @@ class GroupActorSheet extends MultiActorSheet {
         case "npc": await this._prepareNPCContext(actor, member, options); break;
         case "vehicle": await this._prepareVehicleContext(actor, member, options); break;
       }
+      this._prepareTeamRoleUnderlay(member);
       section.members.push(member);
     }
-    Object.values(context.sections).forEach(s => {
-      s.members.sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang));
+    Object.values(sections).forEach(s => {
+      if (Number.isFinite(s.capacity)) {
+        const remaining = Math.max(0, s.capacity - s.members.length);
+        s.emptySlots = Array.from({ length: remaining }, (_, index) => ({ index: index + 1 }));
+      }
     });
     return context;
   }
@@ -58264,6 +58319,17 @@ class GroupActorSheet extends MultiActorSheet {
     const { originalClass } = context.system.details;
     const cls = actor.items.get(originalClass);
     if (cls) context.underlay = `var(--underlay-${cls.identifier})`;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prefer a position-specific underlay for active team roles.
+   * @param {object} context  Member render context.
+   * @protected
+   */
+  _prepareTeamRoleUnderlay(context) {
+    if (context.role && (context.role !== "reserve")) context.underlay = `var(--underlay-team-${context.role})`;
   }
 
   /* -------------------------------------------- */
@@ -58354,6 +58420,63 @@ class GroupActorSheet extends MultiActorSheet {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * Assign a group member to a role, swapping occupants when a filled role is targeted.
+   * @param {string} actorId              Actor ID of the moved member.
+   * @param {string} role                 Target role.
+   * @param {object} [options={}]
+   * @param {string} [options.swapActorId] Actor ID of a specific member to swap with.
+   * @returns {Promise<Actor5e|void>}
+   * @protected
+   */
+  async _assignMemberRole(actorId, role, { swapActorId } = {}) {
+    if (!this.isEditable) return;
+    if (role === "attack") role = "offensive";
+    if (!this.constructor.TEAM_ROLES.some(r => r.key === role)) role = "reserve";
+
+    const members = this.actor.system.toObject().members;
+    const member = members.find(m => m.actor === actorId);
+    if (!member) return;
+
+    const memberRole = member.role === "attack" ? "offensive" : member.role;
+    const previousRole = this.constructor.TEAM_ROLES.some(r => r.key === memberRole) ? memberRole : "reserve";
+    if ((previousRole === role) && !swapActorId) return;
+
+    const targetRole = this.constructor.TEAM_ROLES.find(r => r.key === role);
+    let displaced = swapActorId ? members.find(m => (m.actor === swapActorId) && (m.actor !== actorId)) : null;
+    if (!displaced && Number.isFinite(targetRole?.capacity)) {
+      const occupants = members.filter(m => {
+        const occupantRole = m.role === "attack" ? "offensive" : (m.role ?? "reserve");
+        return (m.actor !== actorId) && (occupantRole === role);
+      });
+      if (occupants.length >= targetRole.capacity) displaced = occupants[0];
+    }
+
+    member.role = role;
+    if (displaced) displaced.role = previousRole;
+
+    await this.actor.update({ "system.members": members });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the role and member under a drop target.
+   * @param {HTMLElement} target  Drop target.
+   * @returns {{role: string|null, swapActorId: string|null}}
+   * @protected
+   */
+  _getTeamDropTarget(target) {
+    const member = target.closest(".member[data-actor-id]");
+    const section = target.closest(".team-section");
+    return {
+      role: member?.closest(".team-section")?.dataset.role ?? section?.dataset.role ?? null,
+      swapActorId: member?.dataset.actorId ?? null
+    };
+  }
+
+  /* -------------------------------------------- */
   /*  Life-Cycle Handlers                         */
   /* -------------------------------------------- */
 
@@ -58402,6 +58525,9 @@ class GroupActorSheet extends MultiActorSheet {
 
   /** @inheritDoc */
   _onChangeForm(formConfig, event) {
+    if (event.target.matches("[data-action='changeMemberRole']")) {
+      return this.constructor.#onChangeMemberRole.call(this, event, event.target);
+    }
     if (event.target.dataset.name?.startsWith("system.currency.") && (this.inventorySource.type === "vehicle")) {
       return this.inventorySource.update({ [event.target.dataset.name]: event.target.value });
     }
@@ -58427,10 +58553,70 @@ class GroupActorSheet extends MultiActorSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Handle assigning a member to a team role.
+   * @this {GroupActorSheet}
+   * @param {Event} event         The triggering event.
+   * @param {HTMLSelectElement} target  The role selector.
+   */
+  static async #onChangeMemberRole(event, target) {
+    await this._assignMemberRole(target.dataset.actorId, target.value);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create a team d6 contest chat card.
+   * @this {GroupActorSheet}
+   */
+  static async #onTeamContest() {
+    return TeamContestChatCard.create(this.actor);
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _onDragStart(event) {
+    const member = event.currentTarget.closest(".member[data-actor-id]");
+    if (!member) return super._onDragStart(event);
+    const dragData = {
+      shmn: { action: "teamMember", actorId: member.dataset.actorId },
+      type: "Actor",
+      uuid: member.dataset.uuid
+    };
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+    event.dataTransfer.effectAllowed = "move";
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _onDrop(event) {
+    const dragData = event.dataTransfer.getData("application/json") || event.dataTransfer.getData("text/plain");
+    if (dragData) {
+      try {
+        const data = JSON.parse(dragData);
+        if (data.shmn?.action === "teamMember") {
+          const { role, swapActorId } = this._getTeamDropTarget(event.target);
+          if (role) return this._assignMemberRole(data.shmn.actorId, role, { swapActorId });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return super._onDrop(event);
+  }
+
+  /* -------------------------------------------- */
+
   /** @inheritDoc */
   async _onDropActor(event, actor) {
     await super._onDropActor(event, actor);
-    if (actor) actor.apps[this.id] = this;
+    if (actor) {
+      actor.apps[this.id] = this;
+      const { role, swapActorId } = this._getTeamDropTarget(event.target);
+      if (role) await this._assignMemberRole(actor.id, role, { swapActorId });
+    }
     return actor;
   }
 
@@ -70152,7 +70338,10 @@ class GroupSystemFlags extends foundry.abstract.DataModel {
   }
 }
 
-const { ArrayField: ArrayField$7, ForeignDocumentField: ForeignDocumentField$3, NumberField: NumberField$c, SchemaField: SchemaField$f } = foundry.data.fields;
+const {
+  ArrayField: ArrayField$7, ForeignDocumentField: ForeignDocumentField$3, NumberField: NumberField$c,
+  SchemaField: SchemaField$f, StringField: StringField$team
+} = foundry.data.fields;
 
 /**
  * @import { SkillToolRollProcessConfiguration } from "../../dice/_types.mjs";
@@ -70180,7 +70369,8 @@ class GroupData extends GroupTemplate {
         }, { label: "SHMN.ExperiencePoints.Label" })
       }, { label: "SHMN.Details" }),
       members: new ArrayField$7(new SchemaField$f({
-        actor: new ForeignDocumentField$3(foundry.documents.BaseActor)
+        actor: new ForeignDocumentField$3(foundry.documents.BaseActor),
+        role: new StringField$team({ initial: "reserve", blank: false, label: "SHMN.Team.Role.Label" })
       }), { label: "SHMN.GroupMembers" }),
       primaryVehicle: new ForeignDocumentField$3(foundry.documents.BaseActor)
     });
@@ -70260,8 +70450,9 @@ class GroupData extends GroupTemplate {
   static #migrateMembers(source) {
     if (foundry.utils.getType(source.members) !== "Array") return;
     source.members = source.members.map(m => {
-      if (foundry.utils.getType(m) === "Object") return m;
-      return { actor: m };
+      if (foundry.utils.getType(m) !== "Object") m = { actor: m };
+      m.role = m.role === "attack" ? "offensive" : (m.role ?? "reserve");
+      return m;
     });
   }
 
@@ -71602,6 +71793,301 @@ class RequestMessageData extends ChatMessageDataModel {
   }
 }
 
+/**
+ * Chat message type used for a team d6 contest.
+ * @extends {ChatMessageDataModel}
+ */
+class TeamContestMessageData extends ChatMessageDataModel {
+  /** @override */
+  static defineSchema() {
+    return {
+      critical: new foundry.data.fields.BooleanField(),
+      opponent: new StringField$k({ initial: "SHMN.TeamContest.Opponent" }),
+      rolls: new ObjectField(),
+      team: new StringField$k({ required: true, blank: false }),
+      winner: new StringField$k()
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+    actions: {
+      rollContest: TeamContestMessageData.#rollContest
+    },
+    template: "systems/shmn/templates/chat/team-contest-card.hbs"
+  }, { inplace: false }));
+
+  /* -------------------------------------------- */
+
+  /**
+   * Team actor for the contest.
+   * @type {Actor5e|null}
+   */
+  get teamActor() {
+    return fromUuidSync(this.team);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the team?
+   * @returns {boolean}
+   */
+  get canRollTeam() {
+    const actor = this.teamActor;
+    if (!actor || this.rolls?.team) return false;
+    if (game.user.isGM || actor.isOwner) return true;
+    return actor.system.members?.some?.(({ actor }) => actor?.isOwner) ?? false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the opposing team?
+   * @returns {boolean}
+   */
+  get canRollOpponent() {
+    return game.user.isGM && !this.rolls?.opponent;
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  async _prepareContext() {
+    const actor = this.teamActor;
+    const rolls = this.rolls ?? {};
+    const complete = !!(rolls.team && rolls.opponent);
+    const critical = complete && ((rolls.team.total === 1 && rolls.opponent.total === 6)
+      || (rolls.team.total === 6 && rolls.opponent.total === 1));
+    const winner = this.winner ? game.i18n.localize(
+      this.winner === "team" ? "SHMN.TeamContest.Team" : "SHMN.TeamContest.Opponent"
+    ) : "";
+    return {
+      actor,
+      canRollOpponent: this.canRollOpponent,
+      canRollTeam: this.canRollTeam,
+      complete,
+      critical,
+      opponent: game.i18n.localize(this.opponent || "SHMN.TeamContest.Opponent"),
+      rolls,
+      winner
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll one side of the contest.
+   * @this {TeamContestMessageData}
+   * @param {Event} event         Triggering click event.
+   * @param {HTMLElement} target  Button that was clicked.
+   * @returns {Promise<ChatMessage5e|void>}
+   */
+  static async #rollContest(event, target) {
+    event.preventDefault();
+    const side = target.dataset.side;
+    if ((side === "team") && !this.canRollTeam) return;
+    if ((side === "opponent") && !this.canRollOpponent) return;
+
+    const roll = await TeamContestChatCard.rollD6({
+      speaker: ChatMessage.getSpeaker({ actor: this.teamActor }),
+      flavor: game.i18n.localize(side === "team" ? "SHMN.TeamContest.Action.RollTeam" : "SHMN.TeamContest.Action.RollOpponent")
+    });
+    const rolls = foundry.utils.deepClone(this.rolls ?? {});
+    rolls[side] = {
+      label: side === "team" ? this.teamActor?.name : game.i18n.localize(this.opponent || "SHMN.TeamContest.Opponent"),
+      total: roll.total,
+      user: game.user.id
+    };
+
+    let winner = "";
+    let critical = false;
+    if (rolls.team && rolls.opponent) {
+      if (rolls.team.total > rolls.opponent.total) winner = "team";
+      else if (rolls.opponent.total > rolls.team.total) winner = "opponent";
+      critical = (rolls.team.total === 1 && rolls.opponent.total === 6)
+        || (rolls.team.total === 6 && rolls.opponent.total === 1);
+    }
+
+    return this.parent.update({
+      "system.critical": critical,
+      "system.rolls": rolls,
+      "system.winner": winner
+    });
+  }
+}
+
+/**
+ * Flag-backed chat card used for a team d6 contest.
+ */
+class TeamContestChatCard {
+  static TEMPLATE = "systems/shmn/templates/chat/team-contest-card.hbs";
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create a team contest chat card without relying on a custom ChatMessage type.
+   * @param {Actor5e} actor  Team actor.
+   * @returns {Promise<ChatMessage5e>}
+   */
+  static async create(actor) {
+    const data = {
+      opponent: "SHMN.TeamContest.Opponent",
+      rolls: {},
+      team: actor.uuid
+    };
+    return ChatMessage.create({
+      content: await this.renderContent(data),
+      speaker: ChatMessage.getSpeaker({ actor }),
+      flags: { shmn: { teamContest: data } }
+    });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Build the rendering context for a team contest.
+   * @param {object} data  Team contest flag data.
+   * @returns {object}
+   */
+  static prepareContext(data) {
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ?? {};
+    const complete = !!(rolls.team && rolls.opponent);
+    const critical = complete && ((rolls.team.total === 1 && rolls.opponent.total === 6)
+      || (rolls.team.total === 6 && rolls.opponent.total === 1));
+    const winner = data.winner ? game.i18n.localize(
+      data.winner === "team" ? "SHMN.TeamContest.Team" : "SHMN.TeamContest.Opponent"
+    ) : "";
+    return {
+      actor,
+      complete,
+      critical,
+      opponent: game.i18n.localize(data.opponent || "SHMN.TeamContest.Opponent"),
+      rolls,
+      winner
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the team?
+   * @param {Actor5e|null} actor  Team actor.
+   * @param {object} rolls        Contest rolls.
+   * @returns {boolean}
+   */
+  static canRollTeam(actor, rolls) {
+    if (!actor || rolls?.team) return false;
+    if (game.user.isGM || actor.isOwner) return true;
+    return actor.system.members?.some?.(({ actor }) => actor?.isOwner) ?? false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Render team contest content.
+   * @param {object} data  Team contest flag data.
+   * @returns {Promise<string>}
+   */
+  static renderContent(data) {
+    return foundry.applications.handlebars.renderTemplate(this.TEMPLATE, this.prepareContext(data));
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll the contest die and show it through 3D dice modules when available.
+   * @param {object} [options={}]
+   * @param {object} [options.speaker]  Chat speaker data.
+   * @param {string} [options.flavor]   Roll flavor.
+   * @returns {Promise<Roll>}
+   */
+  static async rollD6({ speaker, flavor } = {}) {
+    const roll = await Roll.create("1d6").evaluate({ allowInteractive: true });
+
+    if (game.dice3d?.showForRoll) {
+      const rollMode = game.settings.get("core", "rollMode");
+      const whisper = ["gmroll", "blindroll"].includes(rollMode)
+        ? ChatMessage.getWhisperRecipients("GM").map(u => u.id)
+        : null;
+      const blind = rollMode === "blindroll";
+      await game.dice3d.showForRoll(roll, game.user, true, whisper, blind, speaker, flavor);
+    }
+
+    return roll;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Add button listeners to a rendered chat card.
+   * @param {ChatMessage5e} message  Rendered message.
+   * @param {HTMLElement} html       Rendered HTML.
+   */
+  static onRenderChatMessage(message, html) {
+    const data = message.getFlag("shmn", "teamContest");
+    if (!data) return;
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ?? {};
+    for (const button of html.querySelectorAll("[data-action='rollContest']")) {
+      const side = button.dataset.side;
+      const allowed = side === "team" ? this.canRollTeam(actor, rolls) : game.user.isGM && !rolls.opponent;
+      if (!allowed) {
+        button.remove();
+        continue;
+      }
+      button.addEventListener("click", event => this.rollContest(message, event));
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll one side of the contest and update the existing message.
+   * @param {ChatMessage5e} message  Team contest message.
+   * @param {Event} event            Triggering click event.
+   * @returns {Promise<ChatMessage5e|void>}
+   */
+  static async rollContest(message, event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    const side = target.dataset.side;
+    const data = foundry.utils.deepClone(message.getFlag("shmn", "teamContest") ?? {});
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ??= {};
+
+    if ((side === "team") && !this.canRollTeam(actor, rolls)) return;
+    if ((side === "opponent") && (!game.user.isGM || rolls.opponent)) return;
+
+    const roll = await this.rollD6({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      flavor: game.i18n.localize(side === "team" ? "SHMN.TeamContest.Action.RollTeam" : "SHMN.TeamContest.Action.RollOpponent")
+    });
+    rolls[side] = {
+      label: side === "team" ? actor?.name : game.i18n.localize(data.opponent || "SHMN.TeamContest.Opponent"),
+      total: roll.total,
+      user: game.user.id
+    };
+
+    data.winner = "";
+    data.critical = false;
+    if (rolls.team && rolls.opponent) {
+      if (rolls.team.total > rolls.opponent.total) data.winner = "team";
+      else if (rolls.opponent.total > rolls.team.total) data.winner = "opponent";
+      data.critical = (rolls.team.total === 1 && rolls.opponent.total === 6)
+        || (rolls.team.total === 6 && rolls.opponent.total === 1);
+    }
+
+    return message.update({
+      content: await this.renderContent(data),
+      "flags.shmn.teamContest": data
+    });
+  }
+}
+
 const TextEditor$1 = foundry.applications.ux.TextEditor.implementation;
 const { ForeignDocumentField: ForeignDocumentField$1, StringField: StringField$j } = foundry.data.fields;
 
@@ -71769,6 +72255,7 @@ var _module$a = /*#__PURE__*/Object.freeze({
 const config$3 = {
   request: RequestMessageData,
   rest: RestMessageData,
+  teamContest: TeamContestMessageData,
   turn: TurnMessageData
 };
 
@@ -71776,6 +72263,7 @@ var _module$9 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   RequestMessageData: RequestMessageData,
   RestMessageData: RestMessageData,
+  TeamContestMessageData: TeamContestMessageData,
   TurnMessageData: TurnMessageData,
   config: config$3,
   fields: _module$a
@@ -80286,6 +80774,7 @@ Hooks.once("ready", function () {
 
   // Chat message listeners
   ChatMessage5e.activateListeners();
+  Hooks.on("shmn.renderChatMessage", TeamContestChatCard.onRenderChatMessage.bind(TeamContestChatCard));
 
   // Bastion initialization
   game.shmn.bastion.initializeUI();

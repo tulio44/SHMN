@@ -1,4 +1,4 @@
-<li class="member" data-uuid="{{ uuid }}">
+<li class="member {{#if @root.editable}}draggable{{/if}}" data-uuid="{{ uuid }}" data-actor-id="{{ id }}">
     <div class="vitals card" {{#if underlay}}style="--underlay: {{ underlay }}"{{/if}}>
         {{#if isPrimaryVehicle}}
         <i class="fa-duotone fa-solid fa-circle-star primary-vehicle" data-tooltip
@@ -63,6 +63,9 @@
         </div>
         <div class="classes controls">
             {{#if @root.editable}}
+            <select class="unselect team-role" data-action="changeMemberRole" data-actor-id="{{ id }}">
+                {{ selectOptions @root.roleOptions selected=role localize=true }}
+            </select>
             <button type="button" class="config-button unbutton" data-action="removeMember" data-tooltip
                     aria-label="{{ localize "SHMN.Group.Action.Remove" }}">
                 <i class="fa-solid fa-square-xmark" inert></i>

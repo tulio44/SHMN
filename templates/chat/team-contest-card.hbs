@@ -1,0 +1,52 @@
+<div class="chat-card team-contest-card">
+    <header>
+        <h3>{{ localize "SHMN.TeamContest.Title" }}</h3>
+    </header>
+
+    <section class="contestants">
+        <div class="contestant">
+            <span class="name">{{#if actor}}{{ actor.name }}{{else}}{{ localize "SHMN.TeamContest.Team" }}{{/if}}</span>
+            <span class="roll">{{#if rolls.team}}{{ rolls.team.total }}{{else}}&mdash;{{/if}}</span>
+            {{#unless rolls.team}}
+            <button
+                type="button"
+                class="gold-button"
+                data-action="rollContest"
+                data-side="team"
+                data-tooltip="SHMN.TeamContest.Action.RollTeam"
+                aria-label="{{ localize "SHMN.TeamContest.Action.RollTeam" }}">
+                <i class="fa-solid fa-dice-d6" inert></i>
+            </button>
+            {{/unless}}
+        </div>
+
+        <div class="versus">{{ localize "SHMN.TeamContest.Versus" }}</div>
+
+        <div class="contestant">
+            <span class="name">{{ opponent }}</span>
+            <span class="roll">{{#if rolls.opponent}}{{ rolls.opponent.total }}{{else}}&mdash;{{/if}}</span>
+            {{#unless rolls.opponent}}
+            <button
+                type="button"
+                class="gold-button"
+                data-action="rollContest"
+                data-side="opponent"
+                data-tooltip="SHMN.TeamContest.Action.RollOpponent"
+                aria-label="{{ localize "SHMN.TeamContest.Action.RollOpponent" }}">
+                <i class="fa-solid fa-dice-d6" inert></i>
+            </button>
+            {{/unless}}
+        </div>
+    </section>
+
+    {{#if complete}}
+    <footer class="{{#if critical}}critical{{/if}}">
+        {{#if winner}}
+        <strong>{{ localize "SHMN.TeamContest.Winner" winner=winner }}</strong>
+        {{else}}
+        <strong>{{ localize "SHMN.TeamContest.Draw" }}</strong>
+        {{/if}}
+        {{#if critical}}<span>{{ localize "SHMN.TeamContest.Critical" }}</span>{{/if}}
+    </footer>
+    {{/if}}
+</div>

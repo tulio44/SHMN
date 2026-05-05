@@ -63,6 +63,7 @@
         "ChatMessage": {
             "request": {},
             "rest": {},
+            "teamContest": {},
             "turn": {}
         },
         "Item": {
