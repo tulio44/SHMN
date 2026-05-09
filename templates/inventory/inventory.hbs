@@ -9,16 +9,16 @@
             <i class="fa-solid fa-coins" inert></i>
         </button>
         {{/unless}}
-        {{#each currency}}
-        {{#with (lookup @root.config.currencies @key) as |currency|}}
-        <label aria-label="{{ lookup currency 'label' }}">
-            <i class="currency {{ @key }}" data-tooltip="{{ lookup currency "label" }}"></i>
-            <input type="text" class="uninput always-interactive" name="system.currency.{{ @key }}"
-                   value="{{ ../this }}" data-dtype="Number" inputmode="numeric" pattern="^[+=\-]?\d*"
-                   {{#if @root.locked}}readonly{{/if}}>
+        <label class="currency-picker" aria-label="{{ localize "SHMN.Currency" }}">
+            <select class="unselect always-interactive" name="flags.shmn.selectedCurrency" {{disabled @root.locked}}>
+                {{ selectOptions @root.config.currencies selected=@root.selectedCurrency labelAttr="label" }}
+            </select>
+            <input type="hidden" name="system.currency.{{ @root.selectedCurrency }}"
+                   value="{{ @root.selectedCurrencyValue }}" data-dtype="Number">
+            <input type="text" class="uninput always-interactive currency-value-mask"
+                   value="{{ @root.selectedCurrencyDisplayValue }}" data-value="{{ @root.selectedCurrencyValue }}"
+                   inputmode="numeric" pattern="^[+=\-]?\d*" {{#if @root.locked}}readonly{{/if}}>
         </label>
-        {{/with}}
-        {{/each}}
     </section>
     {{/if}}
 

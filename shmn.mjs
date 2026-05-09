@@ -1263,15 +1263,10 @@ function getHumanReadableAttributeLabel(attr, { actor, item } = {}) {
     label = game.i18n.format("SHMN.SkillPassiveScore", { skill: CONFIG.SHMN.skills[key].label });
   }
 
-  // Spell slots.
-  else if (attr.startsWith("spells.")) {
+  // Subenergies.
+  else if (attr.startsWith("subenergies.")) {
     const [, key] = attr.split(".");
-    if (!/spell\d+/.test(key)) label = `SHMN.SpellSlots${key.capitalize()}`;
-    else {
-      const plurals = new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
-      const level = Number(key.slice(5));
-      label = game.i18n.format(`SHMN.SpellSlotsN.${plurals.select(level)}`, { n: level });
-    }
+    label = `SHMN.Subenergy.${key}`;
   }
 
   // Currency
@@ -3276,7 +3271,7 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
    * Prepare consumption updates for "Attribute" consumption type.
    * @this {ConsumptionTargetData}
    * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {ActivityUsageUpdates} updates     Updates to be performed.
+     * @param {ActivityUsageUpdates} updates     Updates to be performed.
    * @throws ConsumptionError
    */
   static async consumeAttribute(config, updates) {
@@ -3435,40 +3430,6 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
       if (itemIndex === -1) updates.item.push({ _id: item.id, ...itemUpdate });
       else foundry.utils.mergeObject(updates.item[itemIndex], itemUpdate);
     }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Prepare consumption updates for "Spell Slots" consumption type.
-   * @this {ConsumptionTargetData}
-   * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {ActivityUsageUpdates} updates     Updates to be performed.
-   * @throws ConsumptionError
-   */
-  static async consumeSpellSlots(config, updates) {
-    const levelNumber = Math.clamp(
-      this.resolveLevel({ config, rolls: updates.rolls }), 1, Object.keys(CONFIG.SHMN.spellLevels).length - 1
-    );
-    const keyPath = `system.spells.spell${levelNumber}.value`;
-    const cost = (await this.resolveCost({ config, delta: { keyPath }, rolls: updates.rolls })).total;
-
-    // Check to see if enough slots are available at the specified level
-    const levelData = this.actor.system.spells?.[`spell${levelNumber}`];
-    const newValue = (levelData?.value ?? 0) - cost;
-    let warningMessage;
-    if (!levelData?.max) warningMessage = "SHMN.CONSUMPTION.Warning.MissingSpellSlot";
-    else if ((cost > 0) && !levelData.value) warningMessage = "SHMN.CONSUMPTION.Warning.None";
-    else if (newValue < 0) warningMessage = "SHMN.CONSUMPTION.Warning.NotEnough";
-    if (warningMessage) {
-      const level = CONFIG.SHMN.spellLevels[levelNumber];
-      const type = game.i18n.format("SHMN.CONSUMPTION.Type.SpellSlots.Warning", { level });
-      throw new ConsumptionError(game.i18n.format(warningMessage, {
-        type, level, cost: formatNumber(cost), available: formatNumber(levelData.value)
-      }));
-    }
-
-    updates.actor[keyPath] = Math.max(0, newValue);
   }
 
   /* -------------------------------------------- */
@@ -3676,35 +3637,6 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
   /* -------------------------------------------- */
 
   /**
-   * Create hint text indicating how much of this resource will be consumed/recovered.
-   * @this {ConsumptionTargetData}
-   * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
-   * @param {object} [options={}]
-   * @param {boolean} [options.consumed]       Is this consumption currently set to be consumed?
-   * @returns {ConsumptionLabels}
-   */
-  static consumptionLabelsSpellSlots(config, { consumed } = {}) {
-    const { cost, simplifiedCost, increaseKey, pluralRule } = this._resolveHintCost(config);
-    const levelNumber = Math.clamp(this.resolveLevel({ config }), 1, Object.keys(CONFIG.SHMN.spellLevels).length - 1);
-    const level = CONFIG.SHMN.spellLevels[levelNumber].toLowerCase();
-    const available = this.actor.system.spells?.[`spell${levelNumber}`]?.value ?? 0;
-    return {
-      label: game.i18n.localize(`SHMN.CONSUMPTION.Type.SpellSlots.Prompt${increaseKey}`),
-      hint: game.i18n.format(
-        `SHMN.CONSUMPTION.Type.SpellSlots.PromptHint${increaseKey}`,
-        {
-          cost,
-          slot: game.i18n.format(`SHMN.CONSUMPTION.Type.SpellSlot.${pluralRule}`, { level }),
-          available: formatNumber(available)
-        }
-      ),
-      warn: simplifiedCost > available
-    };
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Resolve the cost for the consumption hint.
    * @param {ActivityUseConfiguration} config  Configuration data for the activity usage.
    * @returns {{ cost: string, simplifiedCost: number, increaseKey: string, pluralRule: string }}
@@ -3738,17 +3670,33 @@ class ConsumptionTargetData extends foundry.abstract.DataModel {
    */
   static validAttributeTargets() {
     if (!this.actor) return [];
-    return TokenDocument.implementation.getConsumedAttributes(this.actor.type).map(attr => {
+
+    const base = TokenDocument.implementation.getConsumedAttributes(this.actor.type) ?? [];
+
+    const normal = base.map(attr => {
       let group;
       if (attr.startsWith("abilities.")) group = game.i18n.localize("SHMN.AbilityScorePl");
       else if (attr.startsWith("currency.")) group = game.i18n.localize("SHMN.Currency");
-      else if (attr.startsWith("spells.")) group = game.i18n.localize("SHMN.CONSUMPTION.Type.SpellSlots.Label");
       else if (attr.startsWith("attributes.movement.")) group = game.i18n.localize("SHMN.Speed");
       else if (attr.startsWith("attributes.senses.")) group = game.i18n.localize("SHMN.Senses");
       else if (attr.startsWith("attributes.actions.")) group = game.i18n.localize("SHMN.Vehicle");
       else if (attr.startsWith("resources.")) group = game.i18n.localize("SHMN.Resources");
-      return { group, value: attr, label: getHumanReadableAttributeLabel(attr, { actor: this.actor }) || attr };
+      else group = game.i18n.localize("SHMN.Attributes");
+
+      return {
+        group,
+        value: attr,
+        label: getHumanReadableAttributeLabel(attr, { actor: this.actor }) || attr
+      };
     });
+
+    const subenergies = Object.keys(this.actor.system.subenergies ?? {}).map(key => ({
+      group: game.i18n.localize("SHMN.Subenergies"),
+      value: `subenergies.${key}`,
+      label: getHumanReadableAttributeLabel(`subenergies.${key}`, { actor: this.actor }) || key
+    }));
+
+    return [...normal, ...subenergies];
   }
 
   /* -------------------------------------------- */
@@ -5027,7 +4975,6 @@ class ActivitySheet extends PseudoDocumentSheet {
         validTargets: showTextTarget ? null : target.validTargets
       };
     });
-    context.showConsumeSpellSlot = (this.activity.isSpell || this.activity.isRider) && (this.item.system.level !== 0);
     context.showScaling = !this.activity.isSpell || this.activity.isRider;
 
     // Uses recovery
@@ -7739,26 +7686,6 @@ function ActivityMixin(Base) {
         }
       }
 
-      // Handle spell slot consumption
-      else if (((config.consume === true) || config.consume.spellSlot)
-        && this.requiresSpellSlot && this.consumption.spellSlot) {
-        const spellcasting = CONFIG.SHMN.spellcasting[this.item.system.method];
-        const effectiveLevel = this.item.system.level + (config.scaling ?? 0);
-        const slot = config.spell?.slot ?? spellcasting?.getSpellSlotKey(effectiveLevel) ?? this.item.system.method;
-        const slotData = this.actor.system.spells?.[slot];
-        if (slotData) {
-          if (slotData.value) {
-            const newValue = Math.max(slotData.value - 1, 0);
-            foundry.utils.mergeObject(updates.actor, { [`system.spells.${slot}.value`]: newValue });
-          } else {
-            const err = new ConsumptionError(game.i18n.format("SHMN.SpellCastNoSlots", {
-              name: this.item.name, level: slotData.label
-            }));
-            errors.push(err);
-          }
-        }
-      }
-
       // Ensure concentration can be handled
       if (config.concentration?.begin) {
         const { effects } = this.actor.concentration;
@@ -9779,17 +9706,6 @@ class BaseActivityData extends foundry.abstract.DataModel {
    */
   get requiresConcentration() {
     return this.duration.concentration;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Does activating this activity consume a spell slot?
-   * @type {boolean}
-   */
-  get requiresSpellSlot() {
-    if (!this.isSpell || !this.actor?.system.spells) return false;
-    return this.canScale;
   }
 
   /* -------------------------------------------- */
@@ -17762,7 +17678,7 @@ class StartingEquipmentTemplate extends SystemDataModel$1 {
       || (!this.source.rules && (game.settings.get("shmn", "rulesVersion") === "modern"));
     if (modernStyle) {
       const entries = topLevel[0].type === "OR" ? topLevel[0].children : topLevel;
-      if (this.wealth) entries.push(new EquipmentEntryData({ type: "currency", key: "gp", count: this.wealth }));
+      if (this.wealth) entries.push(new EquipmentEntryData({ type: "currency", key: "usd", count: this.wealth }));
       if (entries.length > 1) {
         const usedPrefixes = [];
         const choices = EquipmentEntryData.prefixOrEntries(
@@ -18658,7 +18574,7 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
           required: true, nullable: false, initial: 0, min: 0, label: "SHMN.Price"
         }),
         denomination: new StringField$Z({
-          required: true, blank: false, initial: "gp", label: "SHMN.Currency"
+          required: true, blank: false, initial: "usd", label: "SHMN.Currency"
         })
       }, { label: "SHMN.Price" }),
       rarity: new StringField$Z({ required: true, blank: true, label: "SHMN.Rarity" })
@@ -18767,7 +18683,7 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
     if (!("price" in source) || foundry.utils.getType(source.price) === "Object") return;
     source.price = {
       value: Number.isNumeric(source.price) ? Number(source.price) : 0,
-      denomination: "gp"
+      denomination: "usd"
     };
   }
 
@@ -18806,12 +18722,12 @@ class PhysicalItemTemplate extends SystemDataModel$1 {
    * Prepare physical item properties.
    */
   preparePhysicalData() {
-    if (!("gp" in CONFIG.SHMN.currencies)) return;
+    if (!("usd" in CONFIG.SHMN.currencies)) return;
     const { value, denomination } = this.price;
     const { conversion } = CONFIG.SHMN.currencies[denomination] ?? {};
-    const { gp } = CONFIG.SHMN.currencies;
+    const { usd } = CONFIG.SHMN.currencies;
     if (conversion) {
-      const multiplier = gp.conversion / conversion;
+      const multiplier = usd.conversion / conversion;
       this.price.valueInGP = Math.floor(value * multiplier);
     }
   }
@@ -22859,7 +22775,6 @@ class ForwardSheet extends ActivitySheet {
   /** @inheritDoc */
   async _prepareActivationContext(context, options) {
     context = await super._prepareActivationContext(context, options);
-    context.showConsumeSpellSlot = false;
     context.showScaling = true;
     return context;
   }
@@ -23261,7 +23176,7 @@ class OrderUsageDialog extends ActivityUsageDialog {
         value: this.config.costs?.days ?? days ?? duration
       },
       gold: {
-        field: new NumberField$w({ nullable: true, integer: true, min: 0, label: "SHMN.CurrencyGP" }),
+        field: new NumberField$w({ nullable: true, integer: true, min: 0, label: "SHMN.CurrencyUSD" }),
         name: "costs.gold",
         value: this.config.costs?.gold ?? gold ?? 0
       }
@@ -24249,6 +24164,9 @@ class CurrencyManager extends Application5e {
     const currencies = Object.entries(CONFIG.SHMN.currencies)
       .filter(([, c]) => c.conversion)
       .sort((a, b) => a[1].conversion - b[1].conversion);
+    if (new Set(currencies.map(([, config]) => config.conversion)).size <= 1) {
+      return doc.update({ "system.currency": currency });
+    }
 
     // Convert all currently to smallest denomination
     const smallestConversion = currencies.at(-1)[1].conversion;
@@ -24564,7 +24482,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
       ${game.i18n.format("SHMN.FACILITY.Costs.Days", { days: costs.days })}
     `);
     if (costs.gold) supplements.push(`
-      <strong>${game.i18n.localize("SHMN.CurrencyGP")}</strong>
+      <strong>${game.i18n.localize("SHMN.CurrencyUSD")}</strong>
       ${formatNumber(costs.gold)}
       (${game.i18n.localize(`SHMN.FACILITY.Costs.${costs.paid ? "Paid" : "Unpaid"}`)})
     `);
@@ -24579,7 +24497,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
     if (trade?.stock?.value && trade.sell) supplements.push(`
       <strong>${game.i18n.localize("SHMN.FACILITY.Trade.Sell.Supplement")}</strong>
       ${formatNumber(trade.stock.value)}
-      ${CONFIG.SHMN.currencies.gp?.abbreviation ?? ""}
+      ${CONFIG.SHMN.currencies.usd?.abbreviation ?? ""}
     `);
     if (trade?.creatures) {
       const creatures = [];
@@ -24626,7 +24544,7 @@ class OrderActivity extends ActivityMixin(BaseOrderActivityData) {
     const config = foundry.utils.expandObject({ "data.flags.shmn.order": order });
     if (method === "automatic") {
       try {
-        await CurrencyManager.deductActorCurrency(this.actor, order.costs.gold, "gp", {
+        await CurrencyManager.deductActorCurrency(this.actor, order.costs.gold, "usd", {
           recursive: true,
           priority: "high"
         });
@@ -41196,7 +41114,7 @@ class VehicleData extends CommonTemplate {
         }, { label: "SHMN.VEHICLE.FIELDS.attributes.capacity.label" }),
         price: new SchemaField$n({
           value: new NumberField$j({ initial: null, min: 0, label: "SHMN.Price" }),
-          denomination: new StringField$t({ required: true, blank: false, initial: "gp", label: "SHMN.Currency" })
+          denomination: new StringField$t({ required: true, blank: false, initial: "usd", label: "SHMN.Currency" })
         }, { label: "SHMN.Price" }),
         quality: new SchemaField$n({
           value: new NumberField$j({ required: true, nullable: false, integer: true, min: -10, max: 10, initial: 4 })
@@ -42696,13 +42614,6 @@ SHMN.activityConsumptionTypes = {
     consumptionLabels: ConsumptionTargetData.consumptionLabelsHitDice,
     validTargets: ConsumptionTargetData.validHitDiceTargets
   },
-  spellSlots: {
-    label: "SHMN.CONSUMPTION.Type.SpellSlots.Label",
-    consume: ConsumptionTargetData.consumeSpellSlots,
-    consumptionLabels: ConsumptionTargetData.consumptionLabelsSpellSlots,
-    scalingModes: [{ value: "level", label: "SHMN.CONSUMPTION.Scaling.SlotLevel" }],
-    validTargets: ConsumptionTargetData.validSpellSlotsTargets
-  },
   attribute: {
     label: "SHMN.CONSUMPTION.Type.Attribute.Label",
     consume: ConsumptionTargetData.consumeAttribute,
@@ -42927,6 +42838,29 @@ SHMN.creatureTypes = {
   }
 };
 preLocalize("creatureTypes", { keys: ["label", "plural"], sort: true });
+
+/* -------------------------------------------- */
+
+SHMN.pactTypes = {
+  fire: { label: "SHMN.PactTypeFire", icon: "fas fa-fire" },
+  water: { label: "SHMN.PactTypeWater", icon: "fas fa-water" },
+  earth: { label: "SHMN.PactTypeEarth", icon: "fas fa-mountain" },
+  air: { label: "SHMN.PactTypeAir", icon: "fas fa-wind" },
+  lightning: { label: "SHMN.PactTypeLightning", icon: "fas fa-bolt" },
+  healing: { label: "SHMN.PactTypeHealing", icon: "fas fa-heart" },
+  emotion: { label: "SHMN.PactTypeEmotion", icon: "fas fa-masks-theater" },
+  blood: { label: "SHMN.PactTypeBlood", icon: "fas fa-tint" },
+  necrotic: { label: "SHMN.PactTypeNecrotic", icon: "fas fa-skull" },
+  sand: { label: "SHMN.PactTypeSand", icon: "fas fa-mound" },
+  time: { label: "SHMN.PactTypeTime", icon: "fas fa-clock" },
+  metal: { label: "SHMN.PactTypeMetal", icon: "fas fa-cubes" },
+  ice: { label: "SHMN.PactTypeIce", icon: "fas fa-snowflake" },
+  wildEnergy: { label: "SHMN.PactTypeWildEnergy", icon: "fas fa-explosion" },
+  celestial: { label: "SHMN.PactTypeCelestial", icon: "fas fa-sparkles" },
+  force: { label: "SHMN.PactTypeForce", icon: "fas fa-wave-square" },
+  lava: { label: "SHMN.PactTypeLava", icon: "fas fa-volcano" }
+};
+preLocalize("pactTypes", { key: "label", sort: true });
 
 /* -------------------------------------------- */
 
@@ -43641,39 +43575,45 @@ preLocalize("lootTypes", { key: "label" });
 
 /**
  * The valid currency denominations with localized labels, abbreviations, and conversions.
- * The conversion number defines how many of that currency are equal to one GP.
+ * The conversion number defines how many of that currency are equal to one base currency unit.
  * @enum {CurrencyConfiguration}
  */
 SHMN.currencies = {
-  pp: {
-    label: "SHMN.CurrencyPP",
-    abbreviation: "SHMN.CurrencyAbbrPP",
-    conversion: 0.1,
-    icon: "systems/shmn/icons/currency/platinum.webp"
-  },
-  gp: {
-    label: "SHMN.CurrencyGP",
-    abbreviation: "SHMN.CurrencyAbbrGP",
+  usd: {
+    label: "SHMN.CurrencyUSD",
+    abbreviation: "SHMN.CurrencyAbbrUSD",
     conversion: 1,
-    icon: "systems/shmn/icons/currency/gold.webp"
+    decimals: 2
   },
-  ep: {
-    label: "SHMN.CurrencyEP",
-    abbreviation: "SHMN.CurrencyAbbrEP",
-    conversion: 2,
-    icon: "systems/shmn/icons/currency/electrum.webp"
+  eur: {
+    label: "SHMN.CurrencyEUR",
+    abbreviation: "SHMN.CurrencyAbbrEUR",
+    conversion: 1,
+    decimals: 2
   },
-  sp: {
-    label: "SHMN.CurrencySP",
-    abbreviation: "SHMN.CurrencyAbbrSP",
-    conversion: 10,
-    icon: "systems/shmn/icons/currency/silver.webp"
+  brl: {
+    label: "SHMN.CurrencyBRL",
+    abbreviation: "SHMN.CurrencyAbbrBRL",
+    conversion: 1,
+    decimals: 2
   },
-  cp: {
-    label: "SHMN.CurrencyCP",
-    abbreviation: "SHMN.CurrencyAbbrCP",
-    conversion: 100,
-    icon: "systems/shmn/icons/currency/copper.webp"
+  gbp: {
+    label: "SHMN.CurrencyGBP",
+    abbreviation: "SHMN.CurrencyAbbrGBP",
+    conversion: 1,
+    decimals: 2
+  },
+  rub: {
+    label: "SHMN.CurrencyRUB",
+    abbreviation: "SHMN.CurrencyAbbrRUB",
+    conversion: 1,
+    decimals: 2
+  },
+  jpy: {
+    label: "SHMN.CurrencyJPY",
+    abbreviation: "SHMN.CurrencyAbbrJPY",
+    conversion: 1,
+    decimals: 0
   }
 };
 preLocalize("currencies", { keys: ["label", "abbreviation"] });
@@ -52339,6 +52279,55 @@ class EnergyPointsConfig extends BaseConfigSheet {
   }
 }
 
+class StaminaConfig extends BaseConfigSheet {
+  static DEFAULT_OPTIONS = {
+    classes: ["stamina"],
+    position: {
+      width: 420
+    }
+  };
+
+  static PARTS = {
+    config: {
+      template: "systems/shmn/templates/actors/config/stamina-config.hbs"
+    }
+  };
+
+  get title() {
+    return game.i18n.localize("SHMN.Stamina");
+  }
+
+  async _preparePartContext(partId, context, options) {
+    context = await super._preparePartContext(partId, context, options);
+    context.data = this.document.system.attributes.stamina;
+    context.fields = this.document.system.schema.fields.attributes.fields.stamina.fields;
+    context.source = this.document.system._source.attributes.stamina;
+    return context;
+  }
+
+  _processSubmitData(event, form, submitData) {
+    const currentValue = Number(foundry.utils.getProperty(submitData, "system.attributes.stamina.value")
+      ?? this.document.system.attributes.stamina.value ?? 0);
+
+    const currentMax = Number(foundry.utils.getProperty(submitData, "system.attributes.stamina.max")
+      ?? this.document.system.attributes.stamina.max ?? 0);
+
+    foundry.utils.setProperty(
+      submitData,
+      "system.attributes.stamina.value",
+      Math.clamp(currentValue, 0, Math.max(0, currentMax))
+    );
+
+    foundry.utils.setProperty(
+      submitData,
+      "system.attributes.stamina.max",
+      Math.max(0, currentMax)
+    );
+
+    super._processSubmitData(event, form, submitData);
+  }
+}
+
 const { BooleanField: BooleanField$e } = foundry.data.fields;
 
 /**
@@ -53865,7 +53854,15 @@ class BaseActorSheet extends PrimarySheetMixin(
     const Inventory = customElements.get(this.options.elements.inventory);
 
     // Currency
-    context.currency = this.inventorySource.system._source.currency;
+    context.currency = this.inventorySource.system._source.currency ?? {};
+    context.selectedCurrency = this.actor.getFlag("shmn", "selectedCurrency");
+    if (!(context.selectedCurrency in CONFIG.SHMN.currencies)) context.selectedCurrency = Object.keys(CONFIG.SHMN.currencies)[0];
+    context.selectedCurrencyValue = context.currency[context.selectedCurrency] ?? 0;
+    const currencyDecimals = CONFIG.SHMN.currencies[context.selectedCurrency]?.decimals ?? 2;
+    context.selectedCurrencyDisplayValue = formatNumber(context.selectedCurrencyValue, {
+      minimumFractionDigits: currencyDecimals,
+      maximumFractionDigits: currencyDecimals
+    });
 
     // Containers
     context.itemContext ??= {};
@@ -54724,8 +54721,15 @@ class BaseActorSheet extends PrimarySheetMixin(
       }
 
       // Handle delta inputs
-      this.element.querySelectorAll('input[type="text"]:is([data-dtype="Number"], [inputmode="numeric"])')
+      this.element.querySelectorAll('input[type="text"]:is([data-dtype="Number"], [inputmode="numeric"]):not(.currency-value-mask)')
         .forEach(i => i.addEventListener("change", this._onChangeInputDelta.bind(this)));
+
+      // Currency display masks
+      this.element.querySelectorAll("input.currency-value-mask").forEach(input => {
+        input.addEventListener("focus", event => this._onFocusCurrencyMask(event));
+        input.addEventListener("change", event => this._onChangeCurrencyMask(event));
+        input.addEventListener("blur", event => this._onBlurCurrencyMask(event));
+      });
 
       // Meter editing
       for (const meter of this.element.querySelectorAll('.meter > [role="meter"]:has(> input)')) {
@@ -54886,6 +54890,68 @@ class BaseActorSheet extends PrimarySheetMixin(
       }
       else target.update({ [input.dataset.name]: result });
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Display raw currency values while editing masked currency inputs.
+   * @param {FocusEvent} event  Triggering event.
+   * @protected
+   */
+  _onFocusCurrencyMask(event) {
+    const input = event.target;
+    const value = Number(input.dataset.value || 0);
+    input.value = Number.isInteger(value) ? value.toString() : value.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+    input.select();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Save masked currency input changes through the numeric hidden field.
+   * @param {Event} event  Triggering event.
+   * @protected
+   */
+  async _onChangeCurrencyMask(event) {
+    const input = event.target;
+    const hidden = input.closest(".currency-picker")?.querySelector('input[type="hidden"][name^="system.currency."]');
+    if (!hidden) return;
+    event.stopPropagation();
+
+    const current = Number(hidden.value || 0);
+    const raw = input.value.trim();
+    let normalized = raw.replace(/\s/g, "");
+    const comma = normalized.lastIndexOf(",");
+    const dot = normalized.lastIndexOf(".");
+    if (comma > dot) normalized = normalized.replace(/\./g, "").replace(",", ".");
+    else if (dot > comma) normalized = normalized.replace(/,/g, "");
+    const value = raw ? parseDelta(normalized, current) : 0;
+    const currency = hidden.name.split(".").at(-1);
+    const currencyDecimals = CONFIG.SHMN.currencies[currency]?.decimals ?? 2;
+    const normalizedValue = currencyDecimals ? value : Math.round(value);
+    hidden.value = Number.isNaN(normalizedValue) ? current.toString() : normalizedValue.toString();
+    input.dataset.value = hidden.value;
+
+    const actor = input.closest(".inventory-element") ? this.inventorySource : this.actor;
+    await actor.update({ [hidden.name]: Number(hidden.value) });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Restore masked currency formatting after editing.
+   * @param {FocusEvent} event  Triggering event.
+   * @protected
+   */
+  _onBlurCurrencyMask(event) {
+    const input = event.target;
+    const currency = input.name?.split(".").at(-1) || input.dataset.name?.split(".").at(-1);
+    const currencyDecimals = CONFIG.SHMN.currencies[currency]?.decimals ?? 2;
+    input.value = formatNumber(Number(input.dataset.value || 0), {
+      minimumFractionDigits: currencyDecimals,
+      maximumFractionDigits: currencyDecimals
+    });
   }
 
   /* -------------------------------------------- */
@@ -55106,6 +55172,8 @@ class BaseActorSheet extends PrimarySheetMixin(
         return new HitPointsConfig(config).render({ force: true });
       case "energyPoints":
         return new EnergyPointsConfig(config).render({ force: true });
+      case "stamina":
+        return new StaminaConfig(config).render({ force: true });
       case "initiative":
         return new InitiativeConfig(config).render({ force: true });
       case "movement":
@@ -55709,9 +55777,13 @@ class CharacterActorSheet extends BaseActorSheet {
       createPact: CharacterActorSheet.#createPact,
       createPactSpell: CharacterActorSheet.#createPactSpell,
       editPactImage: CharacterActorSheet.#editPactImage,
+      editCollectiveCombatImage: CharacterActorSheet.#editCollectiveCombatImage,
       deletePact: CharacterActorSheet.#deletePact,
       editPactSpell: CharacterActorSheet.#editPactSpell,
       deletePactSpell: CharacterActorSheet.#deletePactSpell,
+      toggleSubenergies: CharacterActorSheet.#toggleSubenergies,
+      setBarrier: CharacterActorSheet.#setBarrier,
+      rollBarrier: CharacterActorSheet.#rollBarrier,
       toggleDeathTray: CharacterActorSheet.#toggleDeathTray,
       toggleInspiration: CharacterActorSheet.#toggleInspiration,
       useFacility: CharacterActorSheet.#useFacility,
@@ -55777,6 +55849,11 @@ class CharacterActorSheet extends BaseActorSheet {
       template: "systems/shmn/templates/actors/tabs/character-bastion.hbs",
       scrollable: [""]
     },
+    collectiveCombat: {
+      container: { classes: ["tab-body"], id: "tabs" },
+      template: "systems/shmn/templates/actors/tabs/actor-collective-combat.hbs",
+      scrollable: [""]
+    },
     specialTraits: {
       classes: ["flexcol"],
       container: { classes: ["tab-body"], id: "tabs" },
@@ -55817,8 +55894,9 @@ class CharacterActorSheet extends BaseActorSheet {
     { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
     { tab: "features", label: "SHMN.Features", icon: "fas fa-list" },
     { tab: "spells", label: "TYPES.Item.spellPl", icon: "fas fa-handshake" },
+    { tab: "collectiveCombat", label: "SHMN.CollectiveCombat", icon: "fa-solid fa-people-group" },
     { tab: "effects", label: "SHMN.Effects", icon: "fas fa-bolt" },
-    { tab: "biography", label: "SHMN.Biography", icon: "fas fa-feather" },
+    { tab: "biography", label: "SHMN.Notebook", icon: "fas fa-book-open" },
     { tab: "bastion", label: "SHMN.Bastion.Label", icon: "fas fa-chess-rook" },
     { tab: "specialTraits", label: "SHMN.SpecialTraits", icon: "fas fa-star" }
   ];
@@ -55833,6 +55911,15 @@ class CharacterActorSheet extends BaseActorSheet {
    * @protected
    */
   _deathTrayOpen = false;
+
+  /* -------------------------------------------- */
+
+  /**
+   * Current pactbook search query.
+   * @type {string}
+   * @protected
+   */
+  _pactbookSearch = "";
 
   /* -------------------------------------------- */
 
@@ -55887,6 +55974,7 @@ class CharacterActorSheet extends BaseActorSheet {
       case "abilityScores": return this._prepareAbilityScoresContext(context, options);
       case "bastion": return this._prepareBastionContext(context, options);
       case "biography": return this._prepareBiographyContext(context, options);
+      case "collectiveCombat": return this._prepareCollectiveCombatContext(context, options);
       case "details": return this._prepareDetailsContext(context, options);
       case "effects": return this._prepareEffectsContext(context, options);
       case "features": return this._prepareFeaturesContext(context, options);
@@ -55980,7 +56068,7 @@ class CharacterActorSheet extends BaseActorSheet {
       secrets: this.actor.isOwner, relativeTo: this.actor, rollData: context.rollData
     };
     context.enriched = {
-      label: "SHMN.Biography",
+      label: "SHMN.Notebook",
       value: await TextEditor$8.enrichHTML(this.actor.system.details.biography.value, enrichmentOptions)
     };
 
@@ -55994,6 +56082,49 @@ class CharacterActorSheet extends BaseActorSheet {
         name, label: field.label,
         value: foundry.utils.getProperty(this.actor, name) ?? "",
         source: foundry.utils.getProperty(this.actor._source, name) ?? ""
+      };
+    });
+
+    return context;
+  }
+
+  /* -------------------------------------------- */
+
+  async _prepareCollectiveCombatContext(context, options) {
+    context = await this._prepareDetailsContext(context, options);
+
+    const collectiveCombat = this.actor.system.attributes.collectiveCombat ?? {};
+    const teamImage = collectiveCombat.img || "systems/shmn/icons/svg/actors/group.svg";
+    context.collectiveCombatTeam = {
+      img: teamImage,
+      hasImage: !!collectiveCombat.img,
+      name: collectiveCombat.name ?? "",
+      position: collectiveCombat.position ?? "",
+      label: game.i18n.localize("SHMN.CollectiveCombatTeamImage")
+    };
+    context.stamina = this.actor.system.attributes.stamina;
+
+    const letters = ["A", "B", "C", "D", "E", "F", "G"];
+    const keys = ["a", "b", "c", "d", "e", "f", "g"];
+    const barriersData = collectiveCombat.barriers ?? {};
+
+    context.barriers = keys.map((key, index) => {
+      const value = Number(barriersData[key]?.value ?? 0);
+
+      return {
+        key,
+        letter: letters[index],
+        label: game.i18n.localize(`SHMN.Barrier${letters[index]}`),
+        value,
+        formula: `1d20 + ${value}`,
+        pips: Array.from({ length: 10 }, (_, i) => {
+          const pipValue = i + 1;
+          return {
+            value: pipValue,
+            filled: pipValue <= value,
+            pressed: pipValue <= value ? "true" : "false"
+          };
+        })
       };
     });
 
@@ -56217,6 +56348,13 @@ class CharacterActorSheet extends BaseActorSheet {
     const { attributes } = this.actor.system;
     context.portrait = await this._preparePortrait(context);
 
+    context.subenergies = Object.entries(this.actor.system.subenergies ?? {}).map(([id, value]) => ({
+      id,
+      value: value ?? 0,
+      label: `SHMN.Subenergy.${id}`,
+      inputName: `system.subenergies.${id}`
+    }));
+
     // Death Saves
     const plurals = new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
     context.death = {
@@ -56319,8 +56457,11 @@ class CharacterActorSheet extends BaseActorSheet {
     const Inventory = customElements.get(this.options.elements.inventory);
     const pacts = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
     const rankOrder = ["PASSIVE", "E", "D", "C", "B", "A", "S", "SS"];
-
     const spells = (context.itemCategories?.spells ?? []).filter(item => item.type === "spell");
+
+    const pactTypeChoices = Object.fromEntries(
+      Object.entries(CONFIG.SHMN.pactTypes ?? {}).map(([key, data]) => [key, data.label])
+    );
 
     const buildRankSections = (spellList, pactId) => {
       const sections = [];
@@ -56331,7 +56472,7 @@ class CharacterActorSheet extends BaseActorSheet {
 
         sections.push({
           id: `${pactId || "unlinked"}-${rank}`,
-          label: rank === "PASSIVE" ? "Passivo" : `Rank ${rank}`,
+          label: rank === "PASSIVE" ? game.i18n.localize("SHMN.Passive") : `Rank ${rank}`,
           items: rankSpells,
           columns: [
             "school",
@@ -56358,10 +56499,24 @@ class CharacterActorSheet extends BaseActorSheet {
     const pactbook = pacts.map((pact, index) => {
       const pactSpells = spells.filter(spell => spell.system.pactId === pact.id);
 
+      const types = Array.isArray(pact.types) ? pact.types.slice(0, 3) : [];
+      while (types.length < 3) types.push("");
+
+      const selectedTypes = types
+        .filter(type => type && CONFIG.SHMN.pactTypes?.[type])
+        .map(type => ({
+          key: type,
+          label: game.i18n.localize(CONFIG.SHMN.pactTypes[type].label),
+          icon: CONFIG.SHMN.pactTypes[type].icon
+        }));
+
       return {
         ...pact,
         index,
         description: pact.description ?? "",
+        types,
+        typeChoices: pactTypeChoices,
+        selectedTypes,
         sections: buildRankSections(pactSpells, pact.id)
       };
     });
@@ -56392,25 +56547,32 @@ class CharacterActorSheet extends BaseActorSheet {
   _processFormData(event, form, formData) {
     const submitData = super._processFormData(event, form, formData);
 
-    const pactUpdates = foundry.utils.getProperty(submitData, "flags.shmn.pactsData");
-    if (pactUpdates && (foundry.utils.getType(pactUpdates) === "Object")) {
-      const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    const existing = foundry.utils.deepClone(this.actor.getFlag("shmn", "pacts") ?? []);
+    const pactUpdates = foundry.utils.expandObject(formData.object).flags?.shmn?.pactsData ?? {};
 
-      const next = existing.map(pact => {
-        const update = pactUpdates[pact.id] ?? {};
-        return {
-          ...pact,
-          name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
-          description: update.description ?? pact.description ?? ""
-        };
-      });
+    const next = existing.map(pact => {
+      const update = pactUpdates[pact.id] ?? {};
 
-      foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+      const rawTypes = update.types ?? pact.types ?? [];
+      const normalizedTypes = Array.isArray(rawTypes) ? rawTypes : Object.values(rawTypes);
 
-      delete submitData.flags.shmn.pactsData;
-      if (Object.keys(submitData.flags.shmn).length === 0) delete submitData.flags.shmn;
-      if (Object.keys(submitData.flags ?? {}).length === 0) delete submitData.flags;
-    }
+      const cleanedTypes = normalizedTypes
+        .map(type => String(type ?? "").trim())
+        .filter((type, index, arr) => !type || arr.indexOf(type) === index)
+        .slice(0, 3);
+
+      while (cleanedTypes.length < 3) cleanedTypes.push("");
+
+      return {
+        ...pact,
+        name: (update.name ?? pact.name ?? "").trim() || game.i18n.localize("SHMN.Pact"),
+        description: update.description ?? pact.description ?? "",
+        types: cleanedTypes
+      };
+    });
+
+    foundry.utils.setProperty(submitData, "flags.shmn.pacts", next);
+    foundry.utils.setProperty(submitData, "flags.shmn.-=pactsData", null);
 
     return submitData;
   }
@@ -56733,6 +56895,12 @@ class CharacterActorSheet extends BaseActorSheet {
     if (!this.actor.limited) {
       this._renderAttunement(context, options);
       this._renderSpellbook(context, options);
+      const pactbookSearch = this.element.querySelector(".pactbook-search-input");
+      if (pactbookSearch) {
+        pactbookSearch.value = this._pactbookSearch;
+        pactbookSearch.addEventListener("input", this._onSearchPactbook.bind(this));
+        this._filterPactbook();
+      }
     }
 
     // Show death tray at 0 HP
@@ -56746,6 +56914,46 @@ class CharacterActorSheet extends BaseActorSheet {
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
   /* -------------------------------------------- */
+
+  /**
+   * Handle filtering pact cards by their text or ritual names.
+   * @param {InputEvent} event  Triggering input event.
+   * @protected
+   */
+  _onSearchPactbook(event) {
+    this._pactbookSearch = event.target.value ?? "";
+    this._filterPactbook();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Filter pactbook entries in-place.
+   * @protected
+   */
+  _filterPactbook() {
+    const query = this._normalizeSearchText(this._pactbookSearch);
+    for (const pact of this.element.querySelectorAll(".pactbook .pact")) {
+      const text = this._normalizeSearchText(pact.textContent ?? "");
+      pact.hidden = !!query && !text.includes(query);
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Normalize text for pactbook searches.
+   * @param {string} value  Text to normalize.
+   * @returns {string}
+   * @protected
+   */
+  _normalizeSearchText(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase(game.i18n.lang)
+      .trim();
+  }
 
   /**
    * Handle removing a favorite.
@@ -56859,7 +57067,8 @@ class CharacterActorSheet extends BaseActorSheet {
       id: foundry.utils.randomID(),
       name: game.i18n.localize("SHMN.Pact"),
       img: "icons/svg/mystery-man.svg",
-      description: ""
+      description: "",
+      types: ["", "", ""]
     });
     await this.actor.setFlag("shmn", "pacts", pacts);
   }
@@ -56896,6 +57105,27 @@ class CharacterActorSheet extends BaseActorSheet {
     }).render(true);
   }
 
+  static async #editCollectiveCombatImage(event, target) {
+    if (!this.isEditable) return;
+
+    const current = this.actor.system.attributes.collectiveCombat?.img || target.getAttribute("src")
+      || "systems/shmn/icons/svg/actors/group.svg";
+
+    new CONFIG.ux.FilePicker({
+      type: "image",
+      current,
+      callback: async path => {
+        target.src = path;
+        await this.actor.update({ "system.attributes.collectiveCombat.img": path });
+        this.render({ force: true });
+      },
+      position: {
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      }
+    }).render(true);
+  }
+
   static async #deletePact(event, target) {
     if (!this.isEditable) return;
 
@@ -56921,6 +57151,204 @@ class CharacterActorSheet extends BaseActorSheet {
     await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
+  /* -------------------------------------------- */
+
+  static async #toggleSubenergies(event, target) {
+    event.preventDefault();
+
+    const group = target.closest(".subenergy-group");
+    if (!group) return;
+    const list = group.querySelector(".subenergy-list");
+    const wrapper = list?.querySelector(":scope > .wrapper");
+    if (!list || !wrapper) return;
+
+    const willExpand = group.classList.contains("collapsed");
+    const duration = 260;
+    const easing = "cubic-bezier(0.22, 1, 0.36, 1)";
+    const animationId = foundry.utils.randomID();
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    list.getAnimations().forEach(animation => animation.cancel());
+    wrapper.getAnimations().forEach(animation => animation.cancel());
+    list.dataset.animationId = animationId;
+
+    if (reduceMotion) {
+      group.classList.toggle("collapsed", !willExpand);
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+      delete list.dataset.animationId;
+      await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
+      return;
+    }
+
+    const transition = `height ${duration}ms ${easing}`;
+    const contentTransition = `opacity ${Math.round(duration * 0.75)}ms ease, transform ${duration}ms ${easing}`;
+    const waitForHeight = () => new Promise(resolve => {
+      const timeout = setTimeout(resolve, duration + 80);
+      list.addEventListener("transitionend", event => {
+        if (event.propertyName !== "height") return;
+        clearTimeout(timeout);
+        resolve();
+      }, { once: true });
+    });
+
+    if (willExpand) {
+      wrapper.style.visibility = "hidden";
+      list.style.transition = "none";
+      wrapper.style.transition = "none";
+      group.classList.remove("collapsed");
+      list.style.height = "auto";
+      const height = list.scrollHeight;
+      list.style.height = "0px";
+      wrapper.style.opacity = "0";
+      wrapper.style.transform = "translateY(-6px)";
+      wrapper.style.visibility = "";
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (list.dataset.animationId !== animationId) return;
+      list.style.transition = transition;
+      wrapper.style.transition = contentTransition;
+      list.style.height = `${height}px`;
+      wrapper.style.opacity = "1";
+      wrapper.style.transform = "translateY(0)";
+      await waitForHeight();
+      if (list.dataset.animationId !== animationId) return;
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+    } else {
+      const height = list.getBoundingClientRect().height;
+      list.style.height = `${height}px`;
+      list.style.transition = "none";
+      wrapper.style.opacity = "1";
+      wrapper.style.transform = "translateY(0)";
+      wrapper.style.transition = "none";
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (list.dataset.animationId !== animationId) return;
+      list.style.transition = transition;
+      wrapper.style.transition = contentTransition;
+      group.classList.add("collapsed");
+      list.style.height = "0px";
+      wrapper.style.opacity = "0";
+      wrapper.style.transform = "translateY(-6px)";
+      await waitForHeight();
+      if (list.dataset.animationId !== animationId) return;
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+    }
+
+    delete list.dataset.animationId;
+    await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
+  }
+
+  /* -------------------------------------------- */
+
+  static async #setBarrier(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.isEditable) return;
+
+    const button = target.closest("[data-action='setBarrier']");
+    if (!button) return;
+
+    const barrierKey = button.dataset.barrier;
+    const clickedValue = Number(button.dataset.value);
+
+    if (!barrierKey || !Number.isFinite(clickedValue)) return;
+
+    const propertyPath = `attributes.collectiveCombat.barriers.${barrierKey}.value`;
+    const documentPath = `system.${propertyPath}`;
+
+    const currentValue = Number(
+      foundry.utils.getProperty(this.actor.system, propertyPath) ?? 0
+    );
+
+    let nextValue = clickedValue;
+    if (clickedValue === currentValue) nextValue = Math.max(0, clickedValue - 1);
+
+    await this.actor.update({
+      [documentPath]: nextValue
+    });
+
+    this.render({ force: true });
+  }
+
+  /* -------------------------------------------- */
+
+  static async #rollBarrier(event, target) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const button = target.closest("[data-action='rollBarrier']");
+    if (!button) return;
+
+    const { barrier } = button.dataset;
+    if (!barrier) return;
+
+    const path = `attributes.collectiveCombat.barriers.${barrier}.value`;
+    const value = Number(foundry.utils.getProperty(this.actor.system, path) ?? 0);
+    const barrierLabel = game.i18n.localize(`SHMN.Barrier${barrier.toUpperCase()}`);
+    const flavor = `${game.i18n.localize("SHMN.BarrierRoll")}: ${barrierLabel}`;
+
+    const rollConfig = {
+      event,
+      hookNames: ["barrier", "d20Test"],
+      subject: this.actor,
+      rolls: [
+        CONFIG.Dice.D20Roll.mergeConfigs({
+          parts: [String(value)],
+          data: this.actor.getRollData(),
+          options: {}
+        }, {})
+      ]
+    };
+
+    const dialogConfig = {
+      applicationClass: CONFIG.Dice.D20Roll.DefaultConfigurationDialog,
+      options: {
+        window: {
+          title: flavor,
+          subtitle: this.actor.name
+        }
+      }
+    };
+
+    const messageConfig = {
+      create: true,
+      data: {
+        flags: {
+          shmn: {
+            messageType: "roll",
+            roll: {
+              type: "barrier",
+              barrier
+            }
+          }
+        },
+        flavor,
+        speaker: ChatMessage.getSpeaker({ actor: this.actor })
+      }
+    };
+
+    const rolls = await CONFIG.Dice.D20Roll.build(rollConfig, dialogConfig, messageConfig);
+    if (!rolls?.length) return null;
+
+    Hooks.callAll("shmn.rollBarrier", rolls, { barrier, subject: this.actor });
+    Hooks.callAll("shmn.rollBarrierV2", rolls, { barrier, subject: this.actor });
+
+    return rolls;
+  }
 
   /* -------------------------------------------- */
 
@@ -57833,9 +58261,15 @@ class GroupActorSheet extends MultiActorSheet {
     actions: {
       award: GroupActorSheet.#onAward,
       changePace: GroupActorSheet.#onChangePace,
+      changeMemberRole: GroupActorSheet.#onChangeMemberRole,
       roll: GroupActorSheet.#onRoll,
+      teamContest: GroupActorSheet.#onTeamContest,
       toggleInventory: GroupActorSheet.#onToggleInventory
     },
+    dragDrop: [{
+      dragSelector: ".draggable",
+      dropSelector: null
+    }],
     tab: "members"
   };
 
@@ -57877,10 +58311,31 @@ class GroupActorSheet extends MultiActorSheet {
 
   /** @override */
   static TABS = [
-    { tab: "members", label: "SHMN.Group.Member.other", icon: "fa-solid fa-users" },
-    { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
+    { tab: "members", label: "SHMN.Team.Members", icon: "fa-solid fa-people-group" },
+    { tab: "inventory", label: "SHMN.Trophies", icon: "fa-solid fa-trophy" },
     { tab: "biography", label: "SHMN.Biography", icon: "fa-solid fa-feather" }
   ];
+
+  /* -------------------------------------------- */
+
+  /**
+   * Team role layout for group actors.
+   * @type {{ key: string, label: string, capacity: number|null }[]}
+   */
+  static TEAM_ROLES = [
+    { key: "defense", label: "SHMN.Team.Role.Defense", capacity: 2 },
+    { key: "support", label: "SHMN.Team.Role.Support", capacity: 2 },
+    { key: "catcher", label: "SHMN.Team.Role.Catcher", capacity: 1 },
+    { key: "offensive", label: "SHMN.Team.Role.Offensive", capacity: 1 },
+    { key: "reserve", label: "SHMN.Team.Role.Reserve", capacity: null }
+  ];
+
+  static TEAM_ROLE_SKILLS = {
+    defense: "dcc",
+    support: "scc",
+    catcher: "ccc",
+    offensive: "occ"
+  };
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -57920,8 +58375,9 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   async _prepareHeaderContext(context, options) {
-    context.showXP = game.settings.get("shmn", "levelingMode") !== "noxp";
-    context.travelPace = this.actor.system.getTravelPace();
+    context.teamTitle = this.actor.system.details.teamTitle ?? "";
+    context.victories = Number(this.actor.system.details.victories ?? 0);
+    context.teamPrimaryColor = this._getTeamPrimaryColor();
     return context;
   }
 
@@ -57956,32 +58412,49 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   async _prepareMembersContext(context, options) {
-    context.sections = {
-      character: { members: [], hasStats: true },
-      npc: { members: [], label: "TYPES.Actor.npcPl", hasStats: true },
-      vehicle: { members: [], label: "TYPES.Actor.vehiclePl" }
-    };
-    for (const { actor } of this.document.system.members) {
+    context.roleOptions = this.constructor.TEAM_ROLES.map(({ key, label }) => ({ value: key, label }));
+    context.sections = this.constructor.TEAM_ROLES.map(({ key, label, capacity }) => ({
+      key,
+      label,
+      capacity,
+      emptySlots: [],
+      hasStats: true,
+      members: []
+    }));
+    const sections = Object.fromEntries(context.sections.map(section => [section.key, section]));
+
+    for (const [index, memberData] of this.document.system.members.entries()) {
+      const { actor } = memberData;
       if (!actor) continue;
       const { id, type, img, name, system, uuid } = actor;
-      const section = context.sections[type];
+      const roleKey = memberData.role === "attack" ? "offensive" : memberData.role;
+      const role = sections[roleKey] ? roleKey : "reserve";
+      const section = sections[role];
       if (!section) continue;
-      const member = { id, type, img, name, system, uuid };
+      const member = { id, goals: Number(memberData.goals ?? 0), index, role, type, img, name, system, uuid };
       member.canView = actor.testUserPermission(game.user, "LIMITED");
+      member.canManageGoals = context.editable && (game.user.isGM || actor.isOwner);
+      member.canRollTeamSkill = actor.isOwner;
       member.hiddenStats = !actor.testUserPermission(game.user, "OBSERVER");
       member.classes = member.hiddenStats ? [] : actor.itemTypes.class;
       await this._prepareMemberPortrait(actor, member);
       this._prepareMemberEncumbrance(actor, member);
       this._prepareMemberSkills(actor, member);
+      this._prepareMemberTeamSkill(member);
+      this._prepareMemberStamina(actor, member);
       switch (type) {
         case "character": await this._prepareCharacterContext(actor, member, options); break;
         case "npc": await this._prepareNPCContext(actor, member, options); break;
         case "vehicle": await this._prepareVehicleContext(actor, member, options); break;
       }
+      this._prepareTeamRoleUnderlay(member);
       section.members.push(member);
     }
-    Object.values(context.sections).forEach(s => {
-      s.members.sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang));
+    Object.values(sections).forEach(s => {
+      if (Number.isFinite(s.capacity)) {
+        const remaining = Math.max(0, s.capacity - s.members.length);
+        s.emptySlots = Array.from({ length: remaining }, (_, index) => ({ index: index + 1 }));
+      }
     });
     return context;
   }
@@ -58055,6 +58528,17 @@ class GroupActorSheet extends MultiActorSheet {
   /* -------------------------------------------- */
 
   /**
+   * Prefer a position-specific underlay for active team roles.
+   * @param {object} context  Member render context.
+   * @protected
+   */
+  _prepareTeamRoleUnderlay(context) {
+    if (context.role && (context.role !== "reserve")) context.underlay = `var(--underlay-team-${context.role})`;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
    * Prepare encumbrance context for members.
    * @param {Actor5e} actor   The actor instance.
    * @param {object} context  The render context.
@@ -58084,7 +58568,9 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   _prepareMemberSkills(actor, context) {
-    context.skills = Object.fromEntries(Object.entries(actor.system.skills ?? {}).map(([key, skill]) => {
+    const ccKeys = ["occ", "dcc", "ccc", "scc"];
+
+    const allSkills = Object.fromEntries(Object.entries(actor.system.skills ?? {}).map(([key, skill]) => {
       const { ability, passive, total } = skill;
       const css = [actor.isOwner ? "rollable" : "", "skill"].filterJoin(" ");
       const label = game.i18n.format(actor.isOwner ? "SHMN.SkillRoll" : "SHMN.SkillTitle", {
@@ -58093,6 +58579,53 @@ class GroupActorSheet extends MultiActorSheet {
       });
       return [key, { css, label, passive, total }];
     }));
+
+    context.skills = {};
+    context.ccSkills = {};
+
+    for (const [key, skill] of Object.entries(allSkills)) {
+      if (ccKeys.includes(key)) context.ccSkills[key] = skill;
+      else context.skills[key] = skill;
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare the collective combat proficiency tied to the member's team role.
+   * @param {object} context  The render context.
+   * @protected
+   */
+  _prepareMemberTeamSkill(context) {
+    const skillKey = this.constructor.TEAM_ROLE_SKILLS[context.role];
+    if (!skillKey) return;
+
+    const skill = context.ccSkills?.[skillKey];
+    if (!skill) return;
+
+    context.teamSkill = {
+      ...skill,
+      key: skillKey,
+      label: CONFIG.SHMN.skills[skillKey]?.label ?? skill.label
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare stamina context for team members.
+   * @param {Actor5e} actor   The actor instance.
+   * @param {object} context  The render context.
+   * @protected
+   */
+  _prepareMemberStamina(actor, context) {
+    const stamina = actor.system.attributes.stamina;
+    if (!stamina) return;
+    context.stamina = {
+      value: Number(stamina.value ?? 0),
+      max: Number(stamina.max ?? 0),
+      pct: Number(stamina.pct ?? 0)
+    };
   }
 
   /* -------------------------------------------- */
@@ -58131,6 +58664,63 @@ class GroupActorSheet extends MultiActorSheet {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * Assign a group member to a role, swapping occupants when a filled role is targeted.
+   * @param {string} actorId              Actor ID of the moved member.
+   * @param {string} role                 Target role.
+   * @param {object} [options={}]
+   * @param {string} [options.swapActorId] Actor ID of a specific member to swap with.
+   * @returns {Promise<Actor5e|void>}
+   * @protected
+   */
+  async _assignMemberRole(actorId, role, { swapActorId } = {}) {
+    if (!this.isEditable) return;
+    if (role === "attack") role = "offensive";
+    if (!this.constructor.TEAM_ROLES.some(r => r.key === role)) role = "reserve";
+
+    const members = this.actor.system.toObject().members;
+    const member = members.find(m => m.actor === actorId);
+    if (!member) return;
+
+    const memberRole = member.role === "attack" ? "offensive" : member.role;
+    const previousRole = this.constructor.TEAM_ROLES.some(r => r.key === memberRole) ? memberRole : "reserve";
+    if ((previousRole === role) && !swapActorId) return;
+
+    const targetRole = this.constructor.TEAM_ROLES.find(r => r.key === role);
+    let displaced = swapActorId ? members.find(m => (m.actor === swapActorId) && (m.actor !== actorId)) : null;
+    if (!displaced && Number.isFinite(targetRole?.capacity)) {
+      const occupants = members.filter(m => {
+        const occupantRole = m.role === "attack" ? "offensive" : (m.role ?? "reserve");
+        return (m.actor !== actorId) && (occupantRole === role);
+      });
+      if (occupants.length >= targetRole.capacity) displaced = occupants[0];
+    }
+
+    member.role = role;
+    if (displaced) displaced.role = previousRole;
+
+    await this.actor.update({ "system.members": members });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the role and member under a drop target.
+   * @param {HTMLElement} target  Drop target.
+   * @returns {{role: string|null, swapActorId: string|null}}
+   * @protected
+   */
+  _getTeamDropTarget(target) {
+    const member = target.closest(".member[data-actor-id]");
+    const section = target.closest(".team-section");
+    return {
+      role: member?.closest(".team-section")?.dataset.role ?? section?.dataset.role ?? null,
+      swapActorId: member?.dataset.actorId ?? null
+    };
+  }
+
+  /* -------------------------------------------- */
   /*  Life-Cycle Handlers                         */
   /* -------------------------------------------- */
 
@@ -58157,12 +58747,37 @@ class GroupActorSheet extends MultiActorSheet {
   /** @inheritDoc */
   async _onRender(context, options) {
     await super._onRender(context, options);
+    this._applyTeamPrimaryColor();
+    this.element.querySelector(".team-color-picker")
+      ?.addEventListener("input", event => this._applyTeamPrimaryColor(event.target.value));
     this._renderInventoryToggle();
   }
 
   /* -------------------------------------------- */
   /*  Event Listeners & Handlers                  */
   /* -------------------------------------------- */
+
+  /**
+   * Get the configured team primary color.
+   * @returns {string}
+   * @protected
+   */
+  _getTeamPrimaryColor() {
+    const primaryColor = this.actor.system.details.primaryColor ?? "#a40f32";
+    return /^#[0-9a-f]{6}$/i.test(primaryColor) ? primaryColor : "#a40f32";
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply the team primary color to the sheet root.
+   * @param {string} [color]  Color to apply.
+   * @protected
+   */
+  _applyTeamPrimaryColor(color) {
+    color = /^#[0-9a-f]{6}$/i.test(color ?? "") ? color : this._getTeamPrimaryColor();
+    this.element.style.setProperty("--shmn-team-primary", color);
+  }
 
   /**
    * Handle distributing XP & currency.
@@ -58179,6 +58794,9 @@ class GroupActorSheet extends MultiActorSheet {
 
   /** @inheritDoc */
   _onChangeForm(formConfig, event) {
+    if (event.target.matches("[data-action='changeMemberRole']")) {
+      return this.constructor.#onChangeMemberRole.call(this, event, event.target);
+    }
     if (event.target.dataset.name?.startsWith("system.currency.") && (this.inventorySource.type === "vehicle")) {
       return this.inventorySource.update({ [event.target.dataset.name]: event.target.value });
     }
@@ -58204,10 +58822,70 @@ class GroupActorSheet extends MultiActorSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Handle assigning a member to a team role.
+   * @this {GroupActorSheet}
+   * @param {Event} event         The triggering event.
+   * @param {HTMLSelectElement} target  The role selector.
+   */
+  static async #onChangeMemberRole(event, target) {
+    await this._assignMemberRole(target.dataset.actorId, target.value);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create a team d6 contest chat card.
+   * @this {GroupActorSheet}
+   */
+  static async #onTeamContest() {
+    return TeamContestChatCard.create(this.actor);
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _onDragStart(event) {
+    const member = event.currentTarget.closest(".member[data-actor-id]");
+    if (!member) return super._onDragStart(event);
+    const dragData = {
+      shmn: { action: "teamMember", actorId: member.dataset.actorId },
+      type: "Actor",
+      uuid: member.dataset.uuid
+    };
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+    event.dataTransfer.effectAllowed = "move";
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _onDrop(event) {
+    const dragData = event.dataTransfer.getData("application/json") || event.dataTransfer.getData("text/plain");
+    if (dragData) {
+      try {
+        const data = JSON.parse(dragData);
+        if (data.shmn?.action === "teamMember") {
+          const { role, swapActorId } = this._getTeamDropTarget(event.target);
+          if (role) return this._assignMemberRole(data.shmn.actorId, role, { swapActorId });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return super._onDrop(event);
+  }
+
+  /* -------------------------------------------- */
+
   /** @inheritDoc */
   async _onDropActor(event, actor) {
     await super._onDropActor(event, actor);
-    if (actor) actor.apps[this.id] = this;
+    if (actor) {
+      actor.apps[this.id] = this;
+      const { role, swapActorId } = this._getTeamDropTarget(event.target);
+      if (role) await this._assignMemberRole(actor.id, role, { swapActorId });
+    }
     return actor;
   }
 
@@ -59719,6 +60397,7 @@ var _module$u = /*#__PURE__*/Object.freeze({
   HitDiceConfig: HitDiceConfig,
   HitPointsConfig: HitPointsConfig,
   EnergyPointsConfig: EnergyPointsConfig,
+  StaminaConfig: StaminaConfig,
   InitiativeConfig: InitiativeConfig,
   LanguagesConfig: LanguagesConfig,
   LongRestDialog: LongRestDialog,
@@ -61827,7 +62506,7 @@ class InventoryElement extends (foundry.applications.elements.AdoptableHTMLEleme
       width: 40,
       order: 600,
       priority: 800,
-      label: "SHMN.SpellHeader.Roll",
+      label: "  .Roll",
       template: "systems/shmn/templates/inventory/columns/roll.hbs"
     },
     school: {
@@ -69278,6 +69957,24 @@ class CharacterData extends CreatureTemplate {
             label: "SHMN.MaxEnergyPoints"
           })
         }, { label: "SHMN.EnergyPoints" }),
+        stamina: new SchemaField$j({
+          value: new NumberField$e({
+            required: true,
+            nullable: false,
+            integer: true,
+            min: 0,
+            initial: 10,
+            label: "SHMN.CurrentStamina"
+          }),
+          max: new NumberField$e({
+            required: true,
+            nullable: false,
+            integer: true,
+            min: 0,
+            initial: 10,
+            label: "SHMN.MaxStamina"
+          })
+        }, { label: "SHMN.Stamina" }),
         death: new RollConfigField({
           ability: false,
           success: new NumberField$e({
@@ -69290,12 +69987,79 @@ class CharacterData extends CreatureTemplate {
             save: new FormulaField({ required: true, label: "SHMN.DeathSaveBonus" })
           })
         }, { label: "SHMN.DeathSave" }),
-        inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" })
+        inspiration: new BooleanField$c({ required: true, label: "SHMN.Inspiration" }),
+
+        collectiveCombat: new SchemaField$j({
+          img: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamImage"
+          }),
+          name: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamName"
+          }),
+          position: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatTeamPosition"
+          }),
+          barriers: new SchemaField$j({
+            a: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierA" }),
+            b: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierB" }),
+            c: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierC" }),
+            d: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierD" }),
+            e: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierE" }),
+            f: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierF" }),
+            g: new SchemaField$j({
+              value: new NumberField$e({ required: true, integer: true, min: 0, max: 10, initial: 0 })
+            }, { label: "SHMN.BarrierG" })
+          }, { label: "SHMN.Barriers" })
+        }, { label: "SHMN.CollectiveCombat" })
+
       }, { label: "SHMN.Attributes" }),
+
+      subenergies: new SchemaField$j({
+        fire: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        water: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        earth: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        air: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        lightning: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        healing: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        emotion: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        blood: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        necrotic: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        sand: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        time: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        metal: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        ice: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        wild: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        celestial: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        force: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        lava: new NumberField$e({ required: true, nullable: false, integer: true, min: 0, initial: 0 })
+      }, { label: "SHMN.Subenergies" }),
+
       bastion: new SchemaField$j({
         name: new StringField$n({ required: true }),
         description: new HTMLField$5()
       }),
+
       details: new SchemaField$j({
         ...DetailsField.common,
         ...DetailsField.creature,
@@ -69319,6 +70083,7 @@ class CharacterData extends CreatureTemplate {
         age: new StringField$n({ label: "SHMN.Age" }),
         weight: new StringField$n({ label: "SHMN.Weight" })
       }, { label: "SHMN.Details" }),
+
       traits: new SchemaField$j({
         ...TraitsField.common,
         ...TraitsField.creature,
@@ -69330,11 +70095,13 @@ class CharacterData extends CreatureTemplate {
         }, { label: "SHMN.TraitWeaponProf" }),
         armorProf: new SimpleTraitField({}, { label: "SHMN.TraitArmorProf" })
       }, { label: "SHMN.Traits" }),
+
       resources: new SchemaField$j({
         primary: makeResourceField({ label: "SHMN.ResourcePrimary" }),
         secondary: makeResourceField({ label: "SHMN.ResourceSecondary" }),
         tertiary: makeResourceField({ label: "SHMN.ResourceTertiary" })
       }, { label: "SHMN.Resources" }),
+
       favorites: new ArrayField$9(new SchemaField$j({
         type: new StringField$n({ required: true, blank: false }),
         id: new StringField$n({ required: true, blank: false }),
@@ -69448,6 +70215,14 @@ class CharacterData extends CreatureTemplate {
       this.attributes.ep.value = Math.clamp(Number(this.attributes.ep.value ?? 0), 0, this.attributes.ep.max);
       this.attributes.ep.pct = this.attributes.ep.max > 0
         ? Math.clamp((this.attributes.ep.value / this.attributes.ep.max) * 100, 0, 100)
+        : 0;
+    }
+    if (this.attributes.stamina) {
+      this.attributes.stamina.max = Math.max(0, Number(this.attributes.stamina.max ?? 10));
+      this.attributes.stamina.value = Math.clamp(Number(this.attributes.stamina.value ?? 10), 0,
+        this.attributes.stamina.max);
+      this.attributes.stamina.pct = this.attributes.stamina.max > 0
+        ? Math.clamp((this.attributes.stamina.value / this.attributes.stamina.max) * 100, 0, 100)
         : 0;
     }
   }
@@ -69859,7 +70634,10 @@ class GroupSystemFlags extends foundry.abstract.DataModel {
   }
 }
 
-const { ArrayField: ArrayField$7, ForeignDocumentField: ForeignDocumentField$3, NumberField: NumberField$c, SchemaField: SchemaField$f } = foundry.data.fields;
+const {
+  ArrayField: ArrayField$7, ForeignDocumentField: ForeignDocumentField$3, NumberField: NumberField$c,
+  SchemaField: SchemaField$f, StringField: StringField$team
+} = foundry.data.fields;
 
 /**
  * @import { SkillToolRollProcessConfiguration } from "../../dice/_types.mjs";
@@ -69884,10 +70662,15 @@ class GroupData extends GroupTemplate {
       details: new SchemaField$f({
         xp: new SchemaField$f({
           value: new NumberField$c({ integer: true, min: 0, label: "SHMN.ExperiencePoints.Current" })
-        }, { label: "SHMN.ExperiencePoints.Label" })
+        }, { label: "SHMN.ExperiencePoints.Label" }),
+        teamTitle: new StringField$team({ initial: "", blank: true, label: "SHMN.Team.TeamTitle" }),
+        primaryColor: new StringField$team({ initial: "#a40f32", blank: false, label: "SHMN.Team.PrimaryColor" }),
+        victories: new NumberField$c({ integer: true, min: 0, initial: 0, label: "SHMN.Team.Victories" })
       }, { label: "SHMN.Details" }),
       members: new ArrayField$7(new SchemaField$f({
-        actor: new ForeignDocumentField$3(foundry.documents.BaseActor)
+        actor: new ForeignDocumentField$3(foundry.documents.BaseActor),
+        role: new StringField$team({ initial: "reserve", blank: false, label: "SHMN.Team.Role.Label" }),
+        goals: new NumberField$c({ integer: true, min: 0, initial: 0, label: "SHMN.Team.Goals" })
       }), { label: "SHMN.GroupMembers" }),
       primaryVehicle: new ForeignDocumentField$3(foundry.documents.BaseActor)
     });
@@ -69967,8 +70750,9 @@ class GroupData extends GroupTemplate {
   static #migrateMembers(source) {
     if (foundry.utils.getType(source.members) !== "Array") return;
     source.members = source.members.map(m => {
-      if (foundry.utils.getType(m) === "Object") return m;
-      return { actor: m };
+      if (foundry.utils.getType(m) !== "Object") m = { actor: m };
+      m.role = m.role === "attack" ? "offensive" : (m.role ?? "reserve");
+      return m;
     });
   }
 
@@ -70305,7 +71089,7 @@ class NPCData extends CreatureTemplate {
         }, { label: "SHMN.DeathSave" }),
         price: new SchemaField$e({
           value: new NumberField$b({ initial: null, min: 0 }),
-          denomination: new StringField$l({ required: true, blank: false, initial: "gp" })
+          denomination: new StringField$l({ required: true, blank: false, initial: "usd" })
         }),
         spell: new SchemaField$e({
           level: new NumberField$b({
@@ -71309,6 +72093,301 @@ class RequestMessageData extends ChatMessageDataModel {
   }
 }
 
+/**
+ * Chat message type used for a team d6 contest.
+ * @extends {ChatMessageDataModel}
+ */
+class TeamContestMessageData extends ChatMessageDataModel {
+  /** @override */
+  static defineSchema() {
+    return {
+      critical: new foundry.data.fields.BooleanField(),
+      opponent: new StringField$k({ initial: "SHMN.TeamContest.Opponent" }),
+      rolls: new ObjectField(),
+      team: new StringField$k({ required: true, blank: false }),
+      winner: new StringField$k()
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+    actions: {
+      rollContest: TeamContestMessageData.#rollContest
+    },
+    template: "systems/shmn/templates/chat/team-contest-card.hbs"
+  }, { inplace: false }));
+
+  /* -------------------------------------------- */
+
+  /**
+   * Team actor for the contest.
+   * @type {Actor5e|null}
+   */
+  get teamActor() {
+    return fromUuidSync(this.team);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the team?
+   * @returns {boolean}
+   */
+  get canRollTeam() {
+    const actor = this.teamActor;
+    if (!actor || this.rolls?.team) return false;
+    if (game.user.isGM || actor.isOwner) return true;
+    return actor.system.members?.some?.(({ actor }) => actor?.isOwner) ?? false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the opposing team?
+   * @returns {boolean}
+   */
+  get canRollOpponent() {
+    return game.user.isGM && !this.rolls?.opponent;
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  async _prepareContext() {
+    const actor = this.teamActor;
+    const rolls = this.rolls ?? {};
+    const complete = !!(rolls.team && rolls.opponent);
+    const critical = complete && ((rolls.team.total === 1 && rolls.opponent.total === 6)
+      || (rolls.team.total === 6 && rolls.opponent.total === 1));
+    const winner = this.winner ? game.i18n.localize(
+      this.winner === "team" ? "SHMN.TeamContest.Team" : "SHMN.TeamContest.Opponent"
+    ) : "";
+    return {
+      actor,
+      canRollOpponent: this.canRollOpponent,
+      canRollTeam: this.canRollTeam,
+      complete,
+      critical,
+      opponent: game.i18n.localize(this.opponent || "SHMN.TeamContest.Opponent"),
+      rolls,
+      winner
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll one side of the contest.
+   * @this {TeamContestMessageData}
+   * @param {Event} event         Triggering click event.
+   * @param {HTMLElement} target  Button that was clicked.
+   * @returns {Promise<ChatMessage5e|void>}
+   */
+  static async #rollContest(event, target) {
+    event.preventDefault();
+    const side = target.dataset.side;
+    if ((side === "team") && !this.canRollTeam) return;
+    if ((side === "opponent") && !this.canRollOpponent) return;
+
+    const roll = await TeamContestChatCard.rollD6({
+      speaker: ChatMessage.getSpeaker({ actor: this.teamActor }),
+      flavor: game.i18n.localize(side === "team" ? "SHMN.TeamContest.Action.RollTeam" : "SHMN.TeamContest.Action.RollOpponent")
+    });
+    const rolls = foundry.utils.deepClone(this.rolls ?? {});
+    rolls[side] = {
+      label: side === "team" ? this.teamActor?.name : game.i18n.localize(this.opponent || "SHMN.TeamContest.Opponent"),
+      total: roll.total,
+      user: game.user.id
+    };
+
+    let winner = "";
+    let critical = false;
+    if (rolls.team && rolls.opponent) {
+      if (rolls.team.total > rolls.opponent.total) winner = "team";
+      else if (rolls.opponent.total > rolls.team.total) winner = "opponent";
+      critical = (rolls.team.total === 1 && rolls.opponent.total === 6)
+        || (rolls.team.total === 6 && rolls.opponent.total === 1);
+    }
+
+    return this.parent.update({
+      "system.critical": critical,
+      "system.rolls": rolls,
+      "system.winner": winner
+    });
+  }
+}
+
+/**
+ * Flag-backed chat card used for a team d6 contest.
+ */
+class TeamContestChatCard {
+  static TEMPLATE = "systems/shmn/templates/chat/team-contest-card.hbs";
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create a team contest chat card without relying on a custom ChatMessage type.
+   * @param {Actor5e} actor  Team actor.
+   * @returns {Promise<ChatMessage5e>}
+   */
+  static async create(actor) {
+    const data = {
+      opponent: "SHMN.TeamContest.Opponent",
+      rolls: {},
+      team: actor.uuid
+    };
+    return ChatMessage.create({
+      content: await this.renderContent(data),
+      speaker: ChatMessage.getSpeaker({ actor }),
+      flags: { shmn: { teamContest: data } }
+    });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Build the rendering context for a team contest.
+   * @param {object} data  Team contest flag data.
+   * @returns {object}
+   */
+  static prepareContext(data) {
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ?? {};
+    const complete = !!(rolls.team && rolls.opponent);
+    const critical = complete && ((rolls.team.total === 1 && rolls.opponent.total === 6)
+      || (rolls.team.total === 6 && rolls.opponent.total === 1));
+    const winner = data.winner ? game.i18n.localize(
+      data.winner === "team" ? "SHMN.TeamContest.Team" : "SHMN.TeamContest.Opponent"
+    ) : "";
+    return {
+      actor,
+      complete,
+      critical,
+      opponent: game.i18n.localize(data.opponent || "SHMN.TeamContest.Opponent"),
+      rolls,
+      winner
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Can the current user roll for the team?
+   * @param {Actor5e|null} actor  Team actor.
+   * @param {object} rolls        Contest rolls.
+   * @returns {boolean}
+   */
+  static canRollTeam(actor, rolls) {
+    if (!actor || rolls?.team) return false;
+    if (game.user.isGM || actor.isOwner) return true;
+    return actor.system.members?.some?.(({ actor }) => actor?.isOwner) ?? false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Render team contest content.
+   * @param {object} data  Team contest flag data.
+   * @returns {Promise<string>}
+   */
+  static renderContent(data) {
+    return foundry.applications.handlebars.renderTemplate(this.TEMPLATE, this.prepareContext(data));
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll the contest die and show it through 3D dice modules when available.
+   * @param {object} [options={}]
+   * @param {object} [options.speaker]  Chat speaker data.
+   * @param {string} [options.flavor]   Roll flavor.
+   * @returns {Promise<Roll>}
+   */
+  static async rollD6({ speaker, flavor } = {}) {
+    const roll = await Roll.create("1d6").evaluate({ allowInteractive: true });
+
+    if (game.dice3d?.showForRoll) {
+      const rollMode = game.settings.get("core", "rollMode");
+      const whisper = ["gmroll", "blindroll"].includes(rollMode)
+        ? ChatMessage.getWhisperRecipients("GM").map(u => u.id)
+        : null;
+      const blind = rollMode === "blindroll";
+      await game.dice3d.showForRoll(roll, game.user, true, whisper, blind, speaker, flavor);
+    }
+
+    return roll;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Add button listeners to a rendered chat card.
+   * @param {ChatMessage5e} message  Rendered message.
+   * @param {HTMLElement} html       Rendered HTML.
+   */
+  static onRenderChatMessage(message, html) {
+    const data = message.getFlag("shmn", "teamContest");
+    if (!data) return;
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ?? {};
+    for (const button of html.querySelectorAll("[data-action='rollContest']")) {
+      const side = button.dataset.side;
+      const allowed = side === "team" ? this.canRollTeam(actor, rolls) : game.user.isGM && !rolls.opponent;
+      if (!allowed) {
+        button.remove();
+        continue;
+      }
+      button.addEventListener("click", event => this.rollContest(message, event));
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Roll one side of the contest and update the existing message.
+   * @param {ChatMessage5e} message  Team contest message.
+   * @param {Event} event            Triggering click event.
+   * @returns {Promise<ChatMessage5e|void>}
+   */
+  static async rollContest(message, event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    const side = target.dataset.side;
+    const data = foundry.utils.deepClone(message.getFlag("shmn", "teamContest") ?? {});
+    const actor = fromUuidSync(data.team);
+    const rolls = data.rolls ??= {};
+
+    if ((side === "team") && !this.canRollTeam(actor, rolls)) return;
+    if ((side === "opponent") && (!game.user.isGM || rolls.opponent)) return;
+
+    const roll = await this.rollD6({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      flavor: game.i18n.localize(side === "team" ? "SHMN.TeamContest.Action.RollTeam" : "SHMN.TeamContest.Action.RollOpponent")
+    });
+    rolls[side] = {
+      label: side === "team" ? actor?.name : game.i18n.localize(data.opponent || "SHMN.TeamContest.Opponent"),
+      total: roll.total,
+      user: game.user.id
+    };
+
+    data.winner = "";
+    data.critical = false;
+    if (rolls.team && rolls.opponent) {
+      if (rolls.team.total > rolls.opponent.total) data.winner = "team";
+      else if (rolls.opponent.total > rolls.team.total) data.winner = "opponent";
+      data.critical = (rolls.team.total === 1 && rolls.opponent.total === 6)
+        || (rolls.team.total === 6 && rolls.opponent.total === 1);
+    }
+
+    return message.update({
+      content: await this.renderContent(data),
+      "flags.shmn.teamContest": data
+    });
+  }
+}
+
 const TextEditor$1 = foundry.applications.ux.TextEditor.implementation;
 const { ForeignDocumentField: ForeignDocumentField$1, StringField: StringField$j } = foundry.data.fields;
 
@@ -71476,6 +72555,7 @@ var _module$a = /*#__PURE__*/Object.freeze({
 const config$3 = {
   request: RequestMessageData,
   rest: RestMessageData,
+  teamContest: TeamContestMessageData,
   turn: TurnMessageData
 };
 
@@ -71483,6 +72563,7 @@ var _module$9 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   RequestMessageData: RequestMessageData,
   RestMessageData: RestMessageData,
+  TeamContestMessageData: TeamContestMessageData,
   TurnMessageData: TurnMessageData,
   config: config$3,
   fields: _module$a
@@ -72069,7 +73150,7 @@ class FacilityData extends ItemDataModel$1.mixin(ActivitiesTemplate, ItemDescrip
     // Price
     if (this.type.value === "basic") {
       const { value, days } = CONFIG.SHMN.facilities.sizes[this.size];
-      this.price = { value, days, denomination: "gp" };
+      this.price = { value, days, denomination: "usd" };
     }
 
     // Squares
@@ -76888,9 +77969,9 @@ class Bastion {
     const results = message.getFlag("shmn", "bastion");
     const { gold } = results;
     const actor = message.getAssociatedActor();
-    const { gp } = actor?.system?.currency ?? {};
-    if (!gold?.value || gold.claimed || (gp === undefined)) return;
-    await actor.update({ "system.currency.gp": gp + gold.value });
+    const { usd } = actor?.system?.currency ?? {};
+    if (!gold?.value || gold.claimed || (usd === undefined)) return;
+    await actor.update({ "system.currency.usd": usd + gold.value });
     gold.claimed = true;
     const content = await this.#renderTurnSummary(actor, results);
     return message.update({ content, flags: { shmn: { bastion: results } } });
@@ -77040,7 +78121,7 @@ class Bastion {
     context.supplements = [];
     if (results.gold.value) {
       context.supplements.push(`
-        <strong>${game.i18n.localize("SHMN.CurrencyGP")}</strong>
+        <strong>${game.i18n.localize("SHMN.CurrencyUSD")}</strong>
         ${formatNumber(results.gold.value)}
         (${game.i18n.localize(`SHMN.Bastion.Gold.${results.gold.claimed ? "Claimed" : "Unclaimed"}`)})
       `);
@@ -79727,13 +80808,15 @@ function _configureTrackableAttributes() {
       ...common.bar,
       "attributes.hp",
       "attributes.ep",
+      "attributes.stamina",
       ..._trackedSpellAttributes()
     ],
     value: [
       ...common.value,
       ...Object.keys(SHMN.skills).map(skill => `skills.${skill}.passive`),
       ...Object.keys(SHMN.senses).map(sense => `attributes.senses.${sense}`),
-      "attributes.hp.temp", "attributes.ep.value", "attributes.spell.attack", "attributes.spell.dc"
+      "attributes.hp.temp", "attributes.ep.value", "attributes.stamina.value",
+      "attributes.spell.attack", "attributes.spell.dc"
     ]
   };
 
@@ -79786,6 +80869,7 @@ function _configureConsumableAttributes() {
     "attributes.ac.flat",
     "attributes.hp.value",
     "attributes.ep.value",
+    "attributes.stamina.value",
     "attributes.exhaustion",
     ...Object.keys(SHMN.senses).map(sense => `attributes.senses.${sense}`),
     ...Object.keys(SHMN.movementTypes).map(type => `attributes.movement.${type}`),
@@ -79888,6 +80972,7 @@ Hooks.once("setup", function () {
   // Create CSS for currencies
   const style = document.createElement("style");
   const currencies = append => Object.entries(CONFIG.SHMN.currencies)
+    .filter(([, { icon }]) => icon)
     .map(([key, { icon }]) => `&.${key}${append ?? ""} { background-image: url("${icon}"); }`);
   style.innerHTML = `
     :is(.shmn2, .shmn2-journal) :is(i, span).currency {
@@ -79992,6 +81077,7 @@ Hooks.once("ready", function () {
 
   // Chat message listeners
   ChatMessage5e.activateListeners();
+  Hooks.on("shmn.renderChatMessage", TeamContestChatCard.onRenderChatMessage.bind(TeamContestChatCard));
 
   // Bastion initialization
   game.shmn.bastion.initializeUI();

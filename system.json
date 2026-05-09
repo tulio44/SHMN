@@ -63,6 +63,7 @@
         "ChatMessage": {
             "request": {},
             "rest": {},
+            "teamContest": {},
             "turn": {}
         },
         "Item": {
@@ -245,6 +246,24 @@
         }
     },
     "packs": [
+        {
+            "name": "shaman",
+            "label": "Shaman",
+            "system": "shmn",
+            "path": "packs/shaman-class",
+            "type": "Item",
+            "private": false,
+            "flags": {
+                "shmn": {
+                    "sourceBook": "SHMN",
+                    "types": [
+                        "class",
+                        "subclass",
+                        "feat"
+                    ]
+                }
+            }
+        },
         {
             "name": "heroes",
             "label": "Starter Heroes",

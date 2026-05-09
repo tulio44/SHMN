@@ -1,4 +1,11 @@
-<li class="member" data-uuid="{{ uuid }}">
+<li class="member role-{{ role }} {{#if @root.editable}}draggable{{/if}}" data-uuid="{{ uuid }}" data-actor-id="{{ id }}">
+    {{#if @root.editable}}
+    <input type="hidden" name="system.members.{{ index }}.actor" value="{{ id }}">
+    <input type="hidden" name="system.members.{{ index }}.role" value="{{ role }}">
+    {{#unless canManageGoals}}
+    <input type="hidden" name="system.members.{{ index }}.goals" value="{{ goals }}" data-dtype="Number">
+    {{/unless}}
+    {{/if}}
     <div class="vitals card" {{#if underlay}}style="--underlay: {{ underlay }}"{{/if}}>
         {{#if isPrimaryVehicle}}
         <i class="fa-duotone fa-solid fa-circle-star primary-vehicle" data-tooltip
@@ -17,27 +24,10 @@
                     {{ name }}
                 </a>
             </strong>
-            {{#with system.attributes.hp}}
-            {{#if max}}
-            <div class="hp-bar bar">
-                <label>{{ localize "SHMN.HP" }}</label>
-                <div class="meter hit-points progress" role="meter" aria-valuemin="0"
-                     aria-valuenow="{{ value }}" aria-valuemax="{{ max }}"
-                     style="--bar-percentage: {{ pct }}%"></div>
-                <div class="values">
-                    {{#unless ../hiddenStats}}
-                    <span class="value">{{ value }}</span>
-                    <span class="separator">&sol;</span>
-                    <span class="max">{{ max }}</span>
-                    {{/unless}}
-                </div>
-            </div>
-            {{/if}}
-            {{/with}}
-            {{#with system.attributes.hd}}
-            <div class="hd-bar bar">
-                <label>{{ localize "SHMN.HITDICE.Abbreviation" }}</label>
-                <div class="meter hit-dice progress" role="meter" aria-valuemin="0"
+            {{#with stamina}}
+            <div class="stamina-bar bar">
+                <label>{{ localize "SHMN.Stamina" }}</label>
+                <div class="meter hit-points stamina-points progress" role="meter" aria-valuemin="0"
                      aria-valuenow="{{ value }}" aria-valuemax="{{ max }}"
                      style="--bar-percentage: {{ pct }}%"></div>
                 <div class="values">
@@ -63,6 +53,9 @@
         </div>
         <div class="classes controls">
             {{#if @root.editable}}
+            <select class="unselect team-role" data-action="changeMemberRole" data-actor-id="{{ id }}">
+                {{ selectOptions @root.roleOptions selected=role localize=true }}
+            </select>
             <button type="button" class="config-button unbutton" data-action="removeMember" data-tooltip
                     aria-label="{{ localize "SHMN.Group.Action.Remove" }}">
                 <i class="fa-solid fa-square-xmark" inert></i>
@@ -81,58 +74,38 @@
     </div>
     {{#if section.hasStats}}
     <div class="stats">
-        {{#if hiddenStats}}
-        <div class="empty">???</div>
-        {{else}}
-        <div class="info">
-            <div>
-                <i class="fa-solid fa-shield" data-tooltip aria-label="{{ localize "SHMN.ArmorClass" }}"></i>
-                <span class="value">{{ system.attributes.ac.value }}</span>
+        <div class="info team-stats">
+            <div class="team-stat">
+                {{#if teamSkill}}
+                {{#if canRollTeamSkill}}
+                <a class="{{ teamSkill.css }}" data-action="roll" data-type="skill" data-key="{{ teamSkill.key }}"
+                   data-tooltip aria-label="{{ localize teamSkill.label }}">
+                    <i class="fa-solid fa-people-group" inert></i>
+                </a>
+                {{else}}
+                <i class="fa-solid fa-people-group" data-tooltip aria-label="{{ localize teamSkill.label }}"></i>
+                {{/if}}
+                <span class="label">{{ localize teamSkill.label }}</span>
+                <span class="value">{{ shmn-formatModifier teamSkill.total }}</span>
+                {{else}}
+                <i class="fa-solid fa-people-group" inert></i>
+                <span class="label">{{ localize "SHMN.Team.Role.Reserve" }}</span>
+                <span class="value">&mdash;</span>
+                {{/if}}
             </div>
-            <div>
-                <i class="fa-solid fa-shoe-prints" data-tooltip aria-label="{{ localize "SHMN.Speed" }}"></i>
+            <div class="team-stat team-goals">
+                <i class="fa-solid fa-futbol" data-tooltip aria-label="{{ localize "SHMN.Team.Goals" }}"></i>
+                <span class="label">{{ localize "SHMN.Team.Goals" }}</span>
                 <span class="value">
-                    {{ system.attributes.movement.walk }}
-                    {{#if system.attributes.movement.slowed}}
-                    <i class="fa-solid fa-triangle-exclamation" data-tooltip
-                       aria-label="{{ localize "SHMN.TRAVEL.Slowed.Member" }}"></i>
+                    {{#if canManageGoals}}
+                    <input type="text" class="uninput" name="system.members.{{ index }}.goals"
+                           value="{{ goals }}" data-dtype="Number" inputmode="numeric" pattern="[+=\-]?\d*">
+                    {{else}}
+                    {{ shmn-numberFormat goals }}
                     {{/if}}
                 </span>
             </div>
         </div>
-        <div class="info">
-            <div>
-                <a class="{{ skills.prc.css }}" data-action="roll" data-type="skill" data-key="prc"
-                   data-tooltip aria-label="{{ skills.prc.label }}">
-                    <i class="fa-solid fa-eye" inert></i>
-                </a>
-                <div class="skill">
-                    <span class="roll">{{ shmn-formatModifier skills.prc.total }}</span>
-                    <span class="passive">({{ skills.prc.passive }})</span>
-                </div>
-            </div>
-            <div>
-                <a class="{{ skills.ste.css }}" data-action="roll" data-type="skill" data-key="ste"
-                   data-tooltip aria-label="{{ skills.ste.label }}">
-                    <i class="fa-solid fa-hood-cloak" inert></i>
-                </a>
-                <div class="skill">
-                    <span class="roll">{{ shmn-formatModifier skills.ste.total }}</span>
-                    <span class="passive">({{ skills.ste.passive }})</span>
-                </div>
-            </div>
-            <div>
-                <a class="{{ skills.sur.css }}" data-action="roll" data-type="skill" data-key="sur"
-                   data-tooltip aria-label="{{ skills.sur.label }}">
-                    <i class="fa-solid fa-bow-arrow" inert></i>
-                </a>
-                <div class="skill">
-                    <span class="roll">{{ shmn-formatModifier skills.sur.total }}</span>
-                    <span class="passive">({{ skills.sur.passive }})</span>
-                </div>
-            </div>
-        </div>
-        {{/if}}
     </div>
     {{/if}}
 </li>

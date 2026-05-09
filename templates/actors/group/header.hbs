@@ -1,26 +1,35 @@
 <header class="sheet-header">
 
-    {{!-- Group Actions --}}
-    <div class="sheet-header-buttons">
-        <button type="button" class="gold-button" data-action="placeMembers" data-tooltip
-                aria-label="{{ localize "SHMN.Group.PlaceMembers" }}">
-            <i class="fa-solid fa-location-dot" inert></i>
-        </button>
-        <button type="button" class="short-rest gold-button" data-action="rest" data-type="short" data-tooltip
-                aria-label="{{ localize 'SHMN.REST.Short.Label' }}">
-            <i class="fas fa-utensils" inert></i>
-        </button>
-        <button type="button" class="long-rest gold-button" data-action="rest" data-type="long" data-tooltip
-                aria-label="{{ localize 'SHMN.REST.Long.Label' }}">
-            <i class="fas fa-campground" inert></i>
-        </button>
-    </div>
-
     {{!-- Portrait --}}
     <div class="left">
-        <div class="portrait">
-            <img src="{{ document.img }}" alt="{{ document.name }}"
-                {{#if editable}}data-action="editImage" data-edit="img"{{/if}}>
+        <div class="team-portrait-panel">
+            <div class="team-rest-actions sheet-header-buttons">
+                <button type="button" class="short-rest gold-button" data-action="rest" data-type="short" data-tooltip
+                        aria-label="{{ localize 'SHMN.REST.Short.Label' }}">
+                    <i class="fas fa-utensils" inert></i>
+                </button>
+                <button type="button" class="long-rest gold-button" data-action="rest" data-type="long" data-tooltip
+                        aria-label="{{ localize 'SHMN.REST.Long.Label' }}">
+                    <i class="fas fa-campground" inert></i>
+                </button>
+                {{#if editable}}
+                <input type="color" class="team-color-picker" name="system.details.primaryColor"
+                       value="{{ teamPrimaryColor }}" data-tooltip="SHMN.Team.PrimaryColor"
+                       aria-label="{{ localize "SHMN.Team.PrimaryColor" }}">
+                {{/if}}
+            </div>
+            <div class="team-portrait-row">
+                <div class="portrait">
+                    <img src="{{ document.img }}" alt="{{ document.name }}"
+                        {{#if editable}}data-action="editImage" data-edit="img"{{/if}}>
+                </div>
+                <div class="team-contest-slot">
+                    <button type="button" class="gold-button" data-action="teamContest" data-tooltip
+                            aria-label="{{ localize "SHMN.TeamContest.Action.Start" }}">
+                        <i class="fa-solid fa-dice-d6" inert></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -36,92 +45,38 @@
             {{/if}}
         </div>
 
-        {{!-- Movement & XP --}}
+        {{!-- Team Details --}}
         <div class="bottom">
 
-            {{!-- Movement --}}
-            {{#with travelPace}}
-            <div class="movement card">
-                <div class="header travel-pace">
-                    <h3>{{ localize "SHMN.TRAVEL.Label" }}</h3>
-                    {{#if @root.editable}}
-                    <button type="button" class="config-button unbutton" data-action="showConfiguration"
-                            data-config="movement" data-tooltip aria-label="{{ localize "SHMN.MOVEMENT.Action.Configure" }}">
-                        <i class="fa-solid fa-cog" inert></i>
-                    </button>
-                    {{else if pace.available}}
-                    <button type="button" class="unbutton config-button {{#if pace.slowed}}suppressed{{/if}}"
-                            data-action="changePace" data-increment="-1" data-tooltip
-                            aria-label="{{ localize "SHMN.Group.Action.ChangePace" }}">
-                        <i class="fa-solid fa-chevron-left" inert></i>
-                    </button>
-                    <span class="pace subtitle" {{#if pace.slowed}}data-tooltip="SHMN.TRAVEL.Slowed.Group"{{/if}}>
-                        {{ pace.label }}
-                    </span>
-                    <button type="button" class="unbutton config-button {{#if pace.slowed}}suppressed{{/if}}"
-                            data-action="changePace" data-increment="1" data-tooltip
-                            aria-label="{{ localize "SHMN.Group.Action.ChangePace" }}">
-                        <i class="fa-solid fa-chevron-right" inert></i>
-                    </button>
-                    {{/if}}
-                </div>
-                <div class="info">
-                    <div>
-                        <span class="label">{{ localize "SHMN.TRAVEL.Type.Land" }}</span>
-                        <span class="value">
-                            {{ shmn-numberFormat paces.land blank="—" }}
-                        </span>
-                    </div>
-                    <div>
-                        <span class="label">{{ localize "SHMN.TRAVEL.Type.Water" }}</span>
-                        <span class="value">
-                            {{ shmn-numberFormat paces.water blank="—" }}
-                        </span>
-                    </div>
-                    <div>
-                        <span class="label">{{ localize "SHMN.TRAVEL.Type.Air" }}</span>
-                        <span class="value">
-                            {{ shmn-numberFormat paces.air blank="—" }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            {{/with}}
-
-            {{!-- XP --}}
-            <div class="xp card">
+            {{!-- Team Title --}}
+            <div class="team-title card">
                 <div class="header">
-                    <h3>{{ localize "SHMN.AdvancementTitle" }}</h3>
-                    <button type="button" class="config-button unbutton" data-action="award" data-tooltip
-                            {{#if showXP}}aria-label="{{ localize "SHMN.Group.Distribute.xp" }}"
-                            {{else}}aria-label="{{ localize "SHMN.Group.Distribute.noxp" }}"{{/if}}>
-                        <i class="fa-solid fa-trophy" inert></i>
-                    </button>
+                    <h3>{{ localize "SHMN.Team.TeamTitle" }}</h3>
                 </div>
                 <div class="info">
-                    {{#if showXP}}
-                    <div>
-                        <span class="label">{{ localize "SHMN.ExperiencePoints.Pool" }}</span>
+                    <div class="team-title-value">
                         <span class="value">
                             {{#if editable}}
-                            {{ formInput fields.details.fields.xp.fields.value value=source.details.xp.value }}
+                            <input type="text" class="uninput" name="system.details.teamTitle"
+                                   value="{{ teamTitle }}" placeholder="{{ localize "SHMN.Team.TeamTitlePlaceholder" }}">
                             {{else}}
-                            {{#if system.details.xp.value}}
-                            {{ shmn-numberFormat system.details.xp.value }}
-                            {{else}}
-                            &mdash;
-                            {{/if}}
+                            {{#if teamTitle}}{{ teamTitle }}{{else}}&mdash;{{/if}}
                             {{/if}}
                         </span>
                     </div>
-                    {{/if}}
-                    <div>
-                        <span class="label">{{ localize "SHMN.LevelAvg" }}</span>
-                        <span class="value">{{ shmn-numberFormat system.level blank="—" useGrouping=false }}</span>
+                    <div class="team-victories">
+                        <span class="label">{{ localize "SHMN.Team.Victories" }}</span>
+                        <span class="value">
+                            {{#if editable}}
+                            <input type="text" class="uninput" name="system.details.victories"
+                                   value="{{ victories }}" data-dtype="Number" inputmode="numeric" pattern="[+=\-]?\d*">
+                            {{else}}
+                            {{ shmn-numberFormat victories }}
+                            {{/if}}
+                        </span>
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>

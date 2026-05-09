@@ -1,14 +1,25 @@
-<section data-group="{{ tab.group }}" data-tab="{{ tab.id }}" class="tab {{ tab.cssClass }} flex1">
+<section data-group="{{ tab.group }}" data-tab="{{ tab.id }}" class="tab {{ tab.cssClass }} flex1 team-members-tab">
     {{#each sections}}
-    {{#if members.length}}
-    <section>
-        {{#if label}}<h3 class="sabers roboto-upper">{{ localize label }}</h3>{{/if}}
+    <section class="team-section team-section-{{ key }}" data-role="{{ key }}">
+        <h3 class="sabers roboto-upper">
+            {{ localize label }}
+            {{#if capacity}}<span>{{ members.length }}/{{ capacity }}</span>{{/if}}
+        </h3>
         <menu class="members {{#if hasStats}}stats{{/if}}">
             {{#each members}}
             {{> "systems/shmn/templates/actors/group/member.hbs" section=.. }}
             {{/each}}
+            {{#each emptySlots}}
+            <li class="member team-empty-slot" data-role="{{ ../key }}">
+                <div class="vitals card">
+                    <div class="portrait"><i class="fa-solid fa-user-plus" inert></i></div>
+                    <div class="bars">
+                        <strong class="name">{{ localize "SHMN.Team.EmptySlot" }}</strong>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
         </menu>
     </section>
-    {{/if}}
     {{/each}}
 </section>

@@ -11,8 +11,8 @@
 "TYPES.Actor.characterPl": "Personagens do Jogador",
 "TYPES.Actor.encounter": "Encontro",
 "TYPES.Actor.encounterPl": "Encontros",
-"TYPES.Actor.group": "Grupo",
-"TYPES.Actor.groupPl": "Grupos",
+"TYPES.Actor.group": "Time",
+"TYPES.Actor.groupPl": "Times",
 "TYPES.Actor.npc": "Personagem Não Jogador",
 "TYPES.Actor.npcPl": "Personagens Não Jogadores",
 "TYPES.Actor.vehicle": "Veículo",
@@ -24,6 +24,7 @@
 "TYPES.ChatMessage": {
   "request": "Mensagem de Solicitação",
   "rest": "Mensagem de Descanso",
+  "teamContest": "Mensagem de Disputa de Time",
   "turn": "Mensagem de Turno de Combate"
 },
 
@@ -960,7 +961,7 @@
   "NoDestinations": "Nenhum Destino Disponível",
   "NoPrimaryParty": "Nenhum grupo principal definido; exibindo personagens atribuídos a jogadores em vez disso.",
   "NotGMError": "O comando /award está disponível apenas para Mestres.",
-  "UnrecognizedWarning": "Não foi possível interpretar {commands}. O comando /award deve ser usado com valores de XP e moedas, como '/award 10gp 50xp'."
+  "UnrecognizedWarning": "Não foi possível interpretar {commands}. O comando /award deve ser usado com valores de XP e moedas, como '/award 10usd 50xp'."
 },
 "SHMN.Background": "Antecedente",
 "SHMN.BackgroundAdd": "Adicionar Antecedente",
@@ -1022,6 +1023,7 @@
 },
 
 "SHMN.Biography": "Biografia",
+"SHMN.Notebook": "Caderno",
 "SHMN.BiographyPublic": "Biografia Pública",
 "SHMN.BiopgrahyPublicEdit": "Editar Biografia Pública",
 "SHMN.Bonds": "Vínculos",
@@ -1490,14 +1492,14 @@
       "label": "Dado de Vida",
       "additional": {
         "label": "Dados de Vida Adicionais",
-        "hint": "Fórmula para dados de vida que estão disponíveis para esta classe além da quantidade normal."
+        "hint": "Fórmula para dados de vida que estão disponíveis para esta casa além da quantidade normal."
       },
       "spent": {
         "label": "Dados de Vida Gastos"
       }
     },
     "levels": {
-      "label": "Níveis de Classe"
+      "label": "Níveis da Casa"
     },
     "primaryAbility": {
       "all": {
@@ -1506,23 +1508,23 @@
       },
       "value": {
         "label": "Habilidade Primária",
-        "hint": "Habilidades mais usadas por esta classe. Usadas para determinar restrições de multiclasse."
+        "hint": "Habilidades mais usadas por esta casa. Usadas para determinar restrições de multiclasse."
       }
     },
     "properties": {
-      "label": "Propriedades da Classe"
+      "label": "Propriedades da Casa"
     }
   }
 },
 
-"SHMN.ClassAdd": "Adicionar Classe",
-"SHMN.ClassIdentifier": "Identificador da Classe",
-"SHMN.ClassIdentifierHint": "Os dados desta classe estarão acessíveis usando <strong>@classes.{identifier}</strong> em fórmulas de rolagem.",
-"SHMN.ClassLevels": "Níveis de Classe",
-"SHMN.ClassMakeOriginal": "Classe Original",
-"SHMN.ClassMakeOriginalHint": "Primeira classe escolhida pelo personagem, usada para determinar certos traços de classe ao fazer multiclasse.",
-"SHMN.ClassName": "Nome da Classe",
-"SHMN.ClassOriginal": "Classe Original",
+"SHMN.ClassAdd": "Adicionar Casa",
+"SHMN.ClassIdentifier": "Identificador da Casa",
+"SHMN.ClassIdentifierHint": "Os dados desta casa estarão acessíveis usando <strong>@classes.{identifier}</strong> em fórmulas de rolagem.",
+"SHMN.ClassLevels": "Níveis da Casa",
+"SHMN.ClassMakeOriginal": "Casa Original",
+"SHMN.ClassMakeOriginalHint": "Primeira casa escolhida pelo personagem, usada para determinar certos traços de classe ao fazer multiclasse.",
+"SHMN.ClassName": "Nome da Casa",
+"SHMN.ClassOriginal": "Casa Original",
 "SHMN.ClassSaves": "Testes de Resistência",
 "SHMN.Confirm": "Confirmar",
 
@@ -1671,7 +1673,7 @@
 "SHMN.ConsumeTitle": "Consumo de Recurso",
 "SHMN.ConsumeAmount": "Quantidade Consumida",
 "SHMN.ConsumeHint": {
-  "Attribute": "Atributo a consumir (ex.: currency.gp)",
+  "Attribute": "Atributo a consumir (ex.: currency.usd)",
   "Item": "UUID do alvo no compêndio"
 },
 "SHMN.ConsumeTarget": "Alvo de Consumo",
@@ -1852,6 +1854,15 @@
       "PromptHintIncrease": "Aumente <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}).",
       "Warning": "quantidade de {attribute}"
     },
+    "RestAttribute": {
+      "Label": "Atributo (Descanso Curto/Longo)",
+      "NonEmbeddedHint": "Caminho do atributo a ser consumido e recuperado em descanso curto ou longo (ex.: resources.primary.value).",
+      "PromptDecrease": "Consumir Atributo de Descanso?",
+      "PromptIncrease": "Restaurar Atributo de Descanso?",
+      "PromptHintDecrease": "Reduza <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}); recupera em descanso curto ou longo.",
+      "PromptHintIncrease": "Aumente <code>{attribute}</code> em <strong>{cost}</strong> (atualmente {current}); recupera em descanso curto ou longo.",
+      "Warning": "quantidade de {attribute}"
+    },
     "HitDice": {
       "Label": "Dados de Vida",
       "PromptDecrease": "Consumir Dado de Vida?",
@@ -1901,7 +1912,7 @@
   },
   "Warning": {
     "MissingAttribute": "O atributo {attribute} configurado para ser consumido pela atividade {activity} em {item} não pôde ser encontrado.",
-    "MissingHitDice": "O ator não possui uma classe com um dado de vida {denomination}.",
+    "MissingHitDice": "O ator não possui uma casa com um dado de vida {denomination}.",
     "MissingItem": "O item configurado para ser consumido pela atividade {activity} em {item} não pôde ser encontrado.",
     "MissingSpellSlot": "Nenhum espaço de nível {level} disponível.",
     "None": "Nenhum {type} disponível para gastar; {cost} necessário.",
@@ -1919,6 +1930,7 @@
 "SHMN.CoverTotal": "Total",
 "SHMN.Cost": "Custo",
 "SHMN.CostGP": "Custo (PO)",
+"SHMN.CostUSD": "Custo (USD)",
 "SHMN.CreatureAberration": "Aberração",
 "SHMN.CreatureAberrationPl": "Aberrações",
 "SHMN.CreatureBeast": "Besta",
@@ -1962,16 +1974,28 @@
 "SHMN.PowerfulCritical": "Crítico Poderoso",
 "SHMN.CRLabel": "ND {cr}",
 "SHMN.Currency": "Moeda",
+"SHMN.CurrencyAbbrBRL": "BRL",
 "SHMN.CurrencyAbbrCP": "pc",
+"SHMN.CurrencyAbbrEUR": "EUR",
 "SHMN.CurrencyAbbrEP": "pe",
+"SHMN.CurrencyAbbrGBP": "GBP",
 "SHMN.CurrencyAbbrGP": "po",
+"SHMN.CurrencyAbbrJPY": "JPY",
 "SHMN.CurrencyAbbrPP": "pp",
+"SHMN.CurrencyAbbrRUB": "RUB",
 "SHMN.CurrencyAbbrSP": "pp",
+"SHMN.CurrencyAbbrUSD": "USD",
+"SHMN.CurrencyBRL": "Real Brasileiro",
 "SHMN.CurrencyCP": "Cobre",
+"SHMN.CurrencyEUR": "Euro",
 "SHMN.CurrencyEP": "Electrum",
+"SHMN.CurrencyGBP": "Libra Esterlina",
 "SHMN.CurrencyGP": "Ouro",
+"SHMN.CurrencyJPY": "Iene Japon\u00eas",
 "SHMN.CurrencyPP": "Platina",
+"SHMN.CurrencyRUB": "Rublo Russo",
 "SHMN.CurrencySP": "Prata",
+"SHMN.CurrencyUSD": "Dólar Americano",
 "SHMN.CurrencyManager": {
   "Title": "Gerenciar Moeda",
   "Convert": {
@@ -2260,8 +2284,8 @@
     "enchant": {
       "label": "Configuração de Encantamento",
       "identifier": {
-        "label": "Identificador da Classe",
-        "hint": "Identificador usado para determinar se o nível do personagem ou o nível de uma classe específica deve ser usado para limites de nível do encantamento."
+        "label": "Identificador da Casa",
+        "hint": "Identificador usado para determinar se o nível do personagem ou o nível de uma casa específica deve ser usado para limites de nível do encantamento."
       },
       "self": {
         "label": "Encantar a Si Mesmo Automaticamente",
@@ -2718,7 +2742,7 @@
 "SHMN.Feature": {
   "Background": "Característica de Antecedente",
   "Class": {
-    "Label": "Característica de Classe",
+    "Label": "Característica de Casa",
     "ArcaneShot": "Disparo Arcano",
     "ArtificerInfusion": "Infusão de Artífice",
     "ArtificerPlan": "Plano de Artífice",
@@ -3057,6 +3081,10 @@
 "SHMN.CurrentEnergyPoints": "Pontos de Energia Atuais",
 "SHMN.MaxEnergyPoints": "Pontos Máximos de Energia",
 "SHMN.EP": "EP",
+"SHMN.Stamina": "Estamina",
+"SHMN.StaminaConfig": "Configurar Estamina",
+"SHMN.CurrentStamina": "Estamina Atual",
+"SHMN.MaxStamina": "Estamina Máxima",
 
 "SHMN.HITDICE": {
   "Abbreviation": "HD",
@@ -3075,7 +3103,7 @@
 "SHMN.HitDie": "Dado de Vida",
 "SHMN.HitDice": "Dados de Vida",
 "SHMN.HitDiceConfig": "Ajustar Dados de Vida",
-"SHMN.HitDiceConfigHint": "Ajuste os níveis restantes de dados de vida para cada classe.",
+"SHMN.HitDiceConfigHint": "Ajuste os níveis restantes de dados de vida para cada casa.",
 "SHMN.HitDiceMax": "Máximo de Dados de Vida",
 "SHMN.HitDiceRemaining": "Dados de Vida Restantes",
 "SHMN.HitDiceRoll": "Rolar Dados de Vida",
@@ -3096,6 +3124,7 @@
 "SHMN.Inspiration": "Inspiração",
 "SHMN.Inventory": "Inventário",
 "SHMN.InventorySearch": "Buscar inventário",
+"SHMN.Trophies": "Troféus",
 "SHMN.Issues": "Problemas",
 "SHMN.ItemActionType": "Tipo de Ação",
 "SHMN.ItemActivation": "Ativação",
@@ -3107,7 +3136,7 @@
 "SHMN.ItemAttackFlat": "Bônus Fixo",
 "SHMN.ItemAttackFlatHint": "Se marcado, não adiciona proficiência, modificador de habilidade ou quaisquer outros bônus à rolagem de ataque, exceto o que está incluído aqui.",
 "SHMN.ItemBackgroundDetails": "Detalhes do Antecedente",
-"SHMN.ItemClassDetails": "Detalhes da Classe",
+"SHMN.ItemClassDetails": "Detalhes da Casa",
 "SHMN.ItemConsumableActivation": "Ativação do Consumível",
 "SHMN.ItemConsumableUsage": "Uso do Consumível",
 "SHMN.ItemConsumableDetails": "Detalhes do Consumível",
@@ -4021,12 +4050,12 @@
 "SHMN.SpecialHint": "Valores especiais separados por ponto e vírgula.",
 "SHMN.SpecialTraits": "Traços Especiais",
 "SHMN.Species": {
-  "Label": "Casa",
-  "Add": "Adicionar Casa",
+  "Label": "Raça",
+  "Add": "Adicionar Raça",
   "AddLegacy": "Adicionar Raça",
-  "Features": "Características de Casa",
+  "Features": "Características de Raça",
   "FeaturesLegacy": "Características Raciais",
-  "Name": "Nome da Casa"
+  "Name": "Nome da Raça"
 },
 "SHMN.Speed": "Velocidade",
 "SHMN.SpeedSpecial": "Movimento Especial",
@@ -5919,7 +5948,89 @@
 "SIDEBAR.SortModePriority": "Ordenar por prioridade",
 
 "SHMN.Pact": "Barganha",
-"SHMN.UnlinkedPact": "Inato",
-"SHMN.PactCreate": "Nova Barganha",
-"SHMN.PactSpellCreate": "Novo ritual"
+"SHMN.PactCreate": "Criar Barganha",
+"SHMN.PactSpellCreate": "Criar Ritual",
+"SHMN.UnlinkedPact": "Rituais sem Barganha",
+
+"SHMN.PactTypeFire": "Fogo",
+"SHMN.PactTypeWater": "Água",
+"SHMN.PactTypeEarth": "Terra",
+"SHMN.PactTypeAir": "Ar",
+"SHMN.PactTypeLightning": "Raio",
+"SHMN.PactTypeHealing": "Cura",
+"SHMN.PactTypeEmotion": "Emoção",
+"SHMN.PactTypeBlood": "Sangue",
+"SHMN.PactTypeNecrotic": "Necrótico",
+"SHMN.PactTypeSand": "Areia",
+"SHMN.PactTypeTime": "Tempo",
+"SHMN.PactTypeMetal": "Metal",
+"SHMN.PactTypeIce": "Gelo",
+"SHMN.PactTypeWildEnergy": "Energia Selvagem",
+"SHMN.PactTypeCelestial": "Celestial",
+"SHMN.PactTypeForce": "Força",
+"SHMN.PactTypeLava": "Lava",
+
+"SHMN.Subenergies": "Subenergias",
+"SHMN.Subenergy.fire": "Fogo",
+"SHMN.Subenergy.water": "Água",
+"SHMN.Subenergy.earth": "Terra",
+"SHMN.Subenergy.air": "Ar",
+"SHMN.Subenergy.lightning": "Raio",
+"SHMN.Subenergy.healing": "Cura",
+"SHMN.Subenergy.emotion": "Emoção",
+"SHMN.Subenergy.blood": "Sangue",
+"SHMN.Subenergy.necrotic": "Necrótico",
+"SHMN.Subenergy.sand": "Areia",
+"SHMN.Subenergy.time": "Tempo",
+"SHMN.Subenergy.metal": "Metal",
+"SHMN.Subenergy.ice": "Gelo",
+"SHMN.Subenergy.wild": "Energia Selvagem",
+"SHMN.Subenergy.celestial": "Celestial",
+"SHMN.Subenergy.force": "Força",
+"SHMN.Subenergy.lava": "Lava",
+
+
+"SHMN.CollectiveCombat": "Combate Coletivo",
+"SHMN.CollectiveCombatProficiencies": "Proficiências de Combate Coletivo",
+"SHMN.Barriers": "Barreiras",
+"SHMN.BarrierA": "Barreira A",
+"SHMN.BarrierB": "Barreira B",
+"SHMN.BarrierC": "Barreira C",
+"SHMN.BarrierD": "Barreira D",
+"SHMN.BarrierE": "Barreira E",
+"SHMN.BarrierF": "Barreira F",
+"SHMN.BarrierG": "Barreira G",
+"SHMN.BarrierRoll": "Rolar Barreira",
+"SHMN.Team.Title": "Time",
+"SHMN.Team.TeamTitle": "Título do Time",
+"SHMN.Team.TeamTitleExample": "Exemplo: Campeão Estadual",
+"SHMN.Team.TeamTitlePlaceholder": "Campeão Estadual",
+"SHMN.Team.PrimaryColor": "Cor primária",
+"SHMN.Team.Lineup": "2 Defenseman, 2 Support, 1 Catcher, 1 Offensive e banco de reservas.",
+"SHMN.Team.EmptySlot": "Posi\u00e7\u00e3o vazia",
+"SHMN.Team.Goals": "Gols",
+"SHMN.Team.Members": "Time",
+"SHMN.Team.Role.Label": "Fun\u00e7\u00e3o no Time",
+"SHMN.Team.Role.Catcher": "Catcher",
+"SHMN.Team.Role.Defense": "Defenseman",
+"SHMN.Team.Role.Offensive": "Offensive",
+"SHMN.Team.Role.Reserve": "Banco",
+"SHMN.Team.Role.Support": "Support",
+"SHMN.Team.Victories": "Vitórias",
+"SHMN.Team.Wins": "Vitórias",
+"SHMN.TeamContest.Action.RollOpponent": "Rolar Oposi\u00e7\u00e3o",
+"SHMN.TeamContest.Action.RollTeam": "Rolar Time",
+"SHMN.TeamContest.Action.Start": "Disputa D6",
+"SHMN.TeamContest.Critical": "Nó Tático",
+"SHMN.TeamContest.Draw": "Empate",
+"SHMN.TeamContest.Opponent": "Oposi\u00e7\u00e3o",
+"SHMN.TeamContest.Team": "Time",
+"SHMN.TeamContest.Title": "Disputa D6",
+"SHMN.TeamContest.Versus": "vs",
+"SHMN.TeamContest.Winner": "{winner} venceu",
+"SHMN.CollectiveCombatTeamImage": "Imagem do Time",
+"SHMN.CollectiveCombatTeamImageEdit": "Alterar imagem do time",
+"SHMN.CollectiveCombatTeamName": "Nome do Time",
+"SHMN.CollectiveCombatTeamPosition": "Posição"
 }
+

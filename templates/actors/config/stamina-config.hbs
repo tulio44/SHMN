@@ -1,0 +1,13 @@
+<section class="flexcol">
+    <div class="final-value">{{ shmn-numberFormat data.value }} / {{ shmn-numberFormat data.max }}</div>
+
+    <fieldset class="card">
+        <legend>{{ localize "SHMN.MaxStamina" }}</legend>
+        {{ formField fields.max value=source.max localize=true }}
+    </fieldset>
+
+    <fieldset class="card">
+        <legend>{{ localize "SHMN.CurrentStamina" }}</legend>
+        {{ formField fields.value value=source.value localize=true }}
+    </fieldset>
+</section>
