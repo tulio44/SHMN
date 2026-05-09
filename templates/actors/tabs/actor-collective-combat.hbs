@@ -56,6 +56,41 @@
     </div>
 
     <div class="right">
+        <filigree-box class="cc-right-panel cc-stamina">
+            <h3>
+                <i class="fas fa-person-running" inert></i>
+                <span class="roboto-upper">{{ localize "SHMN.Stamina" }}</span>
+                {{#if editable}}
+                <button
+                    type="button"
+                    class="config-button unbutton"
+                    data-action="showConfiguration"
+                    data-config="stamina"
+                    data-tooltip="SHMN.StaminaConfig"
+                    aria-label="{{ localize "SHMN.StaminaConfig" }}">
+                    <i class="fas fa-cog" inert></i>
+                </button>
+                {{/if}}
+            </h3>
+
+            {{#with stamina}}
+            <div class="cc-stamina-bar bar">
+                <div class="meter hit-points stamina-points">
+                    <div class="progress hit-points stamina-points" role="meter" aria-valuemin="0"
+                        aria-valuenow="{{ value }}" aria-valuemax="{{ max }}" style="--bar-percentage: {{ pct }}%">
+                        <div class="label">
+                            <span class="value">{{ value }}</span>
+                            <span class="separator">&sol;</span>
+                            <span class="max">{{ max }}</span>
+                        </div>
+                        <input type="text" name="system.attributes.stamina.value" data-dtype="Number" placeholder="0"
+                            value="{{ value }}" hidden>
+                    </div>
+                </div>
+            </div>
+            {{/with}}
+        </filigree-box>
+
         <filigree-box class="cc-right-panel cc-barriers">
             <h3>
                 <i class="fas fa-shield-halved" inert></i>

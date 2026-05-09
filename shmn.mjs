@@ -52279,6 +52279,55 @@ class EnergyPointsConfig extends BaseConfigSheet {
   }
 }
 
+class StaminaConfig extends BaseConfigSheet {
+  static DEFAULT_OPTIONS = {
+    classes: ["stamina"],
+    position: {
+      width: 420
+    }
+  };
+
+  static PARTS = {
+    config: {
+      template: "systems/shmn/templates/actors/config/stamina-config.hbs"
+    }
+  };
+
+  get title() {
+    return game.i18n.localize("SHMN.Stamina");
+  }
+
+  async _preparePartContext(partId, context, options) {
+    context = await super._preparePartContext(partId, context, options);
+    context.data = this.document.system.attributes.stamina;
+    context.fields = this.document.system.schema.fields.attributes.fields.stamina.fields;
+    context.source = this.document.system._source.attributes.stamina;
+    return context;
+  }
+
+  _processSubmitData(event, form, submitData) {
+    const currentValue = Number(foundry.utils.getProperty(submitData, "system.attributes.stamina.value")
+      ?? this.document.system.attributes.stamina.value ?? 0);
+
+    const currentMax = Number(foundry.utils.getProperty(submitData, "system.attributes.stamina.max")
+      ?? this.document.system.attributes.stamina.max ?? 0);
+
+    foundry.utils.setProperty(
+      submitData,
+      "system.attributes.stamina.value",
+      Math.clamp(currentValue, 0, Math.max(0, currentMax))
+    );
+
+    foundry.utils.setProperty(
+      submitData,
+      "system.attributes.stamina.max",
+      Math.max(0, currentMax)
+    );
+
+    super._processSubmitData(event, form, submitData);
+  }
+}
+
 const { BooleanField: BooleanField$e } = foundry.data.fields;
 
 /**
@@ -55123,6 +55172,8 @@ class BaseActorSheet extends PrimarySheetMixin(
         return new HitPointsConfig(config).render({ force: true });
       case "energyPoints":
         return new EnergyPointsConfig(config).render({ force: true });
+      case "stamina":
+        return new StaminaConfig(config).render({ force: true });
       case "initiative":
         return new InitiativeConfig(config).render({ force: true });
       case "movement":
@@ -55845,7 +55896,7 @@ class CharacterActorSheet extends BaseActorSheet {
     { tab: "spells", label: "TYPES.Item.spellPl", icon: "fas fa-handshake" },
     { tab: "collectiveCombat", label: "SHMN.CollectiveCombat", icon: "fa-solid fa-people-group" },
     { tab: "effects", label: "SHMN.Effects", icon: "fas fa-bolt" },
-    { tab: "biography", label: "SHMN.Biography", icon: "fas fa-feather" },
+    { tab: "biography", label: "SHMN.Notebook", icon: "fas fa-book-open" },
     { tab: "bastion", label: "SHMN.Bastion.Label", icon: "fas fa-chess-rook" },
     { tab: "specialTraits", label: "SHMN.SpecialTraits", icon: "fas fa-star" }
   ];
@@ -56008,7 +56059,7 @@ class CharacterActorSheet extends BaseActorSheet {
       secrets: this.actor.isOwner, relativeTo: this.actor, rollData: context.rollData
     };
     context.enriched = {
-      label: "SHMN.Biography",
+      label: "SHMN.Notebook",
       value: await TextEditor$8.enrichHTML(this.actor.system.details.biography.value, enrichmentOptions)
     };
 
@@ -56042,6 +56093,7 @@ class CharacterActorSheet extends BaseActorSheet {
       position: collectiveCombat.position ?? "",
       label: game.i18n.localize("SHMN.CollectiveCombatTeamImage")
     };
+    context.stamina = this.actor.system.attributes.stamina;
 
     const letters = ["A", "B", "C", "D", "E", "F", "G"];
     const keys = ["a", "b", "c", "d", "e", "f", "g"];
@@ -57051,11 +57103,96 @@ class CharacterActorSheet extends BaseActorSheet {
 
     const group = target.closest(".subenergy-group");
     if (!group) return;
+    const list = group.querySelector(".subenergy-list");
+    const wrapper = list?.querySelector(":scope > .wrapper");
+    if (!list || !wrapper) return;
 
     const willExpand = group.classList.contains("collapsed");
+    const duration = 260;
+    const easing = "cubic-bezier(0.22, 1, 0.36, 1)";
+    const animationId = foundry.utils.randomID();
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    group.classList.toggle("collapsed", !willExpand);
+    list.getAnimations().forEach(animation => animation.cancel());
+    wrapper.getAnimations().forEach(animation => animation.cancel());
+    list.dataset.animationId = animationId;
 
+    if (reduceMotion) {
+      group.classList.toggle("collapsed", !willExpand);
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+      delete list.dataset.animationId;
+      await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
+      return;
+    }
+
+    const transition = `height ${duration}ms ${easing}`;
+    const contentTransition = `opacity ${Math.round(duration * 0.75)}ms ease, transform ${duration}ms ${easing}`;
+    const waitForHeight = () => new Promise(resolve => {
+      const timeout = setTimeout(resolve, duration + 80);
+      list.addEventListener("transitionend", event => {
+        if (event.propertyName !== "height") return;
+        clearTimeout(timeout);
+        resolve();
+      }, { once: true });
+    });
+
+    if (willExpand) {
+      wrapper.style.visibility = "hidden";
+      list.style.transition = "none";
+      wrapper.style.transition = "none";
+      group.classList.remove("collapsed");
+      list.style.height = "auto";
+      const height = list.scrollHeight;
+      list.style.height = "0px";
+      wrapper.style.opacity = "0";
+      wrapper.style.transform = "translateY(-6px)";
+      wrapper.style.visibility = "";
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (list.dataset.animationId !== animationId) return;
+      list.style.transition = transition;
+      wrapper.style.transition = contentTransition;
+      list.style.height = `${height}px`;
+      wrapper.style.opacity = "1";
+      wrapper.style.transform = "translateY(0)";
+      await waitForHeight();
+      if (list.dataset.animationId !== animationId) return;
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+    } else {
+      const height = list.getBoundingClientRect().height;
+      list.style.height = `${height}px`;
+      list.style.transition = "none";
+      wrapper.style.opacity = "1";
+      wrapper.style.transform = "translateY(0)";
+      wrapper.style.transition = "none";
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (list.dataset.animationId !== animationId) return;
+      list.style.transition = transition;
+      wrapper.style.transition = contentTransition;
+      group.classList.add("collapsed");
+      list.style.height = "0px";
+      wrapper.style.opacity = "0";
+      wrapper.style.transform = "translateY(-6px)";
+      await waitForHeight();
+      if (list.dataset.animationId !== animationId) return;
+      list.style.height = "";
+      list.style.transition = "";
+      wrapper.style.opacity = "";
+      wrapper.style.transform = "";
+      wrapper.style.transition = "";
+      wrapper.style.visibility = "";
+    }
+
+    delete list.dataset.animationId;
     await this.actor.setFlag("shmn", "subenergiesExpanded", willExpand);
   }
 
@@ -58120,7 +58257,7 @@ class GroupActorSheet extends MultiActorSheet {
   /** @override */
   static TABS = [
     { tab: "members", label: "SHMN.Team.Members", icon: "fa-solid fa-people-group" },
-    { tab: "inventory", label: "SHMN.Inventory", svg: "systems/shmn/icons/svg/backpack.svg" },
+    { tab: "inventory", label: "SHMN.Trophies", icon: "fa-solid fa-trophy" },
     { tab: "biography", label: "SHMN.Biography", icon: "fa-solid fa-feather" }
   ];
 
@@ -58137,6 +58274,13 @@ class GroupActorSheet extends MultiActorSheet {
     { key: "offensive", label: "SHMN.Team.Role.Offensive", capacity: 1 },
     { key: "reserve", label: "SHMN.Team.Role.Reserve", capacity: null }
   ];
+
+  static TEAM_ROLE_SKILLS = {
+    defense: "dcc",
+    support: "scc",
+    catcher: "ccc",
+    offensive: "occ"
+  };
 
   /* -------------------------------------------- */
   /*  Properties                                  */
@@ -58176,8 +58320,8 @@ class GroupActorSheet extends MultiActorSheet {
    * @protected
    */
   async _prepareHeaderContext(context, options) {
-    context.showXP = game.settings.get("shmn", "levelingMode") !== "noxp";
-    context.travelPace = this.actor.system.getTravelPace();
+    context.teamTitle = this.actor.system.details.teamTitle ?? "";
+    context.victories = Number(this.actor.system.details.victories ?? 0);
     return context;
   }
 
@@ -58231,13 +58375,17 @@ class GroupActorSheet extends MultiActorSheet {
       const role = sections[roleKey] ? roleKey : "reserve";
       const section = sections[role];
       if (!section) continue;
-      const member = { id, index, role, type, img, name, system, uuid };
+      const member = { id, goals: Number(memberData.goals ?? 0), index, role, type, img, name, system, uuid };
       member.canView = actor.testUserPermission(game.user, "LIMITED");
+      member.canManageGoals = context.editable && (game.user.isGM || actor.isOwner);
+      member.canRollTeamSkill = actor.isOwner;
       member.hiddenStats = !actor.testUserPermission(game.user, "OBSERVER");
       member.classes = member.hiddenStats ? [] : actor.itemTypes.class;
       await this._prepareMemberPortrait(actor, member);
       this._prepareMemberEncumbrance(actor, member);
       this._prepareMemberSkills(actor, member);
+      this._prepareMemberTeamSkill(member);
+      this._prepareMemberStamina(actor, member);
       switch (type) {
         case "character": await this._prepareCharacterContext(actor, member, options); break;
         case "npc": await this._prepareNPCContext(actor, member, options); break;
@@ -58384,6 +58532,46 @@ class GroupActorSheet extends MultiActorSheet {
       else context.skills[key] = skill;
     }
   }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare the collective combat proficiency tied to the member's team role.
+   * @param {object} context  The render context.
+   * @protected
+   */
+  _prepareMemberTeamSkill(context) {
+    const skillKey = this.constructor.TEAM_ROLE_SKILLS[context.role];
+    if (!skillKey) return;
+
+    const skill = context.ccSkills?.[skillKey];
+    if (!skill) return;
+
+    context.teamSkill = {
+      ...skill,
+      key: skillKey,
+      label: CONFIG.SHMN.skills[skillKey]?.label ?? skill.label
+    };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare stamina context for team members.
+   * @param {Actor5e} actor   The actor instance.
+   * @param {object} context  The render context.
+   * @protected
+   */
+  _prepareMemberStamina(actor, context) {
+    const stamina = actor.system.attributes.stamina;
+    if (!stamina) return;
+    context.stamina = {
+      value: Number(stamina.value ?? 0),
+      max: Number(stamina.max ?? 0),
+      pct: Number(stamina.pct ?? 0)
+    };
+  }
+
   /* -------------------------------------------- */
 
   /**
@@ -60128,6 +60316,7 @@ var _module$u = /*#__PURE__*/Object.freeze({
   HitDiceConfig: HitDiceConfig,
   HitPointsConfig: HitPointsConfig,
   EnergyPointsConfig: EnergyPointsConfig,
+  StaminaConfig: StaminaConfig,
   InitiativeConfig: InitiativeConfig,
   LanguagesConfig: LanguagesConfig,
   LongRestDialog: LongRestDialog,
@@ -69687,6 +69876,24 @@ class CharacterData extends CreatureTemplate {
             label: "SHMN.MaxEnergyPoints"
           })
         }, { label: "SHMN.EnergyPoints" }),
+        stamina: new SchemaField$j({
+          value: new NumberField$e({
+            required: true,
+            nullable: false,
+            integer: true,
+            min: 0,
+            initial: 10,
+            label: "SHMN.CurrentStamina"
+          }),
+          max: new NumberField$e({
+            required: true,
+            nullable: false,
+            integer: true,
+            min: 0,
+            initial: 10,
+            label: "SHMN.MaxStamina"
+          })
+        }, { label: "SHMN.Stamina" }),
         death: new RollConfigField({
           ability: false,
           success: new NumberField$e({
@@ -69927,6 +70134,14 @@ class CharacterData extends CreatureTemplate {
       this.attributes.ep.value = Math.clamp(Number(this.attributes.ep.value ?? 0), 0, this.attributes.ep.max);
       this.attributes.ep.pct = this.attributes.ep.max > 0
         ? Math.clamp((this.attributes.ep.value / this.attributes.ep.max) * 100, 0, 100)
+        : 0;
+    }
+    if (this.attributes.stamina) {
+      this.attributes.stamina.max = Math.max(0, Number(this.attributes.stamina.max ?? 10));
+      this.attributes.stamina.value = Math.clamp(Number(this.attributes.stamina.value ?? 10), 0,
+        this.attributes.stamina.max);
+      this.attributes.stamina.pct = this.attributes.stamina.max > 0
+        ? Math.clamp((this.attributes.stamina.value / this.attributes.stamina.max) * 100, 0, 100)
         : 0;
     }
   }
@@ -70366,11 +70581,14 @@ class GroupData extends GroupTemplate {
       details: new SchemaField$f({
         xp: new SchemaField$f({
           value: new NumberField$c({ integer: true, min: 0, label: "SHMN.ExperiencePoints.Current" })
-        }, { label: "SHMN.ExperiencePoints.Label" })
+        }, { label: "SHMN.ExperiencePoints.Label" }),
+        teamTitle: new StringField$team({ initial: "", blank: true, label: "SHMN.Team.TeamTitle" }),
+        victories: new NumberField$c({ integer: true, min: 0, initial: 0, label: "SHMN.Team.Victories" })
       }, { label: "SHMN.Details" }),
       members: new ArrayField$7(new SchemaField$f({
         actor: new ForeignDocumentField$3(foundry.documents.BaseActor),
-        role: new StringField$team({ initial: "reserve", blank: false, label: "SHMN.Team.Role.Label" })
+        role: new StringField$team({ initial: "reserve", blank: false, label: "SHMN.Team.Role.Label" }),
+        goals: new NumberField$c({ integer: true, min: 0, initial: 0, label: "SHMN.Team.Goals" })
       }), { label: "SHMN.GroupMembers" }),
       primaryVehicle: new ForeignDocumentField$3(foundry.documents.BaseActor)
     });
@@ -80508,13 +80726,15 @@ function _configureTrackableAttributes() {
       ...common.bar,
       "attributes.hp",
       "attributes.ep",
+      "attributes.stamina",
       ..._trackedSpellAttributes()
     ],
     value: [
       ...common.value,
       ...Object.keys(SHMN.skills).map(skill => `skills.${skill}.passive`),
       ...Object.keys(SHMN.senses).map(sense => `attributes.senses.${sense}`),
-      "attributes.hp.temp", "attributes.ep.value", "attributes.spell.attack", "attributes.spell.dc"
+      "attributes.hp.temp", "attributes.ep.value", "attributes.stamina.value",
+      "attributes.spell.attack", "attributes.spell.dc"
     ]
   };
 
@@ -80567,6 +80787,7 @@ function _configureConsumableAttributes() {
     "attributes.ac.flat",
     "attributes.hp.value",
     "attributes.ep.value",
+    "attributes.stamina.value",
     "attributes.exhaustion",
     ...Object.keys(SHMN.senses).map(sense => `attributes.senses.${sense}`),
     ...Object.keys(SHMN.movementTypes).map(type => `attributes.movement.${type}`),

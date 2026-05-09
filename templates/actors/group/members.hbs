@@ -1,19 +1,4 @@
-<section data-group="{{ tab.group }}" data-tab="{{ tab.id }}" class="tab {{ tab.cssClass }} flex1">
-    <header class="team-header">
-        <div>
-            <h2 class="roboto-upper">{{ localize "SHMN.Team.Title" }}</h2>
-            <p>{{ localize "SHMN.Team.Lineup" }}</p>
-        </div>
-        <button
-            type="button"
-            class="gold-button always-interactive team-contest-action"
-            data-action="teamContest"
-            data-tooltip="SHMN.TeamContest.Action.Start"
-            aria-label="{{ localize "SHMN.TeamContest.Action.Start" }}">
-            <i class="fa-solid fa-dice-d6" inert></i>
-        </button>
-    </header>
-
+<section data-group="{{ tab.group }}" data-tab="{{ tab.id }}" class="tab {{ tab.cssClass }} flex1 team-members-tab">
     {{#each sections}}
     <section class="team-section team-section-{{ key }}" data-role="{{ key }}">
         <h3 class="sabers roboto-upper">

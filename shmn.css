@@ -8442,9 +8442,9 @@ dialog.shmn2.application {
   --underlay-sorcerer: url("ui/official/classes/sorcerer.webp");
   --underlay-warlock: url("ui/official/classes/warlock.webp");
   --underlay-wizard: url("ui/official/classes/wizard.webp");
-  --underlay-team-catcher: url("ui/official/classes/monk.webp");
+  --underlay-team-catcher: url("ui/official/classes/barbarian.webp");
   --underlay-team-defense: url("ui/official/classes/fighter.webp");
-  --underlay-team-offensive: url("ui/official/classes/rogue.webp");
+  --underlay-team-offensive: url("ui/official/classes/sorcerer.webp");
   --underlay-team-support: url("ui/official/classes/cleric.webp");
   --underlay-npc-aberration: url("ui/official/npcs/aberration.webp");
   --underlay-npc-beast: url("ui/official/npcs/beast.webp");
@@ -8790,13 +8790,24 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor .meter.hit-points.energy-points .progress::before,
+.shmn2.sheet.actor .meter.hit-points.stamina-points .progress::before,
 .shmn2.sheet.actor .meter.hit-points.energy-points.progress::before,
+.shmn2.sheet.actor .meter.hit-points.stamina-points.progress::before,
 .shmn2.sheet.actor .meter.hit-points .progress.energy-points::before,
+.shmn2.sheet.actor .meter.hit-points .progress.stamina-points::before,
 .shmn2.sheet.actor .meter.hit-points.progress.energy-points::before {
   background: linear-gradient(to right, #8b5cf6 0%, #5b21b6 100%);
 }
 
+.shmn2.sheet.actor .meter.hit-points.stamina-points .progress::before,
+.shmn2.sheet.actor .meter.hit-points.stamina-points.progress::before,
+.shmn2.sheet.actor .meter.hit-points .progress.stamina-points::before,
+.shmn2.sheet.actor .meter.hit-points.progress.stamina-points::before {
+  background: linear-gradient(to right, #c47a25 0%, #7d3f12 100%);
+}
+
 .shmn2.sheet.actor .meter.hit-points.energy-points .progress>input:not([hidden]),
+.shmn2.sheet.actor .meter.hit-points.stamina-points .progress>input:not([hidden]),
 .shmn2.sheet.actor .meter.hit-points .progress.energy-points>input:not([hidden]) {
   position: absolute;
   inset: 0;
@@ -8816,15 +8827,18 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor .meter.hit-points.energy-points .progress>input[hidden],
+.shmn2.sheet.actor .meter.hit-points.stamina-points .progress>input[hidden],
 .shmn2.sheet.actor .meter.hit-points .progress.energy-points>input[hidden] {
   display: none;
 }
 
-.shmn2.sheet.actor .meter.hit-points.energy-points {
+.shmn2.sheet.actor .meter.hit-points.energy-points,
+.shmn2.sheet.actor .meter.hit-points.stamina-points {
   width: 100%;
 }
 
 .shmn2.sheet.actor .meter.hit-points.energy-points>.progress,
+.shmn2.sheet.actor .meter.hit-points.stamina-points>.progress,
 .shmn2.sheet.actor .meter.hit-points>.progress.energy-points {
   width: 100%;
   flex: 1 1 100%;
@@ -8832,6 +8846,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor .meter.hit-points.energy-points>.progress>input,
+.shmn2.sheet.actor .meter.hit-points.stamina-points>.progress>input,
 .shmn2.sheet.actor .meter.hit-points>.progress.energy-points>input {
   position: absolute;
   inset: 0;
@@ -12535,7 +12550,7 @@ dialog.shmn2.application {
 /*  Basic Structure                   */
 /* ---------------------------------- */
 .shmn2.sheet.actor.group {
-  --shmn-sheet-header-height: calc(var(--header-height) + 164px);
+  --shmn-sheet-header-height: calc(var(--header-height) + 202px);
   /* ---------------------------------- */
   /*  Sheet Header                      */
   /* ---------------------------------- */
@@ -12591,11 +12606,6 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .sheet-header-buttons {
-  position: absolute;
-  left: 16px;
-  top: var(--header-height);
-  justify-content: center;
-  width: 226px;
   gap: 4px;
 }
 
@@ -12608,6 +12618,7 @@ dialog.shmn2.application {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  justify-content: flex-start;
 }
 
 .shmn2.sheet.actor.group .sheet-header>.right>.bottom {
@@ -12617,8 +12628,30 @@ dialog.shmn2.application {
   gap: 8px;
 }
 
+.shmn2.sheet.actor.group .sheet-header .team-portrait-panel {
+  display: grid;
+  gap: 6px;
+  justify-content: center;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-rest-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 0;
+  width: 164px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-portrait-row {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 164px 30px;
+}
+
 .shmn2.sheet.actor.group .sheet-header .portrait {
   height: 164px;
+  width: 164px;
 }
 
 .shmn2.sheet.actor.group .sheet-header .portrait img {
@@ -12705,6 +12738,98 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .sheet-header .card.xp .value {
   font-size: var(--font-size-14);
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title {
+  height: 80px;
+  width: min(430px, 100%);
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .info {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  height: calc(100% - 30px);
+  padding: 6px 10px 10px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .info>div {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-title-value {
+  justify-content: center;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .value {
+  color: var(--color-text-title);
+  font-family: var(--shmn-font-roboto-slab);
+  font-size: var(--font-size-16);
+  font-weight: bold;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-title-value .value {
+  display: block;
+  width: min(250px, 100%);
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-title-value input {
+  width: 100%;
+  text-align: center;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories {
+  border-left: var(--shmn-border-gold);
+  flex: 0 0 auto;
+  min-width: 72px;
+  padding-left: 12px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories .label {
+  color: var(--color-text-secondary);
+  font-family: var(--shmn-font-roboto-condensed);
+  font-size: var(--font-size-10);
+  text-transform: uppercase;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories .value {
+  font-size: var(--font-size-18);
+  line-height: 1;
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories input {
+  width: 44px;
+  text-align: center;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-contest-slot {
+  align-items: end;
+  display: grid;
+  height: 164px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-contest-slot>.gold-button[data-action=teamContest] {
+  box-sizing: border-box;
+  height: 30px;
+  justify-content: center;
+  min-width: 30px;
+  padding: 0;
+  width: 30px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-contest-slot>.gold-button[data-action=teamContest]:focus:not(:hover) {
+  box-shadow: 0 0 6px var(--shmn-shadow-45);
 }
 
 .shmn2.sheet.actor.group .sheet-header .card input {
@@ -12794,6 +12919,28 @@ dialog.shmn2.application {
   padding-top: 8px;
 }
 
+.shmn2.sheet.actor.group .team-header {
+  display: none;
+}
+
+.shmn2.sheet.actor.group .team-members-tab.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.shmn2.sheet.actor.group .team-section-reserve {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 180px;
+  padding-bottom: 6px;
+}
+
+.shmn2.sheet.actor.group .team-section-reserve menu.members {
+  flex: 1;
+  min-height: 130px;
+}
+
 .shmn2.sheet.actor.group menu.members {
   display: flex;
   flex-direction: column;
@@ -12817,6 +12964,7 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group menu.members .vitals>* {
   position: relative;
+  z-index: 1;
 }
 
 .shmn2.sheet.actor.group menu.members .vitals .bars {
@@ -12836,6 +12984,33 @@ dialog.shmn2.application {
 .shmn2.sheet.actor.group menu.members .vitals .name a:not([data-action=showDocument]):hover {
   cursor: var(--cursor-default);
   text-shadow: none;
+}
+
+.shmn2.sheet.actor.group menu.members .member .vitals::after {
+  border-radius: 3px;
+  content: "";
+  inset: 0;
+  mask-image: linear-gradient(155deg, transparent 35%, black);
+  opacity: 0.3;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.shmn2.sheet.actor.group menu.members .member.role-catcher .vitals::after {
+  background: linear-gradient(120deg, transparent 35%, rgba(255, 122, 35, 0.8), rgba(255, 190, 80, 0.45));
+}
+
+.shmn2.sheet.actor.group menu.members .member.role-offensive .vitals::after {
+  background: linear-gradient(120deg, transparent 35%, rgba(210, 54, 38, 0.72), rgba(255, 145, 55, 0.42));
+}
+
+.shmn2.sheet.actor.group menu.members .member.role-defense .vitals::after {
+  background: linear-gradient(120deg, transparent 38%, rgba(75, 132, 190, 0.5), rgba(165, 190, 215, 0.28));
+}
+
+.shmn2.sheet.actor.group menu.members .member.role-support .vitals::after {
+  background: linear-gradient(120deg, transparent 38%, rgba(82, 150, 105, 0.48), rgba(215, 198, 105, 0.28));
 }
 
 .shmn2.sheet.actor.group menu.members .vitals .classes img {
@@ -12866,11 +13041,12 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group.editable .team-section {
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .shmn2.sheet.actor.group.editable .team-section:hover {
   outline: 1px dashed color-mix(in oklab, var(--shmn-color-gold), transparent 45%);
-  outline-offset: 2px;
+  outline-offset: -3px;
 }
 
 .shmn2.sheet.actor.group menu.members .team-empty-slot .vitals {
@@ -13008,12 +13184,38 @@ dialog.shmn2.application {
   flex: 3;
 }
 
+.shmn2.sheet.actor.group menu.members div.stats .info.team-stats {
+  flex: 1;
+  gap: 12px;
+  border-right: 0;
+  padding-inline: 10px;
+}
+
 .shmn2.sheet.actor.group menu.members div.stats .info>div {
   justify-content: space-around;
   align-items: stretch;
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+.shmn2.sheet.actor.group menu.members div.stats .team-stat {
+  min-width: 0;
+  gap: 3px;
+}
+
+.shmn2.sheet.actor.group menu.members div.stats .team-stat .label {
+  color: var(--color-text-secondary);
+  font-family: var(--shmn-font-roboto-condensed);
+  font-size: var(--font-size-10);
+  text-transform: uppercase;
+}
+
+.shmn2.sheet.actor.group menu.members div.stats .team-goals input {
+  width: 44px;
+  height: 22px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .shmn2.sheet.actor.group menu.members div.stats .info i {
@@ -18836,20 +19038,12 @@ document-embed.spells ul li {
   color: var(--shmn-color-gold);
 }
 
-.shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list>.wrapper {
-  padding-bottom: 0;
-}
-
 .shmn2.sheet.actor.character .subenergy-list {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 250ms ease;
   overflow: hidden;
-  min-height: 0;
 }
 
 .shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list {
-  grid-template-rows: 0fr;
+  height: 0;
 }
 
 .shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-header .collapse-icon {
@@ -18861,19 +19055,10 @@ document-embed.spells ul li {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-height: 0;
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 250ms ease,
-    transform 250ms ease,
-    padding-bottom 250ms ease;
+  will-change: opacity, transform;
 }
 
 .shmn2.sheet.actor.character .subenergy-group.collapsed .subenergy-list>.wrapper {
-  opacity: 0;
-  transform: translateY(-4px);
-  padding-bottom: 0;
   pointer-events: none;
 }
 
@@ -19189,6 +19374,29 @@ document-embed.spells ul li {
 .shmn2.sheet.actor.character .collective-combat input.cc-team-name::placeholder,
 .shmn2.sheet.actor.character .collective-combat input.cc-team-position::placeholder {
   color: var(--color-text-tertiary);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-stamina {
+  margin-bottom: 12px;
+  padding-bottom: 0.75rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-stamina h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-stamina h3 .config-button {
+  margin-left: auto;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-stamina-bar {
+  padding: 0 0.75rem 0.75rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-stamina .meter {
+  height: 28px;
 }
 
 /* ---------- barreiras ---------- */
