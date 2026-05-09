@@ -38,37 +38,37 @@
     --color-border-light-2: #999;
     --shmn-color-black: #000;
     --shmn-color-dark: #191813;
-    --shmn-color-faint: #c9c7b8;
-    --shmn-color-beige: #b5b3a4;
-    --shmn-color-tan: #7a7971;
-    --shmn-color-olive: #4b4a44;
-    --shmn-color-crimson: #44191A;
+    --shmn-color-faint: #e5ded1;
+    --shmn-color-beige: #d6cdbc;
+    --shmn-color-tan: #8f8372;
+    --shmn-color-olive: #4a3d31;
+    --shmn-color-crimson: #3f0f19;
     --shmn-color-groove: #eeede0;
     --shmn-color-gold: #9f9275;
     --shmn-color-red: #ed1c24;
     --shmn-color-blue: cornflowerblue;
     --shmn-color-green: #205b15;
-    --shmn-color-maroon: #741b2b;
-    --shmn-color-parchment: #f1ebe8;
+    --shmn-color-maroon: #7b1d2c;
+    --shmn-color-parchment: #f7f1e8;
     --shmn-color-purple: #c44dff;
     --shmn-color-scrollbar: var(--shmn-color-gold);
-    --shmn-color-card: #f8f4f1;
+    --shmn-color-card: #fffaf1;
     --shmn-color-hp-1: #1b4b29;
     --shmn-color-hp-2: #3ba55d;
     --shmn-color-hp-3: #276d3c;
-    --shmn-color-hd-1: #401f25;
-    --shmn-color-hd-2: var(--shmn-color-maroon);
-    --shmn-color-hd-3: #500000;
-    --shmn-color-sc-1: #433754;
-    --shmn-color-sc-2: #776493;
+    --shmn-color-hd-1: #5f142c;
+    --shmn-color-hd-2: #2b0d18;
+    --shmn-color-hd-3: #110D0A;
+    --shmn-color-sc-1: #3f2868;
+    --shmn-color-sc-2: #7b55c7;
     --shmn-color-blue-white: #cfd2da;
-    --shmn-color-blue-gray-1: #242731;
-    --shmn-color-blue-gray-2: #252830;
-    --shmn-color-blue-gray-3: #434857;
-    --shmn-color-blue-gray-4: #333742;
-    --shmn-color-iron-gray: #313131;
-    --shmn-color-light-gray: #3d3d3d;
-    --shmn-color-dark-gray: #0d0b0b;
+    --shmn-color-blue-gray-1: #211716;
+    --shmn-color-blue-gray-2: #241918;
+    --shmn-color-blue-gray-3: #4a3d39;
+    --shmn-color-blue-gray-4: #2d211f;
+    --shmn-color-iron-gray: #1D1312;
+    --shmn-color-light-gray: #302320;
+    --shmn-color-dark-gray: #110D0A;
     --shmn-color-success: #006c00;
     --shmn-color-success-background: #c7d0c0;
     --shmn-color-success-critical: green;
@@ -147,7 +147,7 @@
     --shmn-vehicle-header-content: none;
     --shmn-vehicle-header-image: transparent;
     --shmn-vehicle-station-blend-mode: none;
-    --shmn-background-card: var(--shmn-color-card);
+    --shmn-background-card: #272020;
     --shmn-background-parchment: var(--shmn-color-parchment);
     --shmn-background-5: rgba(0, 0, 0, 0.05);
     --shmn-background-alt-1: var(--shmn-color-light-gray);
@@ -922,8 +922,8 @@
     --shmn-inventory-border: none;
     --shmn-slot-border: 1px solid var(--shmn-color-blue-gray-3);
     --shmn-slot-filter: none;
-    --shmn-card-header-1: #491d25;
-    --shmn-card-header-2: #311b1f;
+    --shmn-card-header-1: var(--shmn-color-hd-1);
+    --shmn-card-header-2: var(--shmn-color-hd-2);
     --shmn-card-header-disabled-1: #444;
     --shmn-card-header-disabled-2: #333;
     --shmn-attribute-color: var(--shmn-color-beige);
@@ -1000,8 +1000,8 @@
     --shmn-color-table-row-odd: var(--shmn-color-blue-gray-2);
     --shmn-color-table-row-even: color-mix(in oklab, var(--shmn-color-table-row-odd), black 10%);
     --shmn-color-table-border: color-mix(in oklab, var(--shmn-color-table-row-even), black 10%);
-    --shmn-color-table-header-1: #491d25;
-    --shmn-color-table-header-2: #311b1f;
+    --shmn-color-table-header-1: var(--shmn-color-hd-1);
+    --shmn-color-table-header-2: var(--shmn-color-hd-2);
     --shmn-block-background: var(--shmn-color-blue-gray-4);
     --shmn-block-border-color: var(--shmn-color-gold);
     --shmn-roll-icon-filter: invert(1);
@@ -1161,8 +1161,8 @@
       --shmn-inventory-border: none;
       --shmn-slot-border: 1px solid var(--shmn-color-blue-gray-3);
       --shmn-slot-filter: none;
-      --shmn-card-header-1: #491d25;
-      --shmn-card-header-2: #311b1f;
+      --shmn-card-header-1: var(--shmn-color-hd-1);
+      --shmn-card-header-2: var(--shmn-color-hd-2);
       --shmn-card-header-disabled-1: #444;
       --shmn-card-header-disabled-2: #333;
       --shmn-attribute-color: var(--shmn-color-beige);
@@ -1239,8 +1239,8 @@
       --shmn-color-table-row-odd: var(--shmn-color-blue-gray-2);
       --shmn-color-table-row-even: color-mix(in oklab, var(--shmn-color-table-row-odd), black 10%);
       --shmn-color-table-border: color-mix(in oklab, var(--shmn-color-table-row-even), black 10%);
-      --shmn-color-table-header-1: #491d25;
-      --shmn-color-table-header-2: #311b1f;
+      --shmn-color-table-header-1: var(--shmn-color-hd-1);
+      --shmn-color-table-header-2: var(--shmn-color-hd-2);
       --shmn-block-background: var(--shmn-color-blue-gray-4);
       --shmn-block-border-color: var(--shmn-color-gold);
       --shmn-roll-icon-filter: invert(1);
@@ -1401,8 +1401,8 @@
       --shmn-inventory-border: none;
       --shmn-slot-border: 1px solid var(--shmn-color-blue-gray-3);
       --shmn-slot-filter: none;
-      --shmn-card-header-1: #491d25;
-      --shmn-card-header-2: #311b1f;
+      --shmn-card-header-1: var(--shmn-color-hd-1);
+      --shmn-card-header-2: var(--shmn-color-hd-2);
       --shmn-card-header-disabled-1: #444;
       --shmn-card-header-disabled-2: #333;
       --shmn-attribute-color: var(--shmn-color-beige);
@@ -1479,8 +1479,8 @@
       --shmn-color-table-row-odd: var(--shmn-color-blue-gray-2);
       --shmn-color-table-row-even: color-mix(in oklab, var(--shmn-color-table-row-odd), black 10%);
       --shmn-color-table-border: color-mix(in oklab, var(--shmn-color-table-row-even), black 10%);
-      --shmn-color-table-header-1: #491d25;
-      --shmn-color-table-header-2: #311b1f;
+      --shmn-color-table-header-1: var(--shmn-color-hd-1);
+      --shmn-color-table-header-2: var(--shmn-color-hd-2);
       --shmn-block-background: var(--shmn-color-blue-gray-4);
       --shmn-block-border-color: var(--shmn-color-gold);
       --shmn-roll-icon-filter: invert(1);
@@ -1872,6 +1872,12 @@ shmn-icon.fa-fw {
   line-height: 1;
   font-family: var(--shmn-font-roboto);
   outline: none;
+}
+
+.shmn2 item-list-controls search>input[type="text"]::placeholder,
+.shmn2 .filter-element search>input[type="text"]::placeholder {
+  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-light-0) 18%);
+  opacity: 0.72;
 }
 
 .shmn2 item-list-controls search>input[type="text"]:hover,
@@ -11122,10 +11128,6 @@ dialog.shmn2.application {
   gap: 16px;
 }
 
-.shmn2.sheet.actor.character .sheet-body .inventory-element .items-list {
-  gap: 16px;
-}
-
 .shmn2.sheet.actor.character .sheet-body .effects-element {
   gap: 16px;
 }
@@ -12551,6 +12553,12 @@ dialog.shmn2.application {
 /* ---------------------------------- */
 .shmn2.sheet.actor.group {
   --shmn-sheet-header-height: calc(var(--header-height) + 202px);
+  --shmn-team-primary: #a40f32;
+  --shmn-team-red: var(--shmn-team-primary);
+  --shmn-team-red-dark: color-mix(in srgb, var(--shmn-team-primary), black 52%);
+  --shmn-team-red-bright: color-mix(in srgb, var(--shmn-team-primary), white 22%);
+  --shmn-team-panel: #181b22;
+  --shmn-team-panel-2: #222531;
   /* ---------------------------------- */
   /*  Sheet Header                      */
   /* ---------------------------------- */
@@ -12573,15 +12581,15 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group:not(.minimized)::before {
   content: var(--shmn-group-header-content, none);
-  background: var(--shmn-group-header-image) no-repeat bottom center / cover;
+  background: var(--shmn-group-header-image) no-repeat center center / cover;
   position: absolute;
   inset: 0 0 auto 0;
   height: 255px;
   border-radius: 5px 5px 0 0;
-  opacity: 0.1;
-  mask-image: linear-gradient(to bottom, black, transparent);
+  opacity: 0.34;
+  mask-image: linear-gradient(to bottom, black 0 58%, transparent);
   z-index: -1;
-  filter: grayscale(1);
+  filter: grayscale(0.25) saturate(1.2) contrast(1.05);
 }
 
 .shmn2.sheet.actor.group:not(.minimized, .minimizing, .maximizing) {
@@ -12607,6 +12615,31 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .sheet-header .sheet-header-buttons {
   gap: 4px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-color-picker {
+  background: var(--shmn-team-primary);
+  border: var(--shmn-border-gold);
+  border-radius: 4px;
+  box-shadow: 0 0 6px var(--shmn-shadow-45);
+  cursor: var(--cursor-pointer);
+  height: 28px;
+  padding: 2px;
+  width: 28px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.shmn2.sheet.actor.group .sheet-header .team-color-picker::-moz-color-swatch {
+  border: none;
+  border-radius: 2px;
 }
 
 .shmn2.sheet.actor.group .sheet-header>.left {
@@ -12650,6 +12683,9 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .portrait {
+  background: var(--shmn-team-panel);
+  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), var(--shmn-color-gold) 35%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-text-light-0), transparent 88%) inset;
   height: 164px;
   width: 164px;
 }
@@ -12663,6 +12699,8 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .sheet-header .document-name {
   --input-background-color: var(--npc-header-input-background);
+  color: var(--color-text-light-0);
+  text-shadow: 0 2px 3px var(--color-shadow-dark);
   font-size: var(--font-size-46);
   font-family: var(--shmn-font-modesto);
   font-weight: bold;
@@ -12741,8 +12779,14 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title {
+  background: linear-gradient(180deg, var(--shmn-team-panel-2), var(--shmn-team-panel));
+  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 45%);
   height: 80px;
   width: min(430px, 100%);
+}
+
+.shmn2.sheet.actor.group .sheet-header .card.team-title .header {
+  background: linear-gradient(90deg, var(--shmn-team-red), var(--shmn-team-red-dark));
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .info {
@@ -12769,7 +12813,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .value {
-  color: var(--color-text-title);
+  color: color-mix(in srgb, var(--color-text-light-0), var(--shmn-color-gold) 22%);
   font-family: var(--shmn-font-roboto-slab);
   font-size: var(--font-size-16);
   font-weight: bold;
@@ -12797,7 +12841,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories .label {
-  color: var(--color-text-secondary);
+  color: color-mix(in srgb, var(--color-text-light-0), transparent 18%);
   font-family: var(--shmn-font-roboto-condensed);
   font-size: var(--font-size-10);
   text-transform: uppercase;
@@ -12863,6 +12907,9 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-body .tab-body [data-application-part=members] {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--shmn-team-red-dark), transparent 90%), transparent 120px),
+    color-mix(in srgb, var(--shmn-team-panel), transparent 42%);
   overflow: hidden auto;
   scrollbar-gutter: stable;
   inset: 0 4px 0 0;
@@ -12900,6 +12947,7 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .team-section h3 {
   align-items: center;
+  color: color-mix(in srgb, var(--color-text-light-0), var(--shmn-color-gold) 22%);
   display: flex;
   justify-content: space-between;
   padding-right: 12px;
@@ -12959,6 +13007,10 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members .vitals {
+  background:
+    linear-gradient(90deg, var(--shmn-team-red) 0 4px, transparent 4px),
+    linear-gradient(105deg, color-mix(in srgb, var(--shmn-team-panel-2), transparent 7%), color-mix(in srgb, var(--shmn-team-panel), transparent 5%));
+  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 62%);
   flex-basis: 50%;
 }
 
@@ -12976,6 +13028,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members .vitals .name {
+  color: var(--color-text-light-0);
   font-family: var(--shmn-font-roboto-slab);
   font-weight: bold;
   font-size: var(--font-size-14);
@@ -12998,19 +13051,19 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members .member.role-catcher .vitals::after {
-  background: linear-gradient(120deg, transparent 35%, rgba(255, 122, 35, 0.8), rgba(255, 190, 80, 0.45));
+  background: linear-gradient(120deg, transparent 35%, rgba(210, 31, 70, 0.72), rgba(159, 146, 117, 0.3));
 }
 
 .shmn2.sheet.actor.group menu.members .member.role-offensive .vitals::after {
-  background: linear-gradient(120deg, transparent 35%, rgba(210, 54, 38, 0.72), rgba(255, 145, 55, 0.42));
+  background: linear-gradient(120deg, transparent 35%, rgba(164, 15, 50, 0.78), rgba(210, 31, 70, 0.34));
 }
 
 .shmn2.sheet.actor.group menu.members .member.role-defense .vitals::after {
-  background: linear-gradient(120deg, transparent 38%, rgba(75, 132, 190, 0.5), rgba(165, 190, 215, 0.28));
+  background: linear-gradient(120deg, transparent 38%, rgba(63, 83, 138, 0.52), rgba(210, 31, 70, 0.18));
 }
 
 .shmn2.sheet.actor.group menu.members .member.role-support .vitals::after {
-  background: linear-gradient(120deg, transparent 38%, rgba(82, 150, 105, 0.48), rgba(215, 198, 105, 0.28));
+  background: linear-gradient(120deg, transparent 38%, rgba(126, 42, 92, 0.52), rgba(159, 146, 117, 0.24));
 }
 
 .shmn2.sheet.actor.group menu.members .vitals .classes img {
@@ -13154,9 +13207,10 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members div.stats {
+  background: color-mix(in srgb, var(--shmn-team-panel), transparent 18%);
   display: flex;
   justify-content: center;
-  border: var(--shmn-border-gold);
+  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 70%);
   border-radius: 4px;
   padding-block: 8px;
 }
@@ -13205,7 +13259,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members div.stats .team-stat .label {
-  color: var(--color-text-secondary);
+  color: color-mix(in srgb, var(--color-text-light-0), transparent 22%);
   font-family: var(--shmn-font-roboto-condensed);
   font-size: var(--font-size-10);
   text-transform: uppercase;
@@ -13220,7 +13274,7 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group menu.members div.stats .info i {
   font-size: var(--font-size-12);
-  color: var(--color-text-dark-5);
+  color: color-mix(in srgb, var(--shmn-team-red-bright), var(--color-text-light-0) 18%);
 }
 
 .shmn2.sheet.actor.group menu.members div.stats .info .modifier {
@@ -13228,6 +13282,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group menu.members div.stats .info .value {
+  color: var(--color-text-light-0);
   font-size: var(--font-size-16);
 }
 
@@ -18727,8 +18782,49 @@ document-embed.spells ul li {
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  border-radius: 4px;
+  background: var(--shmn-background-card);
+  border: var(--shmn-border-gold);
+  box-shadow: 0 0 6px var(--shmn-shadow-45);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search::before {
+  content: "\f002";
+  font-family: var(--font-awesome);
+  font-weight: bold;
+  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-light-0) 18%);
+  position: absolute;
+  left: 0.75rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search-input {
+  flex: 1;
+  min-width: 0;
+  height: unset;
+  line-height: 1;
+  padding: 0.55rem 0.5rem 0.55rem 2.25rem;
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  font-family: var(--shmn-font-roboto);
+  font-size: var(--font-size-13);
+  outline: none;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search-input::placeholder {
+  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-light-0) 18%);
+  opacity: 0.9;
 }
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pact {

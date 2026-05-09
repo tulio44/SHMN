@@ -5934,6 +5934,7 @@
 "SHMN.Team.TeamTitle": "Team Title",
 "SHMN.Team.TeamTitleExample": "Example: State Champion",
 "SHMN.Team.TeamTitlePlaceholder": "State Champion",
+"SHMN.Team.PrimaryColor": "Primary Color",
 "SHMN.Team.Lineup": "2 Defenseman, 2 Support, 1 Catcher, 1 Offensive, and reserves.",
 "SHMN.Team.EmptySlot": "Empty position",
 "SHMN.Team.Goals": "Goals",

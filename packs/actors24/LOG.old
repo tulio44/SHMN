@@ -1,3 +1,7 @@
-2026/05/07-20:55:38.363 1b88 Recovering log #204
-2026/05/07-20:55:38.368 1b88 Delete type=0 #204
-2026/05/07-20:55:38.368 1b88 Delete type=3 #203
+2026/05/09-19:50:41.562 5bb8 Recovering log #238
+2026/05/09-19:50:41.567 5bb8 Delete type=0 #238
+2026/05/09-19:50:41.568 5bb8 Delete type=3 #236
+2026/05/09-19:50:50.964 520c Level-0 table #243: started
+2026/05/09-19:50:50.964 520c Level-0 table #243: 0 bytes OK
+2026/05/09-19:50:50.966 520c Delete type=0 #241
+2026/05/09-19:50:50.972 520c Manual compaction at level-0 from '!actors!AkraLv0100000000' @ 72057594037927935 : 1 .. '!folders!xmXOrBADA4LyJOGl' @ 0 : 0; will stop at (end)

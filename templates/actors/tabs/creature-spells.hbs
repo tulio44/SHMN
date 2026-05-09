@@ -82,8 +82,12 @@
 
     {{!-- Spells by Pact --}}
     <section class="pactbook">
-        {{#if @root.editable}}
         <header class="pactbook-header">
+            <search class="pactbook-search">
+                <input type="text" class="pactbook-search-input" placeholder="Buscar barganha ou ritual"
+                    autocomplete="off">
+            </search>
+            {{#if @root.editable}}
             <button type="button" class="config-button pact-create-button" data-action="createPact"
                 data-tooltip="{{ localize " SHMN.PactCreate" }}" aria-label="{{ localize " SHMN.PactCreate" }}">
                 <span class="pact-create-icon">
@@ -91,8 +95,8 @@
                     <i class="fas fa-plus pact-create-plus" inert></i>
                 </span>
             </button>
+            {{/if}}
         </header>
-        {{/if}}
 
         {{#each pactbook as |pact|}}
         <section class="pact card" data-pact-id="{{ pact.id }}">

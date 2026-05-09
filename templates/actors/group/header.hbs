@@ -12,6 +12,11 @@
                         aria-label="{{ localize 'SHMN.REST.Long.Label' }}">
                     <i class="fas fa-campground" inert></i>
                 </button>
+                {{#if editable}}
+                <input type="color" class="team-color-picker" name="system.details.primaryColor"
+                       value="{{ teamPrimaryColor }}" data-tooltip="SHMN.Team.PrimaryColor"
+                       aria-label="{{ localize "SHMN.Team.PrimaryColor" }}">
+                {{/if}}
             </div>
             <div class="team-portrait-row">
                 <div class="portrait">

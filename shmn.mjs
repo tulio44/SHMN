@@ -55914,6 +55914,15 @@ class CharacterActorSheet extends BaseActorSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Current pactbook search query.
+   * @type {string}
+   * @protected
+   */
+  _pactbookSearch = "";
+
+  /* -------------------------------------------- */
+
   /** @override */
   _filters = {
     features: { name: "", properties: new Set() },
@@ -56886,6 +56895,12 @@ class CharacterActorSheet extends BaseActorSheet {
     if (!this.actor.limited) {
       this._renderAttunement(context, options);
       this._renderSpellbook(context, options);
+      const pactbookSearch = this.element.querySelector(".pactbook-search-input");
+      if (pactbookSearch) {
+        pactbookSearch.value = this._pactbookSearch;
+        pactbookSearch.addEventListener("input", this._onSearchPactbook.bind(this));
+        this._filterPactbook();
+      }
     }
 
     // Show death tray at 0 HP
@@ -56899,6 +56914,46 @@ class CharacterActorSheet extends BaseActorSheet {
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
   /* -------------------------------------------- */
+
+  /**
+   * Handle filtering pact cards by their text or ritual names.
+   * @param {InputEvent} event  Triggering input event.
+   * @protected
+   */
+  _onSearchPactbook(event) {
+    this._pactbookSearch = event.target.value ?? "";
+    this._filterPactbook();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Filter pactbook entries in-place.
+   * @protected
+   */
+  _filterPactbook() {
+    const query = this._normalizeSearchText(this._pactbookSearch);
+    for (const pact of this.element.querySelectorAll(".pactbook .pact")) {
+      const text = this._normalizeSearchText(pact.textContent ?? "");
+      pact.hidden = !!query && !text.includes(query);
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Normalize text for pactbook searches.
+   * @param {string} value  Text to normalize.
+   * @returns {string}
+   * @protected
+   */
+  _normalizeSearchText(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase(game.i18n.lang)
+      .trim();
+  }
 
   /**
    * Handle removing a favorite.
@@ -58322,6 +58377,7 @@ class GroupActorSheet extends MultiActorSheet {
   async _prepareHeaderContext(context, options) {
     context.teamTitle = this.actor.system.details.teamTitle ?? "";
     context.victories = Number(this.actor.system.details.victories ?? 0);
+    context.teamPrimaryColor = this._getTeamPrimaryColor();
     return context;
   }
 
@@ -58691,12 +58747,37 @@ class GroupActorSheet extends MultiActorSheet {
   /** @inheritDoc */
   async _onRender(context, options) {
     await super._onRender(context, options);
+    this._applyTeamPrimaryColor();
+    this.element.querySelector(".team-color-picker")
+      ?.addEventListener("input", event => this._applyTeamPrimaryColor(event.target.value));
     this._renderInventoryToggle();
   }
 
   /* -------------------------------------------- */
   /*  Event Listeners & Handlers                  */
   /* -------------------------------------------- */
+
+  /**
+   * Get the configured team primary color.
+   * @returns {string}
+   * @protected
+   */
+  _getTeamPrimaryColor() {
+    const primaryColor = this.actor.system.details.primaryColor ?? "#a40f32";
+    return /^#[0-9a-f]{6}$/i.test(primaryColor) ? primaryColor : "#a40f32";
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply the team primary color to the sheet root.
+   * @param {string} [color]  Color to apply.
+   * @protected
+   */
+  _applyTeamPrimaryColor(color) {
+    color = /^#[0-9a-f]{6}$/i.test(color ?? "") ? color : this._getTeamPrimaryColor();
+    this.element.style.setProperty("--shmn-team-primary", color);
+  }
 
   /**
    * Handle distributing XP & currency.
@@ -70583,6 +70664,7 @@ class GroupData extends GroupTemplate {
           value: new NumberField$c({ integer: true, min: 0, label: "SHMN.ExperiencePoints.Current" })
         }, { label: "SHMN.ExperiencePoints.Label" }),
         teamTitle: new StringField$team({ initial: "", blank: true, label: "SHMN.Team.TeamTitle" }),
+        primaryColor: new StringField$team({ initial: "#a40f32", blank: false, label: "SHMN.Team.PrimaryColor" }),
         victories: new NumberField$c({ integer: true, min: 0, initial: 0, label: "SHMN.Team.Victories" })
       }, { label: "SHMN.Details" }),
       members: new ArrayField$7(new SchemaField$f({
