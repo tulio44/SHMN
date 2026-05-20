@@ -58324,7 +58324,7 @@ class GroupActorSheet extends MultiActorSheet {
    */
   static TEAM_ROLES = [
     { key: "defense", label: "SHMN.Team.Role.Defense", capacity: 2 },
-    { key: "support", label: "SHMN.Team.Role.Support", capacity: 2 },
+    { key: "support", label: "SHMN.Team.Role.Support", capacity: 1 },
     { key: "catcher", label: "SHMN.Team.Role.Catcher", capacity: 1 },
     { key: "offensive", label: "SHMN.Team.Role.Offensive", capacity: 1 },
     { key: "reserve", label: "SHMN.Team.Role.Reserve", capacity: null }
