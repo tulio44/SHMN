@@ -84,12 +84,13 @@
     <section class="pactbook">
         <header class="pactbook-header">
             <search class="pactbook-search">
-                <input type="text" class="pactbook-search-input" placeholder="Buscar barganha ou ritual"
-                    autocomplete="off">
+                <input type="text" class="pactbook-search-input"
+                    placeholder="{{ localize "SHMN.PactSearchPlaceholder" }}" autocomplete="off">
             </search>
             {{#if @root.editable}}
             <button type="button" class="config-button pact-create-button" data-action="createPact"
-                data-tooltip="{{ localize "SHMN.PactCreate" }}" aria-label="{{ localize "SHMN.PactCreate" }}">
+                data-tooltip="{{ localize "SHMN.PactCreate" }}" title="{{ localize "SHMN.PactCreate" }}"
+                aria-label="{{ localize "SHMN.PactCreate" }}">
                 <span class="pact-create-icon">
                     <i class="fas fa-handshake" inert></i>
                     <i class="fas fa-plus pact-create-plus" inert></i>
@@ -128,17 +129,17 @@
                     {{#if @root.editable}}
                     <div class="pact-types pact-types-edit">
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.0" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 0) blank="— Tipo 1 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 0) blank=(localize "SHMN.PactTypeBlank1")
                             localize=true }}
                         </select>
 
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.1" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 1) blank="— Tipo 2 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 1) blank=(localize "SHMN.PactTypeBlank2")
                             localize=true }}
                         </select>
 
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.2" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 2) blank="— Tipo 3 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 2) blank=(localize "SHMN.PactTypeBlank3")
                             localize=true }}
                         </select>
                     </div>

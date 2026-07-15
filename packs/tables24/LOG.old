@@ -1,3 +1,7 @@
-2026/05/12-19:24:50.098 6114 Recovering log #238
-2026/05/12-19:24:50.103 6114 Delete type=0 #238
-2026/05/12-19:24:50.103 6114 Delete type=3 #236
+2026/07/15-19:52:52.274 2500 Recovering log #247
+2026/07/15-19:52:52.279 2500 Delete type=0 #247
+2026/07/15-19:52:52.279 2500 Delete type=3 #245
+2026/07/15-20:18:24.129 48d8 Level-0 table #253: started
+2026/07/15-20:18:24.129 48d8 Level-0 table #253: 0 bytes OK
+2026/07/15-20:18:24.131 48d8 Delete type=0 #251
+2026/07/15-20:18:24.132 48d8 Manual compaction at level-0 from '!folders!6PmNgdAU8WO1cFlx' @ 72057594037927935 : 1 .. '!tables.results!phbsplTeleportMi.yJ4FhyyZvenG7AJl' @ 0 : 0; will stop at (end)

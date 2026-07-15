@@ -5950,6 +5950,10 @@
 "SHMN.Pact": "Barganha",
 "SHMN.PactCreate": "Criar Barganha",
 "SHMN.PactSpellCreate": "Criar Ritual",
+"SHMN.PactSearchPlaceholder": "Buscar barganha ou ritual",
+"SHMN.PactTypeBlank1": "— Tipo 1 —",
+"SHMN.PactTypeBlank2": "— Tipo 2 —",
+"SHMN.PactTypeBlank3": "— Tipo 3 —",
 "SHMN.UnlinkedPact": "Rituais sem Barganha",
 
 "SHMN.PactTypeFire": "Fogo",
