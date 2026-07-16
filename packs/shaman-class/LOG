@@ -1,3 +1,5 @@
-2026/07/15-20:27:06.758 b7c Recovering log #52
-2026/07/15-20:27:06.763 b7c Delete type=0 #52
-2026/07/15-20:27:06.763 b7c Delete type=3 #50
+2026/07/16-13:12:25.906 3ffc Recovering log #65
+2026/07/16-13:12:25.906 3ffc Level-0 table #67: started
+2026/07/16-13:12:25.918 3ffc Level-0 table #67: 2425 bytes OK
+2026/07/16-13:12:25.924 3ffc Delete type=0 #65
+2026/07/16-13:12:25.924 3ffc Delete type=3 #64

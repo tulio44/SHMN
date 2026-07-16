@@ -48,8 +48,8 @@
 "TYPES.Item.racePl": "Species",
 "TYPES.Item.raceLegacy": "Race",
 "TYPES.Item.raceLegacyPl": "Races",
-"TYPES.Item.spell": "Spell",
-"TYPES.Item.spellPl": "Spells",
+"TYPES.Item.spell": "Ritual",
+"TYPES.Item.spellPl": "Rituals",
 "TYPES.Item.subclass": "Subclass",
 "TYPES.Item.subclassPl": "Subclasses",
 "TYPES.Item.tool": "Tool",
@@ -121,7 +121,7 @@
 "SHMN.AbilityPromptTitle": "{ability} Ability Check",
 "SHMN.AbilityUseChargesLabel": "{value} Charges",
 "SHMN.AbilityUseConsumableLabel": "{max} per {per}",
-"SHMN.AbilityUseCast": "Cast Spell",
+"SHMN.AbilityUseCast": "Cast Ritual",
 "SHMN.AbilityUseUse": "Use Ability",
 "SHMN.AbilityUseConfig": "Usage Configuration",
 "SHMN.AbilityBonuses": "Ability Bonuses",
@@ -139,10 +139,10 @@
 "SHMN.ActionAbil": "Ability Check",
 "SHMN.ActionEnch": "Enchant",
 "SHMN.ActionHeal": "Heal",
-"SHMN.ActionMSAK": "Melee Spell Attack",
+"SHMN.ActionMSAK": "Melee Ritual Attack",
 "SHMN.ActionMWAK": "Melee Weapon Attack",
 "SHMN.ActionOther": "Other",
-"SHMN.ActionRSAK": "Ranged Spell Attack",
+"SHMN.ActionRSAK": "Ranged Ritual Attack",
 "SHMN.ActionRWAK": "Ranged Weapon Attack",
 "SHMN.ActionSave": "Saving Throw",
 "SHMN.ActionSumm": "Summon",
@@ -490,12 +490,12 @@
       "restriction": {
         "level": {
           "Available": "Any Available Level",
-          "hint": "Only allow choices from spells of this level.",
-          "label": "Spell Level"
+          "hint": "Only allow choices from rituals of this rank.",
+          "label": "Ritual Rank"
         },
         "list": {
-          "hint": "Only allow spells from these lists.",
-          "label": "Spell Lists"
+          "hint": "Only allow rituals from these lists.",
+          "label": "Ritual Lists"
         },
         "subtype": {
           "label": "Subtype"
@@ -510,7 +510,7 @@
         "label": "Item Type"
       }
     },
-    "Hint": "Present the player with a choice of items (such as equipment, features, or spells) that they can choose for their character at one or more levels.",
+    "Hint": "Present the player with a choice of items (such as equipment, features, or rituals) that they can choose for their character at one or more levels.",
     "Replacement": {
       "None": "No Replacement",
       "Title": "replace"
@@ -520,9 +520,9 @@
       "InvalidType": "Only {type} items can be selected for this choice.",
       "MaxSelected": "No additional items can be selected, uncheck items before selecting more.",
       "NoOriginal": "Previously selected choice no longer available for replacement.",
-      "SpellLevelAvailable": "Only {level} or lower spells can be chosen for this advancement.",
-      "SpellLevelSpecific": "Only {level} spells can be chosen for this advancement.",
-      "SpellList": "Only spells available on the {lists} spell list can be chosen for this advancement."
+      "SpellLevelAvailable": "Only rank {level} or lower rituals can be chosen for this advancement.",
+      "SpellLevelSpecific": "Only rank {level} rituals can be chosen for this advancement.",
+      "SpellList": "Only rituals available on the {lists} ritual list can be chosen for this advancement."
     }
   },
   "ItemGrant": {
@@ -537,7 +537,7 @@
         "hint": "If the whole advancement is marked optional, players may opt out of any of the following items, otherwise all non-optional items are granted."
       }
     },
-    "Hint": "Grant the character items (such as equipment, features, or spells) when they reach a certain level.",
+    "Hint": "Grant the character items (such as equipment, features, or rituals) when they reach a certain level.",
     "Title": "Grant Items",
     "Warning": {
       "Container": "Container contents will not be added with containers.",
@@ -662,12 +662,12 @@
   "SPELLCONFIG": {
     "FIELDS": {
       "spell": {
-        "label": "Spell Details",
+        "label": "Ritual Details",
         "ability": {
           "label": "Ability"
         },
         "method": {
-          "label": "Spellcasting Method"
+          "label": "Ritual Casting Method"
         },
         "prepared": {
           "label": "Preparation"
@@ -681,7 +681,7 @@
           },
           "requireSlot": {
             "label": "Require Slot",
-            "hint": "Require a spell slot to be spent when using the limited uses. If not checked then the uses will be additional free uses that don't consume a slot."
+            "hint": "Require a ritual slot to be spent when using the limited uses. If not checked then the uses will be additional free uses that don't consume a slot."
           }
         }
       }
@@ -855,7 +855,7 @@
     "rwak": "Ranged Attack"
   },
   "Classification": {
-    "Spell": "Spell",
+    "Spell": "Ritual",
     "Unarmed": "Unarmed",
     "Weapon": "Weapon"
   },
@@ -888,7 +888,7 @@
         },
         "classification": {
           "label": "Attack Classification",
-          "hint": "Is this an unarmed, weapon, or spell attack?"
+          "hint": "Is this an unarmed, weapon, or ritual attack?"
         }
       }
     },
@@ -1053,12 +1053,12 @@
         }
       },
       "msak": {
-        "label": "Melee Spell Bonuses",
+        "label": "Melee Ritual Bonuses",
         "attack": {
-          "label": "Melee Spell Attack Bonus"
+          "label": "Melee Ritual Attack Bonus"
         },
         "damage": {
-          "label": "Melee Spell Damage Bonus"
+          "label": "Melee Ritual Damage Bonus"
         }
       },
       "mwak": {
@@ -1071,12 +1071,12 @@
         }
       },
       "rsak": {
-        "label": "Ranged Spell Bonuses",
+        "label": "Ranged Ritual Bonuses",
         "attack": {
-          "label": "Ranged Spell Attack Bonus"
+          "label": "Ranged Ritual Attack Bonus"
         },
         "damage": {
-          "label": "Ranged Spell Damage Bonus"
+          "label": "Ranged Ritual Damage Bonus"
         }
       },
       "rwak": {
@@ -1089,9 +1089,9 @@
         }
       },
       "spell": {
-        "label": "Global Spell Bonuses",
+        "label": "Global Ritual Bonuses",
         "dc": {
-          "label": "Global Spell DC Bonus"
+          "label": "Global Ritual DC Bonus"
         }
       }
     }
@@ -1322,53 +1322,53 @@
 
 "SHMN.CAST": {
   "Action": {
-    "RemoveSpell": "Remove Spell"
+    "RemoveSpell": "Remove Ritual"
   },
   "Enchantment": {
-    "Name": "Spell Changes"
+    "Name": "Ritual Changes"
   },
   "FIELDS": {
     "spell": {
       "label": "Casting Details",
       "ability": {
         "label": "Casting Ability",
-        "hint": "Ability to override the creature's normal spellcasting ability."
+        "hint": "Ability to override the creature's normal ritual casting ability."
       },
       "challenge": {
         "attack": {
           "label": "Attack Bonus",
-          "hint": "Flat to hit bonus in place of the spell's normal attack bonus."
+          "hint": "Flat to hit bonus in place of the ritual's normal attack bonus."
         },
         "save": {
           "label": "Save DC",
-          "hint": "Flat DC to use in place of the spell's normal save DC."
+          "hint": "Flat DC to use in place of the ritual's normal save DC."
         },
         "override": {
           "label": "Override Values",
-          "hint": "Override the spell's normal attack bonus & DC when casting."
+          "hint": "Override the ritual's normal attack bonus & DC when casting."
         }
       },
       "level": {
-        "label": "Casting Level",
-        "hint": "Base level to cast the spell, if different than the spell's level."
+        "label": "Casting Rank",
+        "hint": "Base rank to cast the ritual, if different than the ritual's rank."
       },
       "properties": {
         "label": "Ignored Properties",
-        "hint": "Spell components & tags to ignore while casting."
+        "hint": "Ritual components & tags to ignore while casting."
       },
       "spellbook": {
-        "label": "Display in Spellbook",
-        "hint": "Display spell in the Spells tab of the character sheet."
+        "label": "Display in Ritual Book",
+        "hint": "Display ritual in the Rituals tab of the character sheet."
       },
       "uuid": {
-        "label": "Spell to Cast"
+        "label": "Ritual to Cast"
       }
     }
   },
-  "Hint": "Cast a spell through an item.",
+  "Hint": "Cast a ritual through an item.",
   "SECTIONS": {
-    "Spell": "Spell",
-    "Spellbook": "Additional Spells"
+    "Spell": "Ritual",
+    "Spellbook": "Additional Rituals"
   },
   "Title": "Cast"
 },
@@ -1557,7 +1557,7 @@
     "Label": "Filters",
     "Grouped": "{type} ({group})",
     "HasDarkvision": "Has Darkvision",
-    "HasSpellcasting": "Has Spellcasting",
+    "HasSpellcasting": "Has Ritual Casting",
     "SearchResults": "Search results"
   },
   "Selection": {
@@ -1691,7 +1691,7 @@
 "SHMN.ConsumeRecharge": "Consume Recharge?",
 "SHMN.ConsumeScaling": "Resource Scaling",
 "SHMN.ConsumeScalingLabel": "Use Resources",
-"SHMN.ConsumeScalingTooltip": "If checked, consuming additional resources will increase the level the spell is cast at.",
+"SHMN.ConsumeScalingTooltip": "If checked, consuming additional resources will increase the rank the ritual is cast at.",
 
 "SHMN.CONSUMABLE": {
   "FIELDS": {
@@ -1774,7 +1774,7 @@
         "label": "Consumption Scaling",
         "allowed": {
           "label": "Allow Scaling",
-          "hint": "Can an activity not on a spell be activated at higher levels?"
+          "hint": "Can an activity not on a ritual be activated at higher ranks?"
         },
         "max": {
           "label": "Max Scaling",
@@ -1782,8 +1782,8 @@
         }
       },
       "spellSlot": {
-        "label": "Consume Spell Slot",
-        "hint": "Should using this activity consume a slot for this spell?"
+        "label": "Consume Ritual Slot",
+        "hint": "Should using this activity consume a slot for this ritual?"
       },
       "targets": {
         "label": "Consumption Targets",
@@ -1826,7 +1826,7 @@
     "Amount": "Amount",
     "Automatic": "Automatic",
     "None": "No Scaling",
-    "SlotLevel": "Slot Level"
+    "SlotLevel": "Slot Rank"
   },
   "Target": {
     "ThisItem": "This Item",
@@ -1898,9 +1898,9 @@
       "other": "{level} slots"
     },
     "SpellSlots": {
-      "Label": "Spell Slots",
-      "PromptDecrease": "Consume Spell Slot?",
-      "PromptIncrease": "Restore Spell Slot?",
+      "Label": "Ritual Slots",
+      "PromptDecrease": "Consume Ritual Slot?",
+      "PromptIncrease": "Restore Ritual Slot?",
       "PromptHintDecrease": "Spend <strong>{cost}</strong> {slot} ({available} remaining).",
       "PromptHintIncrease": "Recover <strong>{cost}</strong> {slot}.",
       "Warning": "{level} slots"
@@ -1914,7 +1914,7 @@
     "MissingAttribute": "Attribute {attribute} configured to be consumed by {activity} activity on {item} could not be found.",
     "MissingHitDice": "Actor does not have a class with a {denomination} hit die.",
     "MissingItem": "Item configured to be consumed by {activity} activity on {item} could not be found.",
-    "MissingSpellSlot": "No {level} slots available.",
+    "MissingSpellSlot": "No {level} ritual slots available.",
     "None": "No {type} available to spend, {cost} required.",
     "NotEnough": "Not enough {type} available to spend, {cost} required and only {available} available.",
     "WillDestroy": "Consuming {item} will spend its final use and it will be destroyed."
@@ -2091,10 +2091,10 @@
   },
   "Scaling": {
     "Half": "Every Other Level",
-    "HalfCantrip": "Half Cantrip Scaling",
+    "HalfCantrip": "Half Passive Scaling",
     "None": "No Scaling",
     "Whole": "Every Level",
-    "WholeCantrip": "Cantrip Scaling"
+    "WholeCantrip": "Passive Scaling"
   },
   "Title": "Damage"
 },
@@ -2756,7 +2756,7 @@
     "Maneuver": "Maneuver",
     "Metamagic": "Metamagic Option",
     "Multiattack": "Multiattack",
-    "PactBoon": "Pact Boon",
+    "PactBoon": "Bargain Boon",
     "PsionicPower": "Psionic Power",
     "Rune": "Rune",
     "SuperiorHuntersDefense": "Superior Hunter's Defense"
@@ -2782,7 +2782,7 @@
   }
 },
 "SHMN.Focus": {
-  "Label": "Spellcasting Focus",
+  "Label": "Ritual Focus",
   "Arcane": "Arcane Focus",
   "Druidic": "Druidic Focus",
   "Holy": "Holy Focus"
@@ -2851,8 +2851,8 @@
 "SHMN.FilterGroupCategory": "Group by Category",
 "SHMN.FilterGroupOrigin": "Group by Origin",
 "SHMN.FilterGroupAction": "Group by Action",
-"SHMN.FilterNoSpells": "No spells found for this set of filters.",
-"SHMN.NoSpellLevels": "This character has no spellcaster levels, but you may add spells manually.",
+"SHMN.FilterNoSpells": "No rituals found for this set of filters.",
+"SHMN.NoSpellLevels": "This character has no ritual casting ranks, but you may add rituals manually.",
 
 "SHMN.FLAGS": {
   "EnhancedDualWielding": {
@@ -2889,8 +2889,8 @@
 "SHMN.FlagsRemarkableAthleteHint": "Half-Proficiency (rounded-up) to physical Ability Checks and Initiative.",
 "SHMN.FlagsWeaponCritThreshold": "Weapon Critical Hit Threshold",
 "SHMN.FlagsWeaponCritThresholdHint": "An expanded critical hit threshold for weapon attacks.",
-"SHMN.FlagsSpellCritThreshold": "Spell Critical Hit Threshold",
-"SHMN.FlagsSpellCritThresholdHint": "An expanded critical hit threshold for spell attacks.",
+"SHMN.FlagsSpellCritThreshold": "Ritual Critical Hit Threshold",
+"SHMN.FlagsSpellCritThresholdHint": "An expanded critical hit threshold for ritual attacks.",
 "SHMN.FlagsMeleeCriticalDice": "Melee Critical Damage Dice",
 "SHMN.FlagsMeleeCriticalDiceHint": "A number of additional damage dice added to melee weapon critical hits.",
 "SHMN.FlagsToolExpertise": "Tool Expertise",
@@ -3462,7 +3462,7 @@
   "other": "{number}th"
 },
 
-"SHMN.PactMagic": "Pact Magic",
+"SHMN.PactMagic": "Bargain Magic",
 "SHMN.Passive": "Passive",
 "SHMN.PassivePerception": "Passive Perception",
 "SHMN.Period": "Period",
@@ -3699,10 +3699,10 @@
   "Long": {
     "Abbreviation": "LR",
     "Hint": {
-      "Group": "On a long rest group members will recover hit points, hit dice, class resources, limited use item charges, and spell slots.",
-      "GroupLegacy": "On a long rest group members will recover hit points, half of their maximum hit dice, class resources, limited use item charges, and spell slots.",
-      "Normal": "On a long rest you will recover hit points, hit dice, class resources, limited use item charges, and spell slots.",
-      "NormalLegacy": "On a long rest you will recover hit points, half your maximum hit dice, class resources, limited use item charges, and spell slots."
+      "Group": "On a long rest group members will recover hit points, hit dice, class resources, limited use item charges, and ritual slots.",
+      "GroupLegacy": "On a long rest group members will recover hit points, half of their maximum hit dice, class resources, limited use item charges, and ritual slots.",
+      "Normal": "On a long rest you will recover hit points, hit dice, class resources, limited use item charges, and ritual slots.",
+      "NormalLegacy": "On a long rest you will recover hit points, half your maximum hit dice, class resources, limited use item charges, and ritual slots."
     },
     "Label": "Long Rest",
     "LabelShort": "L. Rest",
@@ -3871,18 +3871,18 @@
 "SHMN.SaveBonus": "Saving Throw Bonus",
 "SHMN.SaveGlobalBonusHint": "This bonus applies to all saving throws made by this actor.",
 "SHMN.Scroll": {
-  "CreateFrom": "Create Scroll from {spell}",
+  "CreateFrom": "Create Ritual Scroll from {spell}",
   "CreateScroll": "Create Scroll",
   "Details": "Scroll Details",
   "Explanation": {
     "Label": "Explanation",
-    "Hint": "Amount of the rules on using spell scrolls to include in the created scroll.",
+    "Hint": "Amount of the rules on using ritual scrolls to include in the created scroll.",
     "Complete": "Complete",
     "Reference": "Reference"
   },
   "RequiresConcentration": "Requires Concentration",
   "SaveDC": "Save DC",
-  "Values": "Spell Values"
+  "Values": "Ritual Values"
 },
 "SHMN.Senses": "Senses",
 "SHMN.SensesConfig": "Configure Senses",
@@ -3909,7 +3909,7 @@
   "NPC": "Default 5e NPC Sheet",
   "RotateArea": "Default 5e Rotate Area Sheet",
   "Rule": "Default 5e Rule Sheet",
-  "SpellList": "Default 5e Spell List Sheet",
+  "SpellList": "Default Ritual List Sheet",
   "Token": "Default 5e Token Sheet",
   "Vehicle": "Default 5e Vehicle Sheet"
 },
@@ -4059,19 +4059,19 @@
 },
 "SHMN.Speed": "Speed",
 "SHMN.SpeedSpecial": "Special Movement",
-"SHMN.SpellAbility": "Spellcasting Ability",
-"SHMN.SpellAbilitySet": "Set as Primary Spellcasting Ability",
-"SHMN.SpellAdd": "Add Spell",
-"SHMN.SpellAttackBonus": "Spell Attack Bonus",
-"SHMN.SpellCantrip": "Cantrip",
-"SHMN.SpellCastConsume": "Consume Spell Slot?",
-"SHMN.SpellCastNoSlots": "You have no available {level} spell slots with which to cast {name}",
-"SHMN.SpellCastNoSlotsLeft": "You have no available spell slots with which to cast {name}!",
+"SHMN.SpellAbility": "Ritual Casting Ability",
+"SHMN.SpellAbilitySet": "Set as Primary Ritual Casting Ability",
+"SHMN.SpellAdd": "Add Ritual",
+"SHMN.SpellAttackBonus": "Ritual Attack Bonus",
+"SHMN.SpellCantrip": "Passive",
+"SHMN.SpellCastConsume": "Consume Ritual Slot?",
+"SHMN.SpellCastNoSlots": "You have no available {level} ritual slots with which to cast {name}",
+"SHMN.SpellCastNoSlotsLeft": "You have no available ritual slots with which to cast {name}!",
 "SHMN.SpellCastTime": "Casting Time",
-"SHMN.SpellCastUpcast": "Cast at Level",
-"SHMN.SpellcasterLevel": "Spellcaster Level",
-"SHMN.SpellCastingHeader": "Spell Casting",
-"SHMN.Spellcasting": "Spellcasting",
+"SHMN.SpellCastUpcast": "Cast at Rank",
+"SHMN.SpellcasterLevel": "Ritual Caster Level",
+"SHMN.SpellCastingHeader": "Ritual Casting",
+"SHMN.Spellcasting": "Ritual Casting",
 
 "SHMN.SPELLCASTING": {
   "METHODS": {
@@ -4079,13 +4079,13 @@
       "label": "At-Will"
     },
     "Innate": {
-      "label": "Innate Spellcasting"
+      "label": "Innate Ritual Casting"
     },
     "Ritual": {
       "label": "Ritual Only"
     },
     "Spell": {
-      "label": "Spellcasting",
+      "label": "Ritual Casting",
       "Full": {
         "label": "Full Caster"
       },
@@ -4100,40 +4100,40 @@
       }
     },
     "Pact": {
-      "abbr": "Pact",
-      "label": "Pact Magic",
+      "abbr": "Bargain",
+      "label": "Bargain Magic",
       "Full": {
-        "label": "Pact Magic"
+        "label": "Bargain Magic"
       }
     }
   },
   "SLOTS": {
-    "spell0": "Cantrips",
-    "spell1": "1st Level",
-    "spell2": "2nd Level",
-    "spell3": "3rd Level",
-    "spell4": "4th Level",
-    "spell5": "5th Level",
-    "spell6": "6th Level",
-    "spell7": "7th Level",
-    "spell8": "8th Level",
-    "spell9": "9th Level"
+    "spell0": "Passive",
+    "spell1": "Rank E",
+    "spell2": "Rank D",
+    "spell3": "Rank C",
+    "spell4": "Rank B",
+    "spell5": "Rank A",
+    "spell6": "Rank S",
+    "spell7": "Rank SS",
+    "spell8": "Rank 8",
+    "spell9": "Rank 9"
   },
   "STATES": {
     "Unprepared": "Not Prepared",
     "Prepared": "Prepared",
     "AlwaysPrepared": "Always Prepared"
   },
-  "Unlabeled": "Unlabeled Spellcasting"
+  "Unlabeled": "Unlabeled Ritual Casting"
 },
 
-"SHMN.SpellcastingClass": "{class} Spellcasting",
-"SHMN.SpellComponent": "Spell Component",
-"SHMN.SpellComponents": "Spell Components",
-"SHMN.SpellCreate": "Create Spell",
-"SHMN.SpellDC": "Spell DC",
-"SHMN.SpellDetails": "Spell Details",
-"SHMN.SpellEffects": "Spell Effects",
+"SHMN.SpellcastingClass": "{class} Ritual Casting",
+"SHMN.SpellComponent": "Ritual Component",
+"SHMN.SpellComponents": "Ritual Components",
+"SHMN.SpellCreate": "Create Ritual",
+"SHMN.SpellDC": "Ritual DC",
+"SHMN.SpellDetails": "Ritual Details",
+"SHMN.SpellEffects": "Ritual Effects",
 "SHMN.SpellHeader": {
   "Formula": "Formula",
   "Range": "Range",
@@ -4142,68 +4142,68 @@
   "Target": "Target",
   "Time": "Time"
 },
-"SHMN.SpellLevel": "Spell Level",
-"SHMN.SpellLevels": "Spell Levels",
-"SHMN.SpellLevel0": "Cantrip",
-"SHMN.SpellLevel1": "1st Level",
-"SHMN.SpellLevel2": "2nd Level",
-"SHMN.SpellLevel3": "3rd Level",
-"SHMN.SpellLevel4": "4th Level",
-"SHMN.SpellLevel5": "5th Level",
-"SHMN.SpellLevel6": "6th Level",
-"SHMN.SpellLevel7": "7th Level",
-"SHMN.SpellLevel8": "8th Level",
-"SHMN.SpellLevel9": "9th Level",
-"SHMN.SpellLevelSpell": "{level} ({n} Slots)",
-"SHMN.SpellLevelPact": "Pact Slot [Level {level}] ({n} Slots)",
-"SHMN.SpellMaterials": "Spellcasting Materials",
+"SHMN.SpellLevel": "Ritual Rank",
+"SHMN.SpellLevels": "Ritual Ranks",
+"SHMN.SpellLevel0": "Passive",
+"SHMN.SpellLevel1": "E",
+"SHMN.SpellLevel2": "D",
+"SHMN.SpellLevel3": "C",
+"SHMN.SpellLevel4": "B",
+"SHMN.SpellLevel5": "A",
+"SHMN.SpellLevel6": "S",
+"SHMN.SpellLevel7": "SS",
+"SHMN.SpellLevel8": "Rank 8",
+"SHMN.SpellLevel9": "Rank 9",
+"SHMN.SpellLevelSpell": "{level} ({n} Ritual Slots)",
+"SHMN.SpellLevelPact": "Bargain Slot [Rank {level}] ({n} Slots)",
+"SHMN.SpellMaterials": "Ritual Materials",
 "SHMN.SpellMaterialsConsumed": "Consume Materials",
 "SHMN.SpellMaterialsCost": "Material Cost",
 "SHMN.SpellMaterialsDescription": "Material Description",
 "SHMN.SpellMaterialsSupply": "Material Supply",
-"SHMN.SpellName": "Spell Name",
+"SHMN.SpellName": "Ritual Name",
 "SHMN.SpellNone": "None",
 "SHMN.SpellPrepAtWill": "At-Will",
-"SHMN.SpellPrepInnate": "Innate Spellcasting",
+"SHMN.SpellPrepInnate": "Innate Ritual Casting",
 "SHMN.SpellPrepRitual": "Ritual Only",
 "SHMN.SpellPrepPrepared": "Prepared",
 "SHMN.SpellPrepAlways": "Always Prepared",
 "SHMN.SpellPreparation": {
-  "Label": "Spell Preparation",
+  "Label": "Ritual Preparation",
   "Formula": "Preparation Formula",
-  "Method": "Spellcasting Method"
+  "Method": "Ritual Casting Method"
 },
 "SHMN.SpellSourceClass": "Source Class",
 "SHMN.SpellPrepared": "Prepared",
 "SHMN.SpellProgArt": "Artificer",
-"SHMN.SpellProgAvailable": "Available slots",
+"SHMN.SpellProgAvailable": "Available ritual slots",
 "SHMN.SpellProgFull": "Full Caster",
 "SHMN.SpellProgHalf": "Half Caster",
-"SHMN.SpellProgLeveled": "Leveled Magic",
-"SHMN.SpellProgOverride": "Override slots",
-"SHMN.SpellProgPact": "Pact Magic",
+"SHMN.SpellProgLeveled": "Ranked Magic",
+"SHMN.SpellProgOverride": "Override ritual slots",
+"SHMN.SpellProgPact": "Bargain Magic",
 "SHMN.SpellProgThird": "Third Caster",
-"SHMN.SpellProgression": "Spell Progression",
-"SHMN.SpellsSearch": "Search spells",
-"SHMN.SpellSchool": "Spell School",
-"SHMN.SpellScroll": "Spell Scroll",
-"SHMN.SpellSlotExpended": "Expended Spell Slot",
-"SHMN.SpellSlotN.one": "{n}st spell slot",
-"SHMN.SpellSlotN.two": "{n}nd spell slot",
-"SHMN.SpellSlotN.few": "{n}rd spell slot",
-"SHMN.SpellSlotN.other": "{n}th spell slot",
-"SHMN.SpellSlotTemporary": "Temporary Spell Slot",
-"SHMN.SpellSlotsN.one": "{n}st Level Slots",
-"SHMN.SpellSlotsN.two": "{n}nd Level Slots",
-"SHMN.SpellSlotsN.few": "{n}rd Level Slots",
-"SHMN.SpellSlotsN.other": "{n}th Level Slots",
-"SHMN.SpellSlotsPact": "Pact Slots",
-"SHMN.SpellSlotsConfig": "Configure Spell Slots",
-"SHMN.SpellTag": "Spell Tag",
-"SHMN.SpellTarget": "Spell Target",
+"SHMN.SpellProgression": "Ritual Progression",
+"SHMN.SpellsSearch": "Search rituals",
+"SHMN.SpellSchool": "Ritual School",
+"SHMN.SpellScroll": "Ritual Scroll",
+"SHMN.SpellSlotExpended": "Expended Ritual Slot",
+"SHMN.SpellSlotN.one": "{n}st ritual slot",
+"SHMN.SpellSlotN.two": "{n}nd ritual slot",
+"SHMN.SpellSlotN.few": "{n}rd ritual slot",
+"SHMN.SpellSlotN.other": "{n}th ritual slot",
+"SHMN.SpellSlotTemporary": "Temporary Ritual Slot",
+"SHMN.SpellSlotsN.one": "Rank {n} Slots",
+"SHMN.SpellSlotsN.two": "Rank {n} Slots",
+"SHMN.SpellSlotsN.few": "Rank {n} Slots",
+"SHMN.SpellSlotsN.other": "Rank {n} Slots",
+"SHMN.SpellSlotsPact": "Bargain Slots",
+"SHMN.SpellSlotsConfig": "Configure Ritual Slots",
+"SHMN.SpellTag": "Ritual Tag",
+"SHMN.SpellTarget": "Ritual Target",
 "SHMN.SpellUnprepared": "Unprepared",
-"SHMN.SpellUsage": "Spell Usage",
-"SHMN.Spellbook": "Spellbook",
+"SHMN.SpellUsage": "Ritual Usage",
+"SHMN.Spellbook": "Ritual Book",
 "SHMN.Spent": "Spent",
 "SHMN.StartingEquipment": {
   "Title": "Starting Equipment",
@@ -4214,7 +4214,7 @@
   },
   "Choice": {
     "Armor": "Choose Armor",
-    "Focus": "Choose Spellcasting Focus",
+    "Focus": "Choose Ritual Focus",
     "Tool": "Choose Tool",
     "Weapon": "Choose Weapon"
   },
@@ -4859,7 +4859,7 @@
         "Label": "Other Actors"
       },
       "Spell": {
-        "Label": "Spell Effects"
+        "Label": "Ritual Effects"
       }
     },
     "FIELDS": {
@@ -4882,8 +4882,8 @@
         "label": "Other Options"
       },
       "spellLists": {
-        "hint": "The spells on these spell lists will be kept if the actor has a matching item.",
-        "label": "Retained Spell Lists"
+        "hint": "The rituals on these ritual lists will be kept if the actor has a matching item.",
+        "label": "Retained Ritual Lists"
       },
       "tempFormula": {
         "hint": "Formula for temp HP that will be added upon transformation.",
@@ -4940,7 +4940,7 @@
         "Label": "Skill Proficiencies"
       },
       "Spells": {
-        "Label": "Spells"
+        "Label": "Rituals"
       },
       "TempHP": {
         "Label": "Temp HP"
@@ -5533,7 +5533,7 @@
 "SHMN.description": "A system for playing the fifth edition of the worlds most popular roleplaying game in the Foundry Virtual Tabletop environment.",
 "SHMN.of": "of",
 "SHMN.per": "per",
-"SHMN.spell": "spell",
+"SHMN.spell": "ritual",
 
 "EDITOR.SHMN.Inline": {
   "ApplyStatus": "Apply Status to Selected Tokens",
@@ -5601,7 +5601,7 @@
 "TYPES.JournalEntryPage.class": "Class Summary",
 "TYPES.JournalEntryPage.map": "Map Location",
 "TYPES.JournalEntryPage.rule": "Rule",
-"TYPES.JournalEntryPage.spells": "Spell List",
+"TYPES.JournalEntryPage.spells": "Ritual List",
 "TYPES.JournalEntryPage.subclass": "Subclass Summary",
 "JOURNALENTRYPAGE.SHMN": {
   "Class": {
@@ -5661,9 +5661,9 @@
     "NoValidClass": "No valid class selected, press the edit button to add a class.",
     "OptionalFeaturesCaption": "Optional Class Features",
     "OptionalFeaturesDescription": "The following section contains optional {class} features. These features are not granted automatically, and you can choose one, some, or all of them at your DM's discretion.",
-    "SpellSlotLevel": "Slot Level",
-    "SpellSlots": "Spell Slots",
-    "SpellSlotsPerSpellLevel": "—Spell Slots per Spell Level—",
+    "SpellSlotLevel": "Slot Rank",
+    "SpellSlots": "Ritual Slots",
+    "SpellSlotsPerSpellLevel": "—Ritual Slots per Ritual Rank—",
     "Style": {
       "Inferred": "Inferred from Source",
       "Legacy": "Legacy",
@@ -5680,25 +5680,25 @@
   "EditDescription": "Edit",
   "TableTOC": "Table: {caption}",
   "SpellList": {
-    "DropHint": "Drop spells or folders of spells here to add to the list",
+    "DropHint": "Drop rituals or folders of rituals here to add to the list",
     "Grouping": {
       "Label": "Grouping Mode",
-      "Hint": "Controls how the spells will be grouped by default in the spell list.",
+      "Hint": "Controls how the rituals will be grouped by default in the ritual list.",
       "Alphabetical": "By First Letter",
-      "Level": "By Level",
+      "Level": "By Rank",
       "None": "No Grouping",
       "School": "By School"
     },
-    "IdentifierHint": "Identifier should match that defined on the associated document, if applicable. For example, when creating a spell list for the Wizard class, the identifier should be 'wizard'.",
+    "IdentifierHint": "Identifier should match that defined on the associated document, if applicable. For example, when creating a ritual list for a class, use that class identifier.",
     "Type": {
-      "Label": "Spell List Type",
+      "Label": "Ritual List Type",
       "Other": "Uncategorized"
     },
     "UnlinkedSpells": {
-      "Label": "Unlinked Spells",
-      "Add": "Add Unlinked Spell",
-      "Configuration": "Spell Configuration",
-      "Edit": "Edit Unlinked Spell"
+      "Label": "Unlinked Rituals",
+      "Add": "Add Unlinked Ritual",
+      "Configuration": "Ritual Configuration",
+      "Edit": "Edit Unlinked Ritual"
     }
   },
   "Subclass": {
@@ -5739,13 +5739,13 @@
 
 "SETTINGS.5eAutoCollapseCardL": "Automatically collapse Item Card descriptions in the Chat Log",
 "SETTINGS.5eAutoCollapseCardN": "Collapse Item Cards in Chat",
-"SETTINGS.5eAutoSpellTemplateL": "When a spell is cast, defaults to begin the process to create the corresponding Measured Template if any (requires TRUSTED or higher player role)",
-"SETTINGS.5eAutoSpellTemplateN": "Always place Spell Template",
+"SETTINGS.5eAutoSpellTemplateL": "When a ritual is cast, defaults to begin the process to create the corresponding Measured Template if any (requires TRUSTED or higher player role)",
+"SETTINGS.5eAutoSpellTemplateN": "Always place Ritual Template",
 "SETTINGS.5eNoAdvancementsN": "Disable level-up automation",
 "SETTINGS.5eNoAdvancementsL": "Do not prompt for level-up or character creation choices.",
 "SETTINGS.5eNoConcentrationN": "Disable concentration tracking",
 "SETTINGS.5eNoConcentrationL": "Disable the system's automated tracking of concentration.",
-"SETTINGS.5eGridAlignedSquareTemplatesL": "When square templates are created as the result of casting a spell or using an item, they will be locked to the grid alignment and unable to be rotated.",
+"SETTINGS.5eGridAlignedSquareTemplatesL": "When square templates are created as the result of casting a ritual or using an item, they will be locked to the grid alignment and unable to be rotated.",
 "SETTINGS.5eGridAlignedSquareTemplatesN": "Grid-Aligned Square Templates",
 "SETTINGS.SHMN": {
   "AUTOMATION": {
@@ -5963,10 +5963,10 @@
 "SHMN.Team.Role.Offensive": "Offensive",
 "SHMN.Team.Role.Reserve": "Bench",
 "SHMN.Team.Role.Support": "Support",
-"SHMN.Pact": "Pact",
-"SHMN.PactCreate": "Create Pact",
+"SHMN.Pact": "Bargain",
+"SHMN.PactCreate": "Create Bargain",
 "SHMN.PactSpellCreate": "Create Ritual",
-"SHMN.PactSearchPlaceholder": "Search pact or ritual",
+"SHMN.PactSearchPlaceholder": "Search bargain or ritual",
 "SHMN.PactTypeBlank1": "-- Type 1 --",
 "SHMN.PactTypeBlank2": "-- Type 2 --",
 "SHMN.PactTypeBlank3": "-- Type 3 --",

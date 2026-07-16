@@ -47746,7 +47746,7 @@ function registerSystemSettings() {
     scope: "world",
     config: true,
     type: Boolean,
-    default: false
+    default: true
   });
 
   // Metric Volume Weights
