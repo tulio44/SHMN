@@ -12780,13 +12780,17 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title {
   background: linear-gradient(180deg, var(--shmn-team-panel-2), var(--shmn-team-panel));
-  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 45%);
+  border: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 28%);
   height: 80px;
   width: min(430px, 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--shmn-team-primary), transparent 82%),
+    0 0 10px color-mix(in srgb, var(--shmn-team-primary), transparent 78%);
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .header {
   background: linear-gradient(90deg, var(--shmn-team-red), var(--shmn-team-red-dark));
+  border-bottom: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 36%);
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .info {
@@ -12800,6 +12804,7 @@ dialog.shmn2.application {
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .info>div {
   align-items: center;
+  border-right: none;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -12834,7 +12839,7 @@ dialog.shmn2.application {
 }
 
 .shmn2.sheet.actor.group .sheet-header .card.team-title .team-victories {
-  border-left: var(--shmn-border-gold);
+  border-left: 1px solid color-mix(in srgb, var(--shmn-team-red-bright), transparent 48%);
   flex: 0 0 auto;
   min-width: 72px;
   padding-left: 12px;
@@ -18797,13 +18802,14 @@ document-embed.spells ul li {
   background: var(--shmn-background-card);
   border: var(--shmn-border-gold);
   box-shadow: 0 0 6px var(--shmn-shadow-45);
+  padding-right: 0.25rem;
 }
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search::before {
   content: "\f002";
   font-family: var(--font-awesome);
   font-weight: bold;
-  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-light-0) 18%);
+  color: var(--color-text-secondary);
   position: absolute;
   left: 0.75rem;
 }
@@ -18823,8 +18829,49 @@ document-embed.spells ul li {
 }
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search-input::placeholder {
-  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-light-0) 18%);
+  color: color-mix(in srgb, var(--shmn-color-gold), var(--color-text-secondary) 45%);
   opacity: 0.9;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .controls {
+  display: flex;
+  align-self: stretch;
+  align-items: stretch;
+  padding: 0.5rem 0;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control {
+  height: 100%;
+  color: var(--filter-control-color);
+  font-size: var(--font-size-16);
+  padding: 0 0.375rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control.active {
+  color: var(--filter-control-active-color);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control:hover:not(.disabled) {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control:hover:not(.disabled),
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control:focus {
+  box-shadow: none;
+  outline: 0;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control.filter {
+  border-right: var(--shmn-border-separator-faint);
+  padding-right: 0.625rem;
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control.filter:hover {
+  border-right: var(--shmn-border-separator-faint);
+}
+
+.shmn2.sheet.actor.character .tab[data-tab="spells"] .pactbook-search .filter-control.sort {
+  padding-left: 0.625rem;
 }
 
 .shmn2.sheet.actor.character .tab[data-tab="spells"] .pact {
@@ -19422,11 +19469,6 @@ document-embed.spells ul li {
   cursor: var(--cursor-pointer);
 }
 
-.shmn2.sheet.actor.character .collective-combat .cc-team-image>img[data-action]:hover,
-.shmn2.sheet.actor.character .collective-combat .cc-team-image>img[data-action]:focus {
-  filter: brightness(1.08) drop-shadow(0 0 6px var(--shmn-color-gold));
-}
-
 .shmn2.sheet.actor.character .collective-combat .cc-team-details {
   width: min(100%, var(--skills-col-width));
   margin: -1px 0 0;
@@ -19470,6 +19512,92 @@ document-embed.spells ul li {
 .shmn2.sheet.actor.character .collective-combat input.cc-team-name::placeholder,
 .shmn2.sheet.actor.character .collective-combat input.cc-team-position::placeholder {
   color: var(--color-text-tertiary);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-controls {
+  width: min(100%, var(--skills-col-width));
+  position: relative;
+  display: flex;
+  gap: 0;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background: var(--shmn-background-card);
+  border: var(--shmn-border-gold);
+  box-shadow: 0 0 6px var(--shmn-shadow-15);
+  overflow: visible;
+  min-height: 2rem;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle {
+  flex: 1 1 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  align-self: stretch;
+  padding: 0.45rem 0.5rem;
+  font-size: var(--font-size-11);
+  line-height: 1;
+  cursor: var(--cursor-pointer);
+  transition: color 160ms ease, text-shadow 160ms ease;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle:has(input:checked) {
+  color: var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle:hover,
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle:focus-within {
+  color: var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle:hover :is(i, span),
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-toggle:focus-within :is(i, span) {
+  text-shadow: 0 0 6px var(--shmn-color-gold);
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-button,
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-spacer {
+  position: absolute;
+  top: -0.65rem;
+  right: -0.25rem;
+  width: 3.1rem;
+  aspect-ratio: 1;
+  margin: 0;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-button {
+  padding: 0;
+  border: 2px solid var(--shmn-color-gold);
+  background: var(--shmn-background-card);
+  box-shadow:
+    0 0 0 2px var(--shmn-background-card),
+    0 0 0 3px color-mix(in srgb, var(--shmn-color-gold), transparent 40%),
+    0 0 8px var(--shmn-shadow-45);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-button>img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border: none;
+}
+
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-button:hover>img,
+.shmn2.sheet.actor.character .collective-combat .cc-outfit-image-button:focus-visible>img {
+  filter: brightness(1.08) drop-shadow(0 0 5px var(--shmn-color-gold));
 }
 
 .shmn2.sheet.actor.character .collective-combat .cc-stamina {

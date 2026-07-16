@@ -51,8 +51,8 @@
             </ul>
             {{/if}}
         </div>
+        {{#if @root.editable}}
         <div class="classes controls">
-            {{#if @root.editable}}
             <select class="unselect team-role" data-action="changeMemberRole" data-actor-id="{{ id }}">
                 {{ selectOptions @root.roleOptions selected=role localize=true }}
             </select>
@@ -60,17 +60,8 @@
                     aria-label="{{ localize "SHMN.Group.Action.Remove" }}">
                 <i class="fa-solid fa-square-xmark" inert></i>
             </button>
-            {{else}}
-            {{#each classes}}
-            <img class="item-tooltip" src="{{ img }}" alt="{{ name }}" data-uuid="{{ uuid }}"
-                 data-action="showDocument" data-tooltip-direction="RIGHT">
-            {{#with subclass}}
-            <img class="item-tooltip" src="{{ img }}" alt="{{ name }}" data-uuid="{{ uuid }}"
-                 data-action="showDocument" data-tooltip-direction="RIGHT">
-            {{/with}}
-            {{/each}}
-            {{/if}}
         </div>
+        {{/if}}
     </div>
     {{#if section.hasStats}}
     <div class="stats">

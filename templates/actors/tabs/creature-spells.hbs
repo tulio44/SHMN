@@ -86,6 +86,14 @@
             <search class="pactbook-search">
                 <input type="text" class="pactbook-search-input"
                     placeholder="{{ localize "SHMN.PactSearchPlaceholder" }}" autocomplete="off">
+                <ul class="unlist controls pactbook-search-controls">
+                    <li>
+                        <button type="button" class="unbutton filter-control always-interactive"
+                            data-action="clearPactbookSearch" data-tooltip aria-label="{{ localize "SHMN.FilterClear" }}">
+                            <i class="fas fa-xmark" inert></i>
+                        </button>
+                    </li>
+                </ul>
             </search>
             {{#if @root.editable}}
             <button type="button" class="config-button pact-create-button" data-action="createPact"
@@ -287,8 +295,6 @@
                         {{/each}}
                     </section>
                 </shmn-inventory>
-                {{else}}
-                <p class="empty">{{ localize "SHMN.None" }}</p>
                 {{/if}}
             </div>
         </section>

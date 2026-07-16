@@ -33,6 +33,31 @@
             {{/if}}
         </div>
 
+        <div class="cc-outfit-controls">
+            <label class="slide-toggle cc-outfit-toggle roboto-upper" data-action="toggleCollectiveCombatOutfit"
+                   data-tooltip="SHMN.CollectiveCombatOutfitToggle">
+                <input type="checkbox" {{ collectiveCombatOutfit.checked }} aria-label="{{ localize "SHMN.CollectiveCombatOutfitToggle" }}">
+                {{#if collectiveCombatOutfit.useUniform}}
+                <i class="fas fa-toggle-on" inert></i>
+                {{else}}
+                <i class="fas fa-toggle-off" inert></i>
+                {{/if}}
+                <span>{{ localize "SHMN.CollectiveCombatOutfitToggle" }}</span>
+            </label>
+            {{#if editable}}
+            <button
+                type="button"
+                class="cc-outfit-image-button unbutton"
+                data-action="editCollectiveCombatOutfitImage"
+                data-tooltip="SHMN.CollectiveCombatOutfitImageEdit"
+                aria-label="{{ localize "SHMN.CollectiveCombatOutfitImageEdit" }}">
+                <img src="{{ collectiveCombatOutfit.img }}" alt="{{ collectiveCombatOutfit.label }}">
+            </button>
+            {{else}}
+            <div class="cc-outfit-image-spacer" inert></div>
+            {{/if}}
+        </div>
+
         <filigree-box class="cc-skills">
             <h3>
                 <i class="fas fa-people-group" inert></i>
@@ -109,11 +134,10 @@
 </section>
 
 {{#*inline ".skill-prof"}}
-<li data-key="{{ key }}" {{~#if reference}} data-reference-tooltip="{{ reference }}" {{/if}}>
+<li data-key="{{ key }}">
     <proficiency-cycle
         type="skill"
         name="{{ path }}.value"
-        data-tooltip="{{ hover }}"
         value="{{#if @root.editable}}{{ source.value }}{{else}}{{ value }}{{/if}}"
         aria-label="{{ localize hover }}"
         {{disabled (not @root.editable)}}>
@@ -139,7 +163,6 @@
         class="config-button unbutton"
         data-action="showConfiguration"
         data-config="{{ type }}"
-        data-tooltip="{{ config }}"
         aria-label="{{ localize config }}">
         <i class="fas fa-cog" inert></i>
     </button>

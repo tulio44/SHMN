@@ -55774,10 +55774,13 @@ class CharacterActorSheet extends BaseActorSheet {
       deleteOccupant: CharacterActorSheet.#deleteOccupant,
       findItem: CharacterActorSheet.#findItem,
       setSpellcastingAbility: CharacterActorSheet.#setSpellcastingAbility,
+      clearPactbookSearch: CharacterActorSheet.#clearPactbookSearch,
       createPact: CharacterActorSheet.#createPact,
       createPactSpell: CharacterActorSheet.#createPactSpell,
       editPactImage: CharacterActorSheet.#editPactImage,
       editCollectiveCombatImage: CharacterActorSheet.#editCollectiveCombatImage,
+      editCollectiveCombatOutfitImage: CharacterActorSheet.#editCollectiveCombatOutfitImage,
+      toggleCollectiveCombatOutfit: CharacterActorSheet.#toggleCollectiveCombatOutfit,
       deletePact: CharacterActorSheet.#deletePact,
       editPactSpell: CharacterActorSheet.#editPactSpell,
       deletePactSpell: CharacterActorSheet.#deletePactSpell,
@@ -56102,6 +56105,14 @@ class CharacterActorSheet extends BaseActorSheet {
       position: collectiveCombat.position ?? "",
       label: game.i18n.localize("SHMN.CollectiveCombatTeamImage")
     };
+    const outfitImage = collectiveCombat.uniformImg || "systems/shmn/icons/svg/actors/group.svg";
+    context.collectiveCombatOutfit = {
+      img: outfitImage,
+      hasImage: !!collectiveCombat.uniformImg,
+      useUniform: !!collectiveCombat.useUniform,
+      checked: collectiveCombat.useUniform ? "checked" : "",
+      label: game.i18n.localize("SHMN.CollectiveCombatOutfitImage")
+    };
     context.stamina = this.actor.system.attributes.stamina;
 
     const letters = ["A", "B", "C", "D", "E", "F", "G"];
@@ -56184,8 +56195,7 @@ class CharacterActorSheet extends BaseActorSheet {
 
     for (const entry of [...context.skills, ...context.ccSkills, ...context.tools]) {
       entry.class = this.constructor.PROFICIENCY_CLASSES[context.editable ? entry.baseValue : entry.value];
-      if (entry.key in CONFIG.SHMN.skills) entry.reference = CONFIG.SHMN.skills[entry.key].reference;
-      else if (entry.key in CONFIG.SHMN.tools) entry.reference = getBaseItemUUID(CONFIG.SHMN.tools[entry.key].id);
+      if (entry.key in CONFIG.SHMN.tools) entry.reference = getBaseItemUUID(CONFIG.SHMN.tools[entry.key].id);
     }
 
     // Traits
@@ -56736,7 +56746,7 @@ class CharacterActorSheet extends BaseActorSheet {
         reference = getBaseItemUUID(CONFIG.SHMN.tools[id]?.id);
         ({ img, name: title } = getBaseItem(reference, { indexOnly: true }));
       }
-      else if (type === "skill") ({ icon: img, label: title, reference } = CONFIG.SHMN.skills[id]);
+      else if (type === "skill") ({ icon: img, label: title } = CONFIG.SHMN.skills[id]);
       return { img, title, subtitle, modifier: total, passive, reference };
     }
   }
@@ -57047,6 +57057,19 @@ class CharacterActorSheet extends BaseActorSheet {
   /* -------------------------------------------- */
 
   /**
+   * Clear the pactbook search field.
+   * @this {CharacterActorSheet}
+   */
+  static #clearPactbookSearch() {
+    this._pactbookSearch = "";
+    const input = this.element.querySelector(".pactbook-search-input");
+    if (input) input.value = "";
+    this._filterPactbook();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
    * Handle setting the character's spellcasting ability.
    * @this {CharacterActorSheet}
    * @param {Event} event         Triggering click event.
@@ -57124,6 +57147,52 @@ class CharacterActorSheet extends BaseActorSheet {
         left: this.position.left + 10
       }
     }).render(true);
+  }
+
+  static async #editCollectiveCombatOutfitImage(event, target) {
+    if (!this.isEditable) return;
+
+    const current = this.actor.system.attributes.collectiveCombat?.uniformImg || target.getAttribute("src")
+      || "systems/shmn/icons/svg/actors/group.svg";
+
+    new CONFIG.ux.FilePicker({
+      type: "image",
+      current,
+      callback: async path => {
+        const updateData = { "system.attributes.collectiveCombat.uniformImg": path };
+        if (this.actor.system.attributes.collectiveCombat?.useUniform) updateData.img = path;
+        await this.actor.update(updateData);
+        this.render({ force: true });
+      },
+      position: {
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      }
+    }).render(true);
+  }
+
+  static async #toggleCollectiveCombatOutfit(event, target) {
+    if (!this.actor.isOwner) return;
+    event.preventDefault();
+
+    const collectiveCombat = this.actor.system.attributes.collectiveCombat ?? {};
+    const useUniform = !collectiveCombat.useUniform;
+    const updateData = { "system.attributes.collectiveCombat.useUniform": useUniform };
+
+    if (useUniform) {
+      if (!collectiveCombat.uniformImg) {
+        ui.notifications.warn("SHMN.CollectiveCombatOutfitMissing", { localize: true });
+        return;
+      }
+      updateData["system.attributes.collectiveCombat.portraitImg"] = this.actor.img;
+      updateData.img = collectiveCombat.uniformImg;
+      updateData["flags.shmn.showTokenPortrait"] = false;
+    } else if (collectiveCombat.portraitImg) {
+      updateData.img = collectiveCombat.portraitImg;
+    }
+
+    await this.actor.update(updateData);
+    this.render({ force: true });
   }
 
   static async #deletePact(event, target) {
@@ -57741,8 +57810,10 @@ class MultiActorSheet extends BaseActorSheet {
     const showTokenPortrait = this.actor.getFlag("shmn", "showTokenPortrait");
     const token = actor.isToken ? actor.token : actor.prototypeToken;
     const defaults = Actor.implementation.getDefaultArtwork(actor._source);
-    let src = showTokenPortrait ? token.texture.src : actor.img;
-    if (showTokenPortrait && token?.randomImg) {
+    const collectiveCombat = actor.system.attributes?.collectiveCombat;
+    const collectiveCombatOutfitImage = collectiveCombat?.uniformImg ?? "";
+    let src = collectiveCombatOutfitImage || (showTokenPortrait ? token.texture.src : actor.img);
+    if (!collectiveCombatOutfitImage && showTokenPortrait && token?.randomImg) {
       const images = await actor.getTokenImages();
       src = images[Math.floor(Math.random() * images.length)];
     }
@@ -58436,7 +58507,6 @@ class GroupActorSheet extends MultiActorSheet {
       member.canManageGoals = context.editable && (game.user.isGM || actor.isOwner);
       member.canRollTeamSkill = actor.isOwner;
       member.hiddenStats = !actor.testUserPermission(game.user, "OBSERVER");
-      member.classes = member.hiddenStats ? [] : actor.itemTypes.class;
       await this._prepareMemberPortrait(actor, member);
       this._prepareMemberEncumbrance(actor, member);
       this._prepareMemberSkills(actor, member);
@@ -69995,6 +70065,23 @@ class CharacterData extends CreatureTemplate {
             blank: true,
             initial: "",
             label: "SHMN.CollectiveCombatTeamImage"
+          }),
+          uniformImg: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.CollectiveCombatOutfitImage"
+          }),
+          portraitImg: new StringField$n({
+            required: true,
+            blank: true,
+            initial: "",
+            label: "SHMN.Portrait"
+          }),
+          useUniform: new BooleanField$c({
+            required: true,
+            initial: false,
+            label: "SHMN.CollectiveCombatOutfitToggle"
           }),
           name: new StringField$n({
             required: true,

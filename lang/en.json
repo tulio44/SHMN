@@ -6030,7 +6030,11 @@
 "SHMN.TeamContest.Versus": "vs",
 "SHMN.TeamContest.Winner": "{winner} wins",
 "SHMN.CollectiveCombatTeamImage": "Team Image",
+"SHMN.CollectiveCombatOutfitImage": "Collective Combat Outfit",
 "SHMN.CollectiveCombatTeamImageEdit": "Change team image",
+"SHMN.CollectiveCombatOutfitImageEdit": "Change collective combat outfit",
+"SHMN.CollectiveCombatOutfitMissing": "Choose a collective combat outfit image before changing outfit.",
+"SHMN.CollectiveCombatOutfitToggle": "Wear uniform",
 "SHMN.CollectiveCombatTeamName": "Team Name",
 "SHMN.CollectiveCombatTeamPosition": "Position",
 "SIDEBAR.SortModePriority": "Sort by priority"

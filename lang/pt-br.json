@@ -6033,7 +6033,11 @@
 "SHMN.TeamContest.Versus": "vs",
 "SHMN.TeamContest.Winner": "{winner} venceu",
 "SHMN.CollectiveCombatTeamImage": "Imagem do Time",
+"SHMN.CollectiveCombatOutfitImage": "Roupa de Combate Coletivo",
 "SHMN.CollectiveCombatTeamImageEdit": "Alterar imagem do time",
+"SHMN.CollectiveCombatOutfitImageEdit": "Alterar roupa de combate coletivo",
+"SHMN.CollectiveCombatOutfitMissing": "Escolha uma imagem de roupa de combate coletivo antes de trocar a roupa.",
+"SHMN.CollectiveCombatOutfitToggle": "Colocar uniforme",
 "SHMN.CollectiveCombatTeamName": "Nome do Time",
 "SHMN.CollectiveCombatTeamPosition": "Posição"
 }
