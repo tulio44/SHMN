@@ -5950,6 +5950,10 @@
 "SHMN.Pact": "Barganha",
 "SHMN.PactCreate": "Criar Barganha",
 "SHMN.PactSpellCreate": "Criar Ritual",
+"SHMN.PactSearchPlaceholder": "Buscar barganha ou ritual",
+"SHMN.PactTypeBlank1": "— Tipo 1 —",
+"SHMN.PactTypeBlank2": "— Tipo 2 —",
+"SHMN.PactTypeBlank3": "— Tipo 3 —",
 "SHMN.UnlinkedPact": "Rituais sem Barganha",
 
 "SHMN.PactTypeFire": "Fogo",
@@ -6006,7 +6010,7 @@
 "SHMN.Team.TeamTitleExample": "Exemplo: Campeão Estadual",
 "SHMN.Team.TeamTitlePlaceholder": "Campeão Estadual",
 "SHMN.Team.PrimaryColor": "Cor primária",
-"SHMN.Team.Lineup": "2 Defenseman, 2 Support, 1 Catcher, 1 Offensive e banco de reservas.",
+"SHMN.Team.Lineup": "2 Defenseman, 1 Support, 1 Catcher, 1 Offensive e banco de reservas.",
 "SHMN.Team.EmptySlot": "Posi\u00e7\u00e3o vazia",
 "SHMN.Team.Goals": "Gols",
 "SHMN.Team.Members": "Time",
@@ -6029,7 +6033,11 @@
 "SHMN.TeamContest.Versus": "vs",
 "SHMN.TeamContest.Winner": "{winner} venceu",
 "SHMN.CollectiveCombatTeamImage": "Imagem do Time",
+"SHMN.CollectiveCombatOutfitImage": "Roupa de Combate Coletivo",
 "SHMN.CollectiveCombatTeamImageEdit": "Alterar imagem do time",
+"SHMN.CollectiveCombatOutfitImageEdit": "Alterar roupa de combate coletivo",
+"SHMN.CollectiveCombatOutfitMissing": "Escolha uma imagem de roupa de combate coletivo antes de trocar a roupa.",
+"SHMN.CollectiveCombatOutfitToggle": "Colocar uniforme",
 "SHMN.CollectiveCombatTeamName": "Nome do Time",
 "SHMN.CollectiveCombatTeamPosition": "Posição"
 }

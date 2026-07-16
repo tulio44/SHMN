@@ -16,7 +16,7 @@
                 {{else}}
                 <button type="button" class="radio-button" data-action="setSpellcastingAbility"
                     data-tooltip="SHMN.SpellAbilitySet" aria-pressed="{{#if primary}}true{{else}}false{{/if}}"
-                    aria-label="{{ localize " SHMN.SpellAbilitySet" }}">
+                    aria-label="{{ localize "SHMN.SpellAbilitySet" }}">
                 </button>
                 {{/if}}
             </div>
@@ -84,12 +84,21 @@
     <section class="pactbook">
         <header class="pactbook-header">
             <search class="pactbook-search">
-                <input type="text" class="pactbook-search-input" placeholder="Buscar barganha ou ritual"
-                    autocomplete="off">
+                <input type="text" class="pactbook-search-input"
+                    placeholder="{{ localize "SHMN.PactSearchPlaceholder" }}" autocomplete="off">
+                <ul class="unlist controls pactbook-search-controls">
+                    <li>
+                        <button type="button" class="unbutton filter-control always-interactive"
+                            data-action="clearPactbookSearch" data-tooltip aria-label="{{ localize "SHMN.FilterClear" }}">
+                            <i class="fas fa-xmark" inert></i>
+                        </button>
+                    </li>
+                </ul>
             </search>
             {{#if @root.editable}}
             <button type="button" class="config-button pact-create-button" data-action="createPact"
-                data-tooltip="{{ localize " SHMN.PactCreate" }}" aria-label="{{ localize " SHMN.PactCreate" }}">
+                data-tooltip="{{ localize "SHMN.PactCreate" }}" title="{{ localize "SHMN.PactCreate" }}"
+                aria-label="{{ localize "SHMN.PactCreate" }}">
                 <span class="pact-create-icon">
                     <i class="fas fa-handshake" inert></i>
                     <i class="fas fa-plus pact-create-plus" inert></i>
@@ -116,7 +125,7 @@
                     {{#if @root.editable}}
                     {{#unless pact.unlinked}}
                     <input type="text" class="pact-name-input" name="flags.shmn.pactsData.{{ pact.id }}.name"
-                        value="{{ pact.name }}" placeholder="{{ localize " SHMN.Pact" }}">
+                        value="{{ pact.name }}" placeholder="{{ localize "SHMN.Pact" }}">
                     {{else}}
                     <h3>{{ pact.name }}</h3>
                     {{/unless}}
@@ -128,17 +137,17 @@
                     {{#if @root.editable}}
                     <div class="pact-types pact-types-edit">
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.0" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 0) blank="— Tipo 1 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 0) blank=(localize "SHMN.PactTypeBlank1")
                             localize=true }}
                         </select>
 
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.1" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 1) blank="— Tipo 2 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 1) blank=(localize "SHMN.PactTypeBlank2")
                             localize=true }}
                         </select>
 
                         <select name="flags.shmn.pactsData.{{ pact.id }}.types.2" class="pact-type-select">
-                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 2) blank="— Tipo 3 —"
+                            {{ selectOptions pact.typeChoices selected=(lookup pact.types 2) blank=(localize "SHMN.PactTypeBlank3")
                             localize=true }}
                         </select>
                     </div>
@@ -161,14 +170,14 @@
                 {{#unless pact.unlinked}}
                 <div class="pact-controls">
                     <button type="button" class="config-button unbutton" data-action="createPactSpell"
-                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize " SHMN.PactSpellCreate" }}"
-                        aria-label="{{ localize " SHMN.PactSpellCreate" }}">
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize "SHMN.PactSpellCreate" }}"
+                        aria-label="{{ localize "SHMN.PactSpellCreate" }}">
                         <i class="fas fa-plus" inert></i>
                     </button>
 
                     <button type="button" class="config-button unbutton" data-action="deletePact"
-                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize " SHMN.ContextMenuActionDelete" }}"
-                        aria-label="{{ localize " SHMN.ContextMenuActionDelete" }}">
+                        data-pact-id="{{ pact.id }}" data-tooltip="{{ localize "SHMN.ContextMenuActionDelete" }}"
+                        aria-label="{{ localize "SHMN.ContextMenuActionDelete" }}">
                         <i class="fas fa-trash" inert></i>
                     </button>
                 </div>
@@ -225,7 +234,7 @@
 
                                             {{#if ctx.concentration}}
                                             <i class="concentration fa-solid fa-arrow-rotate-left fa-spin fa-spin-reverse"
-                                                aria-label="{{ localize " SHMN.Concentration" }}"></i>
+                                                aria-label="{{ localize "SHMN.Concentration" }}"></i>
                                             {{/if}}
 
                                             <img class="item-image gold-icon" src="{{ item.img }}" alt="{{ item.name }}"
@@ -286,8 +295,6 @@
                         {{/each}}
                     </section>
                 </shmn-inventory>
-                {{else}}
-                <p class="empty">{{ localize "SHMN.None" }}</p>
                 {{/if}}
             </div>
         </section>
